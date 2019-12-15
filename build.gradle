@@ -1,0 +1,25 @@
+buildscript {
+
+    repositories {
+        mavenCentral()
+    }
+}
+
+subprojects {
+
+    apply plugin: 'java'
+    apply plugin: 'idea'
+    apply plugin: 'maven'
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+
+	sourceCompatibility = 1.8
+	targetCompatibility = 1.8
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '4.0.1'
+}

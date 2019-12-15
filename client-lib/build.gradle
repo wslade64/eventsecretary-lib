@@ -1,0 +1,17 @@
+apply plugin: 'maven'
+
+group = 'au.com.eventsecretary'
+archivesBaseName = 'eventsecretary-client-lib'
+version = 'x.x.x-SNAPSHOT'
+
+dependencies {
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.6'
+    compile group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.3'
+
+    compile("org.springframework.boot:spring-boot-starter-web:1.4.0.RELEASE")
+    compile("au.com.eventsecretary.simm:eventsecretary-simm-impl:x.x.x-SNAPSHOT")
+
+    testCompile("junit:junit:4.12")
+    testCompile("org.hamcrest:hamcrest-library:1.3")
+}
+
