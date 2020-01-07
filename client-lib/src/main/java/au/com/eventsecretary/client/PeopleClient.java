@@ -237,6 +237,27 @@ public class PeopleClient {
         }
     }
 
+    public Person getPersonByDetails(String firstName, String lastName, String emailAddress) {
+        try {
+            HttpEntity<Void> httpEntity = createEntity();
+
+            ResponseEntity<Person[]> exchange = restTemplate.exchange(baseUrl + URI + "/person?"
+                    + "firstName=" + firstName
+                    + "&lastName=" + lastName
+                    + "&emailAddress=" + emailAddress, HttpMethod.GET, httpEntity, Person[].class);
+            switch (exchange.getStatusCode()) {
+                case OK:
+                    return exchange.getBody().length == 0 ? null : exchange.getBody()[0];
+                default:
+                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+            }
+        }
+        catch (RestClientException e) {
+            logger.error("getPersonByNames:could not connect to people service" + e.getMessage());
+            throw new UnexpectedSystemException(e);
+        }
+    }
+
     public List<Person> findPeople(String query) {
         try {
             HttpEntity<Void> httpEntity = createEntity();
