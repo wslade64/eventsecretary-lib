@@ -5,7 +5,6 @@ import au.com.eventsecretary.UnexpectedSystemException;
 import au.com.eventsecretary.user.identity.Identity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.*;
 import org.springframework.http.client.ClientHttpResponse;
@@ -29,7 +28,7 @@ public class IdentityClient {
     private final String baseUrl;
     private final RestTemplate restTemplate;
 
-    public IdentityClient(@Value("${userUrl}") String baseUrl, RestTemplateBuilder restTemplateBuilder) {
+    public IdentityClient(String baseUrl, RestTemplateBuilder restTemplateBuilder) {
         this.baseUrl = baseUrl;
         restTemplate = restTemplateBuilder.build();
         restTemplate.setErrorHandler(new DefaultResponseErrorHandler() {

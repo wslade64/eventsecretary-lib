@@ -34,9 +34,11 @@ public class SecurityInterceptor extends HandlerInterceptorAdapter {
         }
         if (StringUtils.hasLength(bearer)) {
             Identity identity = identityService.get(bearer);
-            request.setAttribute(Identity.class.getName(), identity);
-            MDC.put(IDENTITY_KEY, identity.getEmail());
-            MDC.put(BEARER_KEY, identity.getBearer());
+            if (identity != null) {
+                request.setAttribute(Identity.class.getName(), identity);
+                MDC.put(IDENTITY_KEY, identity.getEmail());
+                MDC.put(BEARER_KEY, bearer);
+            }
         }
         return true;
     }

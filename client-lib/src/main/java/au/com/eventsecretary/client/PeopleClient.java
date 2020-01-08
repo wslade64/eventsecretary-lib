@@ -8,9 +8,11 @@ import au.com.eventsecretary.people.presentation.PersonIdentity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.DefaultResponseErrorHandler;
@@ -33,7 +35,7 @@ public class PeopleClient {
     private final String baseUrl;
     private final RestTemplate restTemplate;
 
-    public PeopleClient(@Value("${userUrl}") String baseUrl, RestTemplateBuilder restTemplateBuilder) {
+    public PeopleClient(String baseUrl, RestTemplateBuilder restTemplateBuilder) {
         this.baseUrl = baseUrl;
         restTemplate = restTemplateBuilder.build();
         restTemplate.setErrorHandler(new DefaultResponseErrorHandler() {
@@ -113,7 +115,9 @@ public class PeopleClient {
 
     public PersonIdentity findPersonIdentityByIdentityId(String identityId) {
         try {
-            ResponseEntity<PersonIdentity> exchange = restTemplate.getForEntity(baseUrl + URI + "/personIdentity/" + identityId, PersonIdentity.class);
+            HttpEntity<Void> httpEntity = createEntity();
+
+            ResponseEntity<PersonIdentity> exchange = restTemplate.exchange(baseUrl + URI + "/personIdentity/" + identityId, HttpMethod.GET, httpEntity, PersonIdentity.class);
             switch (exchange.getStatusCode()) {
                 case OK:
                     return exchange.getBody();

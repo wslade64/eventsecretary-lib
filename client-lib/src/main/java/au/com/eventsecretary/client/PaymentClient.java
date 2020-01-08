@@ -4,14 +4,12 @@ import au.com.eventsecretary.ResourceExistsException;
 import au.com.eventsecretary.UnexpectedSystemException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpResponse;
-import org.springframework.stereotype.Component;
 import org.springframework.web.client.DefaultResponseErrorHandler;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -22,7 +20,6 @@ import java.util.Collections;
 /**
  * @author sladew
  */
-@Component
 public class PaymentClient
 {
     private static final String URI = "/payment/v1";
@@ -31,7 +28,7 @@ public class PaymentClient
     private final String baseUrl;
     private final RestTemplate restTemplate;
 
-    public PaymentClient(@Value("${userUrl}") String baseUrl, RestTemplateBuilder restTemplateBuilder) {
+    public PaymentClient(String baseUrl, RestTemplateBuilder restTemplateBuilder) {
         this.baseUrl = baseUrl;
         restTemplate = restTemplateBuilder.build();
         restTemplate.setErrorHandler(new DefaultResponseErrorHandler() {
