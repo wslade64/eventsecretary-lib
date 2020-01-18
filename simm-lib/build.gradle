@@ -1,0 +1,12 @@
+apply plugin: 'maven'
+
+group = 'au.com.eventsecretary'
+archivesBaseName = 'eventsecretary-simm-lib'
+version = 'x.x.x-SNAPSHOT'
+
+dependencies {
+    compile("au.com.eventsecretary:eventsecretary-client-lib:x.x.x-SNAPSHOT")
+    compile("au.com.eventsecretary.simm:eventsecretary-simm-impl:x.x.x-SNAPSHOT")
+
+}
+
