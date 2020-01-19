@@ -1,1 +1,1 @@
-include 'client-lib'
+include 'system-lib', 'client-lib', 'persistence-lib'
