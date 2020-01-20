@@ -1,8 +1,4 @@
-apply plugin: 'maven'
-
-group = 'au.com.eventsecretary'
 archivesBaseName = 'eventsecretary-system-lib'
-version = 'x.x.x-SNAPSHOT'
 
 dependencies {
 }
