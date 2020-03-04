@@ -16,7 +16,10 @@ subprojects {
         mavenCentral()
     }
 
-	sourceCompatibility = 1.8
+    group = 'au.com.eventsecretary'
+    version = 'x.x.x-SNAPSHOT'
+
+    sourceCompatibility = 1.8
 	targetCompatibility = 1.8
 
     task sourcesJar(type: Jar, dependsOn: classes) {
