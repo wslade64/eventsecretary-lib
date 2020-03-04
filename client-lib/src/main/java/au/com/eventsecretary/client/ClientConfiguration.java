@@ -21,4 +21,9 @@ public class ClientConfiguration {
     public PeopleClient peopleClient(@Value("${userUrl}") String baseUrl, RestTemplateBuilder restTemplateBuilder) {
         return new PeopleClient(baseUrl, restTemplateBuilder);
     }
+
+    @Bean
+    public FacilityClient facilityClient(@Value("${userUrl}") String baseUrl, RestTemplateBuilder restTemplateBuilder) {
+        return new FacilityClient(baseUrl, restTemplateBuilder);
+    }
 }

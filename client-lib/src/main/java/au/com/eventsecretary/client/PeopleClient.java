@@ -1,81 +1,29 @@
 package au.com.eventsecretary.client;
 
-import au.com.eventsecretary.ResourceExistsException;
-import au.com.eventsecretary.ResourceNotFoundException;
 import au.com.eventsecretary.UnexpectedSystemException;
 import au.com.eventsecretary.people.Person;
 import au.com.eventsecretary.people.presentation.PersonIdentity;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.DefaultResponseErrorHandler;
 import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
 
-import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 /**
  * @author sladew
  */
 @Component
-public class PeopleClient {
+public class PeopleClient extends AbstractClient {
     private static final String URI = "/user/v1/people";
 
-    Logger logger = LoggerFactory.getLogger(PeopleClient.class);
-    private final String baseUrl;
-    private final RestTemplate restTemplate;
-
     public PeopleClient(String baseUrl, RestTemplateBuilder restTemplateBuilder) {
-        this.baseUrl = baseUrl;
-        restTemplate = restTemplateBuilder.build();
-        restTemplate.setErrorHandler(new DefaultResponseErrorHandler() {
-
-            @Override
-            public void handleError(ClientHttpResponse clientHttpResponse) throws IOException {
-                switch (clientHttpResponse.getStatusCode()) {
-                    case NOT_FOUND:
-                        throw new ResourceNotFoundException("Identity not found");
-                    case CONFLICT:
-                        logger.info("login:" + clientHttpResponse.getStatusCode());
-                        throw new ResourceExistsException("Email address is already registered.");
-                    case UNAUTHORIZED:
-                        logger.info("login:" + clientHttpResponse.getStatusCode());
-                        throw new UnauthorizedException();
-                    default:
-                        super.handleError(clientHttpResponse);
-                }
-            }
-        });
+        super(baseUrl, restTemplateBuilder);
     }
-
-    private static <T> HttpEntity<T> createEntity() {
-        HttpHeaders headers = new HttpHeaders();
-        String bearer = MDC.get(SecurityInterceptor.BEARER_KEY);
-        if (bearer != null) {
-            headers.put(HttpHeaders.AUTHORIZATION, Collections.singletonList(bearer));
-        }
-        return new HttpEntity<>(headers);
-    }
-
-    private static <T> HttpEntity<T> createEntityBody(T body) {
-        HttpHeaders headers = new HttpHeaders();
-        String bearer = MDC.get(SecurityInterceptor.BEARER_KEY);
-        if (bearer != null) {
-            headers.put(HttpHeaders.AUTHORIZATION, Collections.singletonList(bearer));
-        }
-        return new HttpEntity<>(body, headers);
-    }
-
 
     public Person getPerson(String personId) {
         try {

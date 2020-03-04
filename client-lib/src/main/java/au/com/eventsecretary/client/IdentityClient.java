@@ -3,17 +3,11 @@ package au.com.eventsecretary.client;
 import au.com.eventsecretary.ResourceExistsException;
 import au.com.eventsecretary.UnexpectedSystemException;
 import au.com.eventsecretary.user.identity.Identity;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.*;
-import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.DefaultResponseErrorHandler;
 import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
@@ -21,32 +15,11 @@ import java.util.List;
  * @author sladew
  */
 @Component
-public class IdentityClient {
+public class IdentityClient extends AbstractClient {
     private static final String URI = "/user/v1/identity";
 
-    Logger logger = LoggerFactory.getLogger(IdentityClient.class);
-    private final String baseUrl;
-    private final RestTemplate restTemplate;
-
     public IdentityClient(String baseUrl, RestTemplateBuilder restTemplateBuilder) {
-        this.baseUrl = baseUrl;
-        restTemplate = restTemplateBuilder.build();
-        restTemplate.setErrorHandler(new DefaultResponseErrorHandler() {
-
-            @Override
-            public void handleError(ClientHttpResponse clientHttpResponse) throws IOException {
-                switch (clientHttpResponse.getStatusCode()) {
-                    case CONFLICT:
-                        logger.info("login:" + clientHttpResponse.getStatusCode());
-                        throw new ResourceExistsException("The email address is already in use");
-                    case UNAUTHORIZED:
-                        logger.info("login:" + clientHttpResponse.getStatusCode());
-                        throw new UnauthorizedException();
-                    default:
-                        super.handleError(clientHttpResponse);
-                }
-            }
-        });
+        super(baseUrl, restTemplateBuilder);
     }
 
     public Identity get(String bearer) {

@@ -35,6 +35,16 @@ public interface IdentifiableUtils {
         return null;
     }
 
+    static <T extends Identifiable> T findByCode(List<T> list, String code) {
+
+        for (T item : list) {
+            if (item.getCode().equals(code)) {
+                return item;
+            }
+        }
+        return null;
+    }
+
     static <T extends Identifiable> void addIfNotPresent(List<T> list, T identifable) {
         if (findById(list, identifable.getId()) == null) {
             list.add(identifable);
