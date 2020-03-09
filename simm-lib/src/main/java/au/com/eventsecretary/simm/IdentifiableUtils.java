@@ -10,12 +10,24 @@ import java.util.List;
  * @author sladew
  */
 public interface IdentifiableUtils {
+    static Identifiable reference(Identifiable identifiable) {
+        Identifiable simple = new IdentifiableImpl();
+        simple.setId(identifiable.getId());
+        simple.setName(identifiable.getName());
+        return simple;
+    }
+
     static void checkDuplicate(List<? extends Identifiable> list, Identifiable facilityType) {
         for (Identifiable type : list) {
             if (type.getName().equals(facilityType.getName())) {
                 throw new ResourceExistsException("The name specified is currently in use!");
             }
         }
+    }
+
+    static void copy(Identifiable from, Identifiable to) {
+        to.setCode(from.getCode());
+        to.setName(from.getName());
     }
 
     static Identifiable cloneIdentifiable(Identifiable facilityType) {

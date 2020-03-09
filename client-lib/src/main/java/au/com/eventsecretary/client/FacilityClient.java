@@ -1,12 +1,12 @@
 package au.com.eventsecretary.client;
 
+import au.com.eventsecretary.ResourceNotFoundException;
 import au.com.eventsecretary.UnexpectedSystemException;
+import au.com.eventsecretary.facility.booking.BookingRequest;
 import au.com.eventsecretary.facility.facility.Facility;
 import au.com.eventsecretary.facility.facility.FacilityType;
 import au.com.eventsecretary.facility.site.Site;
 import au.com.eventsecretary.people.presentation.PersonIdentity;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -23,8 +23,6 @@ import java.util.List;
 @Component
 public class FacilityClient extends AbstractClient {
     private static final String URI = "/facility/v1";
-
-    Logger logger = LoggerFactory.getLogger(FacilityClient.class);
 
     public FacilityClient(String baseUrl, RestTemplateBuilder restTemplateBuilder) {
         super(baseUrl, restTemplateBuilder);
@@ -76,6 +74,8 @@ public class FacilityClient extends AbstractClient {
             switch (exchange.getStatusCode()) {
                 case OK:
                     return exchange.getBody();
+                case NOT_FOUND:
+                    throw new ResourceNotFoundException(siteRef);
                 default:
                     throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
             }
@@ -131,7 +131,7 @@ public class FacilityClient extends AbstractClient {
             ResponseEntity<Facility> exchange = restTemplate.exchange(baseUrl + URI + "/site/" + site.getCode() + "/facility/" + facilityType.getCode()
                     , HttpMethod.POST, httpEntity, Facility.class);
             switch (exchange.getStatusCode()) {
-                case OK:
+                case CREATED:
                     return exchange.getBody();
                 default:
                     throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
@@ -159,6 +159,25 @@ public class FacilityClient extends AbstractClient {
         }
         catch (RestClientException e) {
             logger.error("findFacility:could not connect to site service" + e.getMessage());
+            throw new UnexpectedSystemException(e);
+        }
+    }
+
+    public void createBooking(Site site, BookingRequest bookingRequest) {
+        try {
+            HttpEntity<BookingRequest> httpEntity = createEntityBody(bookingRequest);
+
+            ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI + "/site/" + site.getCode() + "/booking"
+                    , HttpMethod.POST, httpEntity, Void.class);
+            switch (exchange.getStatusCode()) {
+                case CREATED:
+                    return;
+                default:
+                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+            }
+        }
+        catch (RestClientException e) {
+            logger.error("createBooking:" + e.getMessage());
             throw new UnexpectedSystemException(e);
         }
     }

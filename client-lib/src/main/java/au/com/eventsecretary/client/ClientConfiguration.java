@@ -26,4 +26,14 @@ public class ClientConfiguration {
     public FacilityClient facilityClient(@Value("${userUrl}") String baseUrl, RestTemplateBuilder restTemplateBuilder) {
         return new FacilityClient(baseUrl, restTemplateBuilder);
     }
+
+    @Bean
+    public AssociationClient associationClient(@Value("${userUrl}") String baseUrl, RestTemplateBuilder restTemplateBuilder) {
+        return new AssociationClient(baseUrl, restTemplateBuilder);
+    }
+
+    @Bean
+    public OrganisationClient organisationClient(@Value("${userUrl}") String baseUrl, RestTemplateBuilder restTemplateBuilder) {
+        return new OrganisationClient(baseUrl, restTemplateBuilder);
+    }
 }
