@@ -1,8 +1,9 @@
 archivesBaseName = 'eventsecretary-simm-lib'
 
 dependencies {
+    compile("joda-time:joda-time:${jodatimeVersion}")
     compile("au.com.eventsecretary.simm:eventsecretary-simm-impl:x.x.x-SNAPSHOT")
     compile project(":system-lib")
-
+    testCompile("junit:junit:4.12")
 }
 
