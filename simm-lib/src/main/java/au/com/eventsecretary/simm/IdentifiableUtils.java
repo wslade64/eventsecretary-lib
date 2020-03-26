@@ -5,6 +5,7 @@ import au.com.eventsecretary.common.Identifiable;
 import au.com.eventsecretary.common.IdentifiableImpl;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author sladew
@@ -71,4 +72,11 @@ public interface IdentifiableUtils {
         });
     }
 
+    static Identifiable create(String code, String name) {
+        Identifiable identifiable = new IdentifiableImpl();
+        identifiable.setId(UUID.randomUUID().toString());
+        identifiable.setCode(code);
+        identifiable.setName(name);
+        return identifiable;
+    }
 }
