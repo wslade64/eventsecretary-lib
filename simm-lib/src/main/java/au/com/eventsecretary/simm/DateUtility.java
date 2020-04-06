@@ -17,6 +17,16 @@ public interface DateUtility {
     int MINUTE = 100;
     int HOUR = MINUTE * 100;
 
+    static String smartTimestamp(Timestamp timestamp) {
+        if (timestamp == null) {
+            return "";
+        }
+        if (timestamp.getTime() == 0) {
+            return DateUtility.longDate(timestamp.getDate());
+        }
+        return DateUtility.longDate(timestamp.getDate()) + " " + DateUtility.shortTime(timestamp.getTime());
+    }
+
     static int time(LocalTime localDate) {
         int hour = localDate.getHourOfDay();
         int minute = localDate.getMinuteOfHour();
@@ -273,5 +283,35 @@ public interface DateUtility {
         timestamp.setTime(splitToTime(localDateTime.getHourOfDay(), localDateTime.getMinuteOfHour(), localDateTime.getSecondOfMinute()));
         return timestamp;
     }
+
+    String[] shortMonths = {
+      "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+    };
+
+    String[] longMonths = {
+            "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+    };
+
+    static String shortDate(int date) {
+        if (date == 0) {
+            return "";
+        }
+
+        int[] ints = dateToSplit(date);
+
+        return shortMonths[ints[1] - 1] + " " + ints[2];
+    }
+
+    static String longDate(int date) {
+
+        if (date == 0) {
+            return "";
+        }
+
+        int[] ints = dateToSplit(date);
+
+        return ints[2] + " " + longMonths[ints[1] - 1] + " " + ints[0];
+    }
+
 
 }
