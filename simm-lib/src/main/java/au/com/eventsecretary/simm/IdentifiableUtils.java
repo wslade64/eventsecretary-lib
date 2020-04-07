@@ -38,6 +38,10 @@ public interface IdentifiableUtils {
         return identifiable;
     }
 
+    static <T extends Identifiable> boolean hasById(List<T> list, String id) {
+        return findById(list, id) != null;
+    }
+
     static <T extends Identifiable> T findById(List<T> list, String id) {
 
         for (T item : list) {

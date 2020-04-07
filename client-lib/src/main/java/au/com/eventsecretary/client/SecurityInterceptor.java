@@ -18,6 +18,7 @@ public class SecurityInterceptor extends HandlerInterceptorAdapter {
 
     public static final String IDENTITY_KEY = "Identity";
     public static final String BEARER_KEY = "Bearer";
+    public static final String SANDBOX_KEY = "Sandbox";
 
     @Autowired
     private IdentityClient identityService;
@@ -40,6 +41,11 @@ public class SecurityInterceptor extends HandlerInterceptorAdapter {
                 MDC.put(BEARER_KEY, bearer);
             }
         }
+
+        String sandbox = request.getHeader("sandbox");
+        if ("true".equals(sandbox)) {
+            MDC.put(SANDBOX_KEY, sandbox);
+        }
         return true;
     }
 
@@ -49,5 +55,10 @@ public class SecurityInterceptor extends HandlerInterceptorAdapter {
             throws Exception {
         MDC.remove(IDENTITY_KEY);
         MDC.remove(BEARER_KEY);
+        MDC.remove(SANDBOX_KEY);
+    }
+
+    public static boolean isSandbox() {
+        return MDC.get(SANDBOX_KEY) != null;
     }
 }
