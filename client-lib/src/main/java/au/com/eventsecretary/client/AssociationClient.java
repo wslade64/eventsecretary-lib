@@ -6,7 +6,6 @@ import au.com.eventsecretary.accounting.organisation.Association;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
-import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 
 import java.util.List;
@@ -14,7 +13,6 @@ import java.util.List;
 /**
  * @author sladew
  */
-@Component
 public class AssociationClient extends AbstractClient {
     private static final String URI = "/payment/association";
 

@@ -4,6 +4,7 @@ import au.com.eventsecretary.ResourceNotFoundException;
 import au.com.eventsecretary.UnexpectedSystemException;
 import au.com.eventsecretary.facility.booking.BookingRequest;
 import au.com.eventsecretary.facility.facility.Facility;
+import au.com.eventsecretary.facility.facility.FacilityCategory;
 import au.com.eventsecretary.facility.facility.FacilityType;
 import au.com.eventsecretary.facility.site.Site;
 import au.com.eventsecretary.people.presentation.PersonIdentity;
@@ -12,7 +13,6 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 
 import java.util.List;
@@ -20,7 +20,6 @@ import java.util.List;
 /**
  * @author sladew
  */
-@Component
 public class FacilityClient extends AbstractClient {
     private static final String URI = "/facility/v1";
 
@@ -148,6 +147,26 @@ public class FacilityClient extends AbstractClient {
             HttpEntity<Void> httpEntity = createEntity();
 
             ResponseEntity<List<Facility>> exchange = restTemplate.exchange(baseUrl + URI + "/site/" + site.getCode() + "/facility/" + facilityType.getCode()
+                    , HttpMethod.GET, httpEntity, new ParameterizedTypeReference<List<Facility>>() {
+                    });
+            switch (exchange.getStatusCode()) {
+                case OK:
+                    return exchange.getBody();
+                default:
+                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+            }
+        }
+        catch (RestClientException e) {
+            logger.error("findFacility:could not connect to site service" + e.getMessage());
+            throw new UnexpectedSystemException(e);
+        }
+    }
+
+    public List<Facility> findFacilitiesByCategory(Site site, FacilityCategory facilityCategory) {
+        try {
+            HttpEntity<Void> httpEntity = createEntity();
+
+            ResponseEntity<List<Facility>> exchange = restTemplate.exchange(baseUrl + URI + "/site/" + site.getCode() + "/facility/query?category=" + facilityCategory
                     , HttpMethod.GET, httpEntity, new ParameterizedTypeReference<List<Facility>>() {
                     });
             switch (exchange.getStatusCode()) {

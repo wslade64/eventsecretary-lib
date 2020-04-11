@@ -7,7 +7,6 @@ import au.com.eventsecretary.user.identity.Identity;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
-import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 
 import java.util.Collections;
@@ -18,7 +17,6 @@ import java.util.Map;
 /**
  * @author sladew
  */
-@Component
 public class IdentityClient extends AbstractClient {
     private static final String URI = "/user/v1/identity";
 
@@ -28,7 +26,6 @@ public class IdentityClient extends AbstractClient {
 
     public Identity get(String bearer) {
         try {
-            logger.info("get:" + bearer);
             HttpHeaders headers = new HttpHeaders();
             headers.put(HttpHeaders.AUTHORIZATION, Collections.singletonList(bearer));
             HttpEntity<Void> httpEntity = new HttpEntity<>(headers);
@@ -47,8 +44,6 @@ public class IdentityClient extends AbstractClient {
 
     public Identity findByEmailAddress(String emailAddress) {
         try {
-            logger.info("find:" + emailAddress);
-
             HttpHeaders headers = new HttpHeaders();
             headers.put(HttpHeaders.AUTHORIZATION, Collections.singletonList("820013bb-5655-42c4-8784-af94a82e668b"));
             HttpEntity<Void> httpEntity = new HttpEntity(headers);

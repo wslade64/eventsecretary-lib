@@ -2,8 +2,9 @@ package au.com.eventsecretary.client;
 
 import au.com.eventsecretary.ResourceExistsException;
 import au.com.eventsecretary.UnexpectedSystemException;
-import au.com.eventsecretary.accounting.organisation.Organisation;
+import au.com.eventsecretary.accounting.organisation.Membership;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.web.client.RestClientException;
 
@@ -14,70 +15,53 @@ import java.util.Map;
 /**
  * @author sladew
  */
-public class OrganisationClient extends AbstractClient {
-    private static final String URI = "/payment/organisation";
+public class MembershipClient extends AbstractClient {
+    private static final String URI = "/payment/membership";
 
-    public OrganisationClient(String baseUrl, RestTemplateBuilder restTemplateBuilder) {
+    public MembershipClient(String baseUrl, RestTemplateBuilder restTemplateBuilder) {
         super(baseUrl, restTemplateBuilder);
     }
 
-    public Organisation getOrganisationByName(String associationRef, String name) {
+    public List<Membership> getMembershipsByPersonId(String personId) {
         try {
             HttpEntity<Void> httpEntity = createSystemEntity();
 
             Map<String, String> uriVariables = new HashMap<>();
-            uriVariables.put("name", name);
-            uriVariables.put("association", associationRef);
-            ResponseEntity<Organisation> exchange = restTemplate.exchange(baseUrl + URI + "?name={name}&association={association}"
-                    , HttpMethod.GET, httpEntity, Organisation.class, uriVariables);
+            uriVariables.put("personId", personId);
+            ResponseEntity<List<Membership>> exchange = restTemplate.exchange(baseUrl + URI + "?personId={personId}"
+                    , HttpMethod.GET, httpEntity, new ParameterizedTypeReference<List<Membership>>(){}, uriVariables);
             if (exchange.getStatusCode() == HttpStatus.OK) {
                 return exchange.getBody();
             }
             return null;
         }
         catch (RestClientException e) {
-            logger.error("getOrganisation:" + e.getMessage());
-            throw new UnexpectedSystemException("getOrganisation");
+            logger.error("getMembership:" + e.getMessage());
+            throw new UnexpectedSystemException("getMembership");
         }
     }
 
-    public Organisation getOrganisationByCode(String code) {
+    public Membership getMembership(String membershipRef) {
         try {
             HttpEntity<Void> httpEntity = createSystemEntity();
 
-            ResponseEntity<Organisation> exchange = restTemplate.exchange(baseUrl + URI + "?code=" + code, HttpMethod.GET, httpEntity, Organisation.class);
+            ResponseEntity<Membership> exchange = restTemplate.exchange(baseUrl + URI + "/" + membershipRef, HttpMethod.GET, httpEntity, Membership.class);
             if (exchange.getStatusCode() == HttpStatus.OK) {
                 return exchange.getBody();
             }
             return null;
         }
         catch (RestClientException e) {
-            logger.error("getOrganisation:" + e.getMessage());
-            throw new UnexpectedSystemException("getOrganisation");
+            logger.error("getMembership:" + e.getMessage());
+            throw new UnexpectedSystemException("getMembership");
         }
     }
 
-    public Organisation getOrganisation(String organisationRef) {
+    public String createMembership(Membership membership) {
         try {
-            HttpEntity<Void> httpEntity = createSystemEntity();
+            logger.info("create:" + membership.getName());
 
-            ResponseEntity<Organisation> exchange = restTemplate.exchange(baseUrl + URI + "/" + organisationRef, HttpMethod.GET, httpEntity, Organisation.class);
-            if (exchange.getStatusCode() == HttpStatus.OK) {
-                return exchange.getBody();
-            }
-            return null;
-        }
-        catch (RestClientException e) {
-            logger.error("getOrganisation:" + e.getMessage());
-            throw new UnexpectedSystemException("getOrganisation");
-        }
-    }
-
-    public String createOrganisation(Organisation organisation) {
-        try {
-            logger.info("create:" + organisation.getName());
-
-            HttpEntity<Organisation> httpEntity = createSystemEntityBody(organisation);
+            HttpEntity<Membership> httpEntity = createSystemEntityBody(membership);
 
             ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI, HttpMethod.POST, httpEntity, Void.class);
             switch (exchange.getStatusCode()) {
@@ -85,35 +69,35 @@ public class OrganisationClient extends AbstractClient {
                     List<String> locationHeader = exchange.getHeaders().get(HttpHeaders.LOCATION);
                     return locationHeader.get(0);
                 case CONFLICT:
-                    throw new ResourceExistsException("Organisation already exists.");
+                    throw new ResourceExistsException("Membership already exists.");
                 default:
                     throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
             }
         }
         catch (RestClientException e) {
-            logger.error("createOrganisation:" + e.getMessage());
+            logger.error("createMembership:" + e.getMessage());
             throw new UnexpectedSystemException(e);
         }
     }
 
-    public void updateOrganisation(Organisation organisation) {
+    public void updateMembership(Membership Membership) {
         try {
-            logger.info("update:" + organisation.getName());
+            logger.info("update:" + Membership.getName());
 
-            HttpEntity<Organisation> httpEntity = createSystemEntityBody(organisation);
+            HttpEntity<Membership> httpEntity = createSystemEntityBody(Membership);
 
-            ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI + "/" + organisation.getId(), HttpMethod.PUT, httpEntity, Void.class);
+            ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI + "/" + Membership.getId(), HttpMethod.PUT, httpEntity, Void.class);
             switch (exchange.getStatusCode()) {
                 case OK:
                     return;
                 case CONFLICT:
-                    throw new ResourceExistsException("Organisation already exists.");
+                    throw new ResourceExistsException("Membership already exists.");
                 default:
                     throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
             }
         }
         catch (RestClientException e) {
-            logger.error("updateOrganisation:" + e.getMessage());
+            logger.error("updateMembership:" + e.getMessage());
             throw new UnexpectedSystemException(e);
         }
     }

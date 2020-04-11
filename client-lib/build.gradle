@@ -5,6 +5,7 @@ dependencies {
     compile("commons-beanutils:commons-beanutils:${commonsBeanutilsVersion}")
     compile("org.springframework.boot:spring-boot-starter-web:${springBootStarterWebVersion}")
     compile("au.com.eventsecretary.simm:eventsecretary-simm-impl:x.x.x-SNAPSHOT")
+    compile("net.sf.javaprinciples.notification:notification-api:1.1.0")
     compile project(":system-lib")
 }
 

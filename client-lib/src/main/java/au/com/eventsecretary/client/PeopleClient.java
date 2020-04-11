@@ -8,7 +8,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 
 import java.util.Arrays;
@@ -17,7 +16,6 @@ import java.util.List;
 /**
  * @author sladew
  */
-@Component
 public class PeopleClient extends AbstractClient {
     private static final String URI = "/user/v1/people";
 

@@ -8,6 +8,11 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ClientConfiguration {
     @Bean
+    public NotificationClient notificationClient(@Value("${userUrl}") String baseUrl, RestTemplateBuilder restTemplateBuilder) {
+        return new NotificationClient(baseUrl, restTemplateBuilder);
+    }
+
+    @Bean
     public IdentityClient identityClient(@Value("${userUrl}") String baseUrl, RestTemplateBuilder restTemplateBuilder) {
         return new IdentityClient(baseUrl, restTemplateBuilder);
     }
@@ -35,5 +40,10 @@ public class ClientConfiguration {
     @Bean
     public OrganisationClient organisationClient(@Value("${userUrl}") String baseUrl, RestTemplateBuilder restTemplateBuilder) {
         return new OrganisationClient(baseUrl, restTemplateBuilder);
+    }
+
+    @Bean
+    public MembershipClient membershipClient(@Value("${userUrl}") String baseUrl, RestTemplateBuilder restTemplateBuilder) {
+        return new MembershipClient(baseUrl, restTemplateBuilder);
     }
 }

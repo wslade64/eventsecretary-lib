@@ -36,6 +36,7 @@ public abstract class AbstractClient {
                     case CONFLICT:
                         break;
                     case BAD_REQUEST:
+                        throw new ResourceNotFoundException("Bad request");
                     case NOT_FOUND:
                         throw new ResourceNotFoundException("Not found");
                     case UNAUTHORIZED:
