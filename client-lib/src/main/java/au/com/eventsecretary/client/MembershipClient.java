@@ -2,7 +2,7 @@ package au.com.eventsecretary.client;
 
 import au.com.eventsecretary.ResourceExistsException;
 import au.com.eventsecretary.UnexpectedSystemException;
-import au.com.eventsecretary.accounting.organisation.Membership;
+import au.com.eventsecretary.accounting.membership.Membership;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
