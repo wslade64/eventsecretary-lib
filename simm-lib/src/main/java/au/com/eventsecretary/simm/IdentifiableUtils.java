@@ -11,6 +11,14 @@ import java.util.UUID;
  * @author sladew
  */
 public interface IdentifiableUtils {
+    static String id() {
+        return UUID.randomUUID().toString();
+    }
+
+    static String random() {
+        return UUID.randomUUID().toString();
+    }
+
     static Identifiable reference(Identifiable identifiable) {
         Identifiable simple = new IdentifiableImpl();
         simple.setId(identifiable.getId());
