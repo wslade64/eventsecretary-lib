@@ -41,7 +41,7 @@ public class PeopleClient extends AbstractClient {
         }
     }
 
-    public Person findPersonByIdentityId(String identityId) {
+    public Person findCurrentPerson() {
         try {
             HttpEntity<Void> httpEntity = createEntity();
 
@@ -59,11 +59,11 @@ public class PeopleClient extends AbstractClient {
         }
     }
 
-    public PersonIdentity findPersonIdentityByIdentityId(String identityId) {
+    public PersonIdentity findPersonIdentityByPersonId(String personId) {
         try {
             HttpEntity<Void> httpEntity = createEntity();
 
-            ResponseEntity<PersonIdentity> exchange = restTemplate.exchange(baseUrl + URI + "/personIdentity/" + identityId, HttpMethod.GET, httpEntity, PersonIdentity.class);
+            ResponseEntity<PersonIdentity> exchange = restTemplate.exchange(baseUrl + URI + "/personIdentity/" + personId, HttpMethod.GET, httpEntity, PersonIdentity.class);
             switch (exchange.getStatusCode()) {
                 case OK:
                     return exchange.getBody();
@@ -95,7 +95,7 @@ public class PeopleClient extends AbstractClient {
         }
     }
 
-    public PersonIdentity createPerson(PersonIdentity personIdentity) {
+    public PersonIdentity createPersonIdentity(PersonIdentity personIdentity) {
         try {
             HttpEntity<PersonIdentity> httpEntity = createEntityBody(personIdentity);
 

@@ -9,7 +9,6 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.web.client.RestClientException;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,9 +25,7 @@ public class IdentityClient extends AbstractClient {
 
     public Identity get(String bearer) {
         try {
-            HttpHeaders headers = new HttpHeaders();
-            headers.put(HttpHeaders.AUTHORIZATION, Collections.singletonList(bearer));
-            HttpEntity<Void> httpEntity = new HttpEntity<>(headers);
+            HttpEntity<Void> httpEntity = new HttpEntity<>(headers(bearer));
 
             ResponseEntity<Identity> exchange = restTemplate.exchange(baseUrl + URI, HttpMethod.GET, httpEntity, Identity.class);
             if (exchange.getStatusCode() == HttpStatus.OK) {
@@ -44,9 +41,7 @@ public class IdentityClient extends AbstractClient {
 
     public Identity findByEmailAddress(String emailAddress) {
         try {
-            HttpHeaders headers = new HttpHeaders();
-            headers.put(HttpHeaders.AUTHORIZATION, Collections.singletonList("820013bb-5655-42c4-8784-af94a82e668b"));
-            HttpEntity<Void> httpEntity = new HttpEntity(headers);
+            HttpEntity<Void> httpEntity = createSystemEntity();
 
             Map<String, String> params = new HashMap<>();
             params.put("emailAddress", emailAddress);
@@ -77,9 +72,7 @@ public class IdentityClient extends AbstractClient {
         try {
             logger.info("create:" + userIdentity.getEmail());
 
-            HttpHeaders headers = new HttpHeaders();
-            headers.put(HttpHeaders.AUTHORIZATION, Collections.singletonList("820013bb-5655-42c4-8784-af94a82e668b"));
-            HttpEntity<Identity> httpEntity = new HttpEntity(userIdentity, headers);
+            HttpEntity<Identity> httpEntity = createSystemEntityBody(userIdentity);
 
             ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI, HttpMethod.POST, httpEntity, Void.class);
             switch (exchange.getStatusCode()) {

@@ -29,7 +29,7 @@ public class FacilityClient extends AbstractClient {
 
     public void reset() {
         try {
-            HttpEntity<PersonIdentity> httpEntity = createEntity();
+            HttpEntity<PersonIdentity> httpEntity = createSystemEntity();
 
             ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI + "/reset", HttpMethod.POST, httpEntity, Void.class);
             switch (exchange.getStatusCode()) {
@@ -47,7 +47,7 @@ public class FacilityClient extends AbstractClient {
 
     public Site createSite(Site site) {
         try {
-            HttpEntity<Site> httpEntity = createEntityBody(site);
+            HttpEntity<Site> httpEntity = createSystemEntityBody(site);
 
             ResponseEntity<Site> exchange = restTemplate.exchange(baseUrl + URI + "/site", HttpMethod.POST, httpEntity, Site.class);
             switch (exchange.getStatusCode()) {
@@ -106,7 +106,7 @@ public class FacilityClient extends AbstractClient {
 
     public void deleteSite(String code) {
         try {
-            HttpEntity<Void> httpEntity = createEntity();
+            HttpEntity<Void> httpEntity = createSystemEntity();
 
             ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI + "/site/" + code
                     , HttpMethod.DELETE, httpEntity, Void.class);
@@ -144,7 +144,7 @@ public class FacilityClient extends AbstractClient {
 
     public List<Facility> findFacilities(Site site, FacilityType facilityType) {
         try {
-            HttpEntity<Void> httpEntity = createEntity();
+            HttpEntity<Void> httpEntity = createSystemEntity();
 
             ResponseEntity<List<Facility>> exchange = restTemplate.exchange(baseUrl + URI + "/site/" + site.getCode() + "/facility/" + facilityType.getCode()
                     , HttpMethod.GET, httpEntity, new ParameterizedTypeReference<List<Facility>>() {
@@ -164,7 +164,7 @@ public class FacilityClient extends AbstractClient {
 
     public List<Facility> findFacilitiesByCategory(Site site, FacilityCategory facilityCategory) {
         try {
-            HttpEntity<Void> httpEntity = createEntity();
+            HttpEntity<Void> httpEntity = createSystemEntity();
 
             ResponseEntity<List<Facility>> exchange = restTemplate.exchange(baseUrl + URI + "/site/" + site.getCode() + "/facility/query?category=" + facilityCategory
                     , HttpMethod.GET, httpEntity, new ParameterizedTypeReference<List<Facility>>() {

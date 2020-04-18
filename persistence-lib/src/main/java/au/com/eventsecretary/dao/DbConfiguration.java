@@ -47,6 +47,11 @@ public class DbConfiguration {
         return simpleMongoDbFactory;
     }
 
+    @Bean
+    public SequenceService sequenceService(BusinessObjectPersistence persistence) {
+        return new SequenceService(persistence);
+    }
+
 //    @Bean
 //    public MongoTemplate mongoTemplate(MongoDbFactory mongoDbFactory) {
 //        return new MongoTemplate(mongoDbFactory);

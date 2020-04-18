@@ -3,7 +3,6 @@ package au.com.eventsecretary.client;
 import au.com.eventsecretary.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -13,6 +12,8 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.util.Collections;
+
+import static au.com.eventsecretary.Request.*;
 
 /**
  * @author sladew
@@ -49,33 +50,30 @@ public abstract class AbstractClient {
         });
     }
 
-    protected static <T> HttpEntity<T> createEntity() {
+    protected static HttpHeaders headers(String bearer) {
         HttpHeaders headers = new HttpHeaders();
-        String bearer = MDC.get(SecurityInterceptor.BEARER_KEY);
         if (bearer != null) {
             headers.put(HttpHeaders.AUTHORIZATION, Collections.singletonList(bearer));
         }
-        return new HttpEntity<>(headers);
+        if (isSandbox()) {
+            headers.put(SANDBOX, Collections.singletonList("true"));
+        }
+        return headers;
+    }
+
+    protected static <T> HttpEntity<T> createEntity() {
+        return new HttpEntity<>(headers(bearer()));
     }
 
     protected static <T> HttpEntity<T> createSystemEntity() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.put(HttpHeaders.AUTHORIZATION, Collections.singletonList(SYSTEM));
-        return new HttpEntity<>(headers);
+        return new HttpEntity<>(headers(SYSTEM));
     }
 
     protected static <T> HttpEntity<T> createEntityBody(T body) {
-        HttpHeaders headers = new HttpHeaders();
-        String bearer = MDC.get(SecurityInterceptor.BEARER_KEY);
-        if (bearer != null) {
-            headers.put(HttpHeaders.AUTHORIZATION, Collections.singletonList(bearer));
-        }
-        return new HttpEntity<>(body, headers);
+        return new HttpEntity<>(body, headers(bearer()));
     }
 
     protected static <T> HttpEntity<T> createSystemEntityBody(T body) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.put(HttpHeaders.AUTHORIZATION, Collections.singletonList(SYSTEM));
-        return new HttpEntity<>(body, headers);
+        return new HttpEntity<>(body, headers(SYSTEM));
     }
 }

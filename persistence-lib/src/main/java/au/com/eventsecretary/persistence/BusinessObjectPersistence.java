@@ -1,6 +1,7 @@
 package au.com.eventsecretary.persistence;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * TODO
@@ -10,6 +11,20 @@ import java.util.List;
 public interface BusinessObjectPersistence
 {
     String CONTAINS = "`%s`";
+    String MATCHES_IGNORE_CASE = "~%s~";
+
+    static String matchesIgnoreCase(String text) {
+        return String.format(MATCHES_IGNORE_CASE, escapeRegex(text));
+    }
+
+    static String containsIgnoreCase(String text) {
+        return String.format(CONTAINS, escapeRegex(text));
+    }
+
+    static String escapeRegex(String someText) {
+        return Pattern.quote(someText);
+    }
+
 
     <T> void storeObject(T object);
 

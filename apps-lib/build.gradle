@@ -1,0 +1,6 @@
+archivesBaseName = 'eventsecretary-apps-lib'
+
+dependencies {
+    compile project(":client-lib")
+}
+

@@ -4,12 +4,9 @@ import au.com.eventsecretary.ResourceExistsException;
 import au.com.eventsecretary.UnexpectedSystemException;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClientException;
-
-import java.util.Collections;
 
 /**
  * @author sladew
@@ -55,9 +52,7 @@ public class PaymentClient extends AbstractClient
             Refund refund = new Refund();
             refund.setAmount(amount);
             refund.setTransactionId(paymentId);
-            HttpHeaders headers = new HttpHeaders();
-            headers.put(HttpHeaders.AUTHORIZATION, Collections.singletonList(bearer));
-            HttpEntity<Refund> httpEntity = new HttpEntity<>(refund, headers);
+            HttpEntity<Refund> httpEntity = createEntityBody(refund);
 
             ResponseEntity<String> exchange = restTemplate.exchange(url, HttpMethod.PUT, httpEntity, String.class);
             switch (exchange.getStatusCode()) {

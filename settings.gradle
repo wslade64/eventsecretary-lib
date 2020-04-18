@@ -1,1 +1,1 @@
-include 'system-lib', 'client-lib', 'persistence-lib', 'simm-lib', 'render-lib'
+include 'system-lib', 'client-lib', 'persistence-lib', 'simm-lib', 'apps-lib', 'render-lib'

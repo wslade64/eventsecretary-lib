@@ -34,16 +34,16 @@ public interface IdentifiableUtils {
         }
     }
 
-    static void copy(Identifiable from, Identifiable to) {
+    static <T extends Identifiable> T copy(T from, T to) {
         to.setCode(from.getCode());
         to.setName(from.getName());
+        return to;
     }
 
-    static Identifiable cloneIdentifiable(Identifiable facilityType) {
-        IdentifiableImpl identifiable = new IdentifiableImpl();
-        identifiable.setId(facilityType.getId());
-        identifiable.setName(facilityType.getName());
-        return identifiable;
+    static <T extends Identifiable> T cloneIdentifiable(T from) {
+        T to = (T) new IdentifiableImpl();
+        to.setId(from.getId());
+        return copy(from, to);
     }
 
     static <T extends Identifiable> boolean hasById(List<T> list, String id) {

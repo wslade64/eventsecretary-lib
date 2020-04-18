@@ -18,6 +18,16 @@ public class ClientConfiguration {
     }
 
     @Bean
+    public AccountClient accountClient(@Value("${userUrl}") String baseUrl, RestTemplateBuilder restTemplateBuilder) {
+        return new AccountClient(baseUrl, restTemplateBuilder);
+    }
+
+    @Bean
+    public OrderClient orderClient(@Value("${userUrl}") String baseUrl, RestTemplateBuilder restTemplateBuilder) {
+        return new OrderClient(baseUrl, restTemplateBuilder);
+    }
+
+    @Bean
     public PaymentClient paymentClient(@Value("${userUrl}") String baseUrl, RestTemplateBuilder restTemplateBuilder) {
         return new PaymentClient(baseUrl, restTemplateBuilder);
     }

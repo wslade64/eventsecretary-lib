@@ -268,7 +268,7 @@ public interface DateUtility {
     }
 
     static boolean isInRange(int eventDate, int startDate, Integer endDate) {
-        return eventDate >= startDate && endDate == null || eventDate < endDate;
+        return eventDate >= startDate && (endDate == null || eventDate < endDate);
     }
 
     static int subtract(int time1, int time) {

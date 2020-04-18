@@ -11,17 +11,15 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import static au.com.eventsecretary.Request.*;
+
 /**
  * @author sladew
  */
 public class SecurityInterceptor extends HandlerInterceptorAdapter {
 
-    public static final String IDENTITY_KEY = "Identity";
-    public static final String BEARER_KEY = "Bearer";
-    public static final String SANDBOX_KEY = "Sandbox";
-
     @Autowired
-    private IdentityClient identityService;
+    private IdentityClient identityClient;
 
     @Override
     public boolean preHandle(HttpServletRequest request
@@ -34,7 +32,7 @@ public class SecurityInterceptor extends HandlerInterceptorAdapter {
             bearer = request.getParameter("bearer");
         }
         if (StringUtils.hasLength(bearer)) {
-            Identity identity = identityService.get(bearer);
+            Identity identity = fetchIdentity(bearer);
             if (identity != null) {
                 request.setAttribute(Identity.class.getName(), identity);
                 MDC.put(IDENTITY_KEY, identity.getEmail());
@@ -42,11 +40,15 @@ public class SecurityInterceptor extends HandlerInterceptorAdapter {
             }
         }
 
-        String sandbox = request.getHeader("sandbox");
+        String sandbox = request.getHeader(SANDBOX);
         if ("true".equals(sandbox)) {
             MDC.put(SANDBOX_KEY, sandbox);
         }
         return true;
+    }
+
+    protected Identity fetchIdentity(String bearer) {
+        return identityClient.get(bearer);
     }
 
     @Override
@@ -56,9 +58,5 @@ public class SecurityInterceptor extends HandlerInterceptorAdapter {
         MDC.remove(IDENTITY_KEY);
         MDC.remove(BEARER_KEY);
         MDC.remove(SANDBOX_KEY);
-    }
-
-    public static boolean isSandbox() {
-        return MDC.get(SANDBOX_KEY) != null;
     }
 }
