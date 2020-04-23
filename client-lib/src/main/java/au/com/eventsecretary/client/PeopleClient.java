@@ -169,6 +169,26 @@ public class PeopleClient extends AbstractClient {
         }
     }
 
+    public void deletePerson(String personId) {
+        try {
+            logger.info("delete:" + personId);
+
+            HttpEntity<Void> httpEntity = createSystemEntity();
+
+            ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI + "/person/" + personId, HttpMethod.DELETE, httpEntity, Void.class);
+            switch (exchange.getStatusCode()) {
+                case OK:
+                    return;
+                default:
+                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+            }
+        }
+        catch (RestClientException e) {
+            logger.error("delete:" + e.getMessage());
+            throw new UnexpectedSystemException(e);
+        }
+    }
+
     public Person getPersonByNames(String firstName, String lastName) {
         try {
             HttpEntity<Void> httpEntity = createEntity();

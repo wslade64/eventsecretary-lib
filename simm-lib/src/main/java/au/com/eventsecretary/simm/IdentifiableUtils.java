@@ -70,6 +70,16 @@ public interface IdentifiableUtils {
         return null;
     }
 
+    static <T extends Identifiable> T findByName(List<T> list, String name) {
+
+        for (T item : list) {
+            if (item.getName().equals(name)) {
+                return item;
+            }
+        }
+        return null;
+    }
+
     static <T extends Identifiable> void addIfNotPresent(List<T> list, T identifable) {
         if (findById(list, identifable.getId()) == null) {
             list.add(identifable);

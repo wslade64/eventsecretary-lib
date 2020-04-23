@@ -56,4 +56,14 @@ public class ClientConfiguration {
     public MembershipClient membershipClient(@Value("${userUrl}") String baseUrl, RestTemplateBuilder restTemplateBuilder) {
         return new MembershipClient(baseUrl, restTemplateBuilder);
     }
+
+    @Bean
+    public ResourceClient riderClient(@Value("${userUrl}") String baseUrl, RestTemplateBuilder restTemplateBuilder) {
+        return new ResourceClient(baseUrl + "/equestrian-ms/rider", restTemplateBuilder);
+    }
+
+    @Bean
+    public ResourceClient horseClient(@Value("${userUrl}") String baseUrl, RestTemplateBuilder restTemplateBuilder) {
+        return new ResourceClient(baseUrl + "/equestrian-ms/horse", restTemplateBuilder);
+    }
 }

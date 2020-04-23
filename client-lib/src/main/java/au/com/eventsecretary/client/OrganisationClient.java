@@ -28,7 +28,7 @@ public class OrganisationClient extends AbstractClient {
             Map<String, String> uriVariables = new HashMap<>();
             uriVariables.put("name", name);
             uriVariables.put("association", associationRef);
-            ResponseEntity<Organisation> exchange = restTemplate.exchange(baseUrl + URI + "?name={name}&association={association}"
+            ResponseEntity<Organisation> exchange = restTemplate.exchange(baseUrl + URI + "?name={name}&associationId={association}"
                     , HttpMethod.GET, httpEntity, Organisation.class, uriVariables);
             if (exchange.getStatusCode() == HttpStatus.OK) {
                 return exchange.getBody();
