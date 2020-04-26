@@ -122,6 +122,26 @@ public class MembershipClient extends AbstractClient {
         }
     }
 
+    public void deleteMembership(String membershipId) {
+        try {
+            logger.info("delete:" + membershipId);
+
+            HttpEntity<Membership> httpEntity = createSystemEntity();
+
+            ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI + "/" + membershipId, HttpMethod.DELETE, httpEntity, Void.class);
+            switch (exchange.getStatusCode()) {
+                case OK:
+                    return;
+                default:
+                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+            }
+        }
+        catch (RestClientException e) {
+            logger.error("delete:" + e.getMessage());
+            throw new UnexpectedSystemException(e);
+        }
+    }
+
     public void reset() {
         try {
             logger.info("reset");
