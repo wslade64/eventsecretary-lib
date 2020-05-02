@@ -17,16 +17,18 @@ import java.util.List;
  * @author sladew
  */
 public class ResourceClient<T extends Identifiable> extends AbstractClient {
+    Class<T> targetClass;
 
-    public ResourceClient(String baseUrl, RestTemplateBuilder restTemplateBuilder) {
+    public ResourceClient(String baseUrl, RestTemplateBuilder restTemplateBuilder, Class<T> targetClass) {
         super(baseUrl, restTemplateBuilder);
+        this.targetClass = targetClass;
     }
 
     public List<T> getResources() {
         try {
             HttpEntity<Void> httpEntity = createEntity();
 
-            ResponseEntity<List<T>> exchange = restTemplate.exchange(baseUrl, HttpMethod.GET, httpEntity, new ParameterizedTypeReference<List<T>>(){});
+            ResponseEntity<List<T>> exchange = restTemplate.exchange(baseUrl, HttpMethod.GET, httpEntity, ParameterizedTypeReference.forType(targetClass));
             if (exchange.getStatusCode() == HttpStatus.OK) {
                 return exchange.getBody();
             }
@@ -44,7 +46,7 @@ public class ResourceClient<T extends Identifiable> extends AbstractClient {
 
             HttpEntity<T> httpEntity = createEntityBody(resource);
 
-            ResponseEntity<T> exchange = restTemplate.exchange(baseUrl, HttpMethod.POST, httpEntity, new ParameterizedTypeReference<T>(){});
+            ResponseEntity<T> exchange = restTemplate.exchange(baseUrl, HttpMethod.POST, httpEntity, targetClass);
             switch (exchange.getStatusCode()) {
                 case CREATED:
                     return exchange.getBody();
@@ -66,7 +68,7 @@ public class ResourceClient<T extends Identifiable> extends AbstractClient {
 
             HttpEntity<T> httpEntity = createEntityBody(resource);
 
-            ResponseEntity<T> exchange = restTemplate.exchange(baseUrl, HttpMethod.PUT, httpEntity, new ParameterizedTypeReference<T>(){});
+            ResponseEntity<T> exchange = restTemplate.exchange(baseUrl, HttpMethod.PUT, httpEntity, targetClass);
             switch (exchange.getStatusCode()) {
                 case OK:
                     return exchange.getBody();

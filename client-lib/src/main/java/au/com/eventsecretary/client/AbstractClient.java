@@ -3,6 +3,7 @@ package au.com.eventsecretary.client;
 import au.com.eventsecretary.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -20,7 +21,9 @@ import static au.com.eventsecretary.Request.*;
  */
 public abstract class AbstractClient {
 
-    private static final String SYSTEM = "2882df7b-4743-466e-ad44-06e8eccc1f7d";
+    @Value("${systemToken}")
+    private String SYSTEM;
+
     protected final Logger logger = LoggerFactory.getLogger(getClass());
     protected final String baseUrl;
     protected final RestTemplate restTemplate;
@@ -61,19 +64,19 @@ public abstract class AbstractClient {
         return headers;
     }
 
-    protected static <T> HttpEntity<T> createEntity() {
+    protected <T> HttpEntity<T> createEntity() {
         return new HttpEntity<>(headers(bearer()));
     }
 
-    protected static <T> HttpEntity<T> createSystemEntity() {
+    protected <T> HttpEntity<T> createSystemEntity() {
         return new HttpEntity<>(headers(SYSTEM));
     }
 
-    protected static <T> HttpEntity<T> createEntityBody(T body) {
+    protected <T> HttpEntity<T> createEntityBody(T body) {
         return new HttpEntity<>(body, headers(bearer()));
     }
 
-    protected static <T> HttpEntity<T> createSystemEntityBody(T body) {
+    protected <T> HttpEntity<T> createSystemEntityBody(T body) {
         return new HttpEntity<>(body, headers(SYSTEM));
     }
 }

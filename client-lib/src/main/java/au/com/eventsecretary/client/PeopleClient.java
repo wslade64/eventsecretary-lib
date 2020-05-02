@@ -25,7 +25,7 @@ public class PeopleClient extends AbstractClient {
 
     public Person getPerson(String personId) {
         try {
-            HttpEntity<Void> httpEntity = createEntity();
+            HttpEntity<Void> httpEntity = createSystemEntity();
 
             ResponseEntity<Person> exchange = restTemplate.exchange(baseUrl + URI + "/person/" + personId, HttpMethod.GET, httpEntity, Person.class);
             switch (exchange.getStatusCode()) {
@@ -43,7 +43,10 @@ public class PeopleClient extends AbstractClient {
 
     public Person findCurrentPerson() {
         try {
-            HttpEntity<Void> httpEntity = createEntity();
+            if (true) {
+                throw new UnexpectedSystemException("This function does not work");
+            }
+            HttpEntity<Void> httpEntity = createSystemEntity();
 
             ResponseEntity<Person[]> exchange = restTemplate.exchange(baseUrl + URI + "/person", HttpMethod.GET, httpEntity, Person[].class);
             switch (exchange.getStatusCode()) {
@@ -61,7 +64,7 @@ public class PeopleClient extends AbstractClient {
 
     public PersonIdentity findPersonIdentityByPersonId(String personId) {
         try {
-            HttpEntity<Void> httpEntity = createEntity();
+            HttpEntity<Void> httpEntity = createSystemEntity();
 
             ResponseEntity<PersonIdentity> exchange = restTemplate.exchange(baseUrl + URI + "/personIdentity/" + personId, HttpMethod.GET, httpEntity, PersonIdentity.class);
             switch (exchange.getStatusCode()) {
@@ -79,7 +82,7 @@ public class PeopleClient extends AbstractClient {
 
     public void reset() {
         try {
-            HttpEntity<PersonIdentity> httpEntity = createEntity();
+            HttpEntity<PersonIdentity> httpEntity = createSystemEntity();
 
             ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI + "/reset", HttpMethod.POST, httpEntity, Void.class);
             switch (exchange.getStatusCode()) {
@@ -97,7 +100,7 @@ public class PeopleClient extends AbstractClient {
 
     public PersonIdentity createPersonIdentity(PersonIdentity personIdentity) {
         try {
-            HttpEntity<PersonIdentity> httpEntity = createEntityBody(personIdentity);
+            HttpEntity<PersonIdentity> httpEntity = createSystemEntityBody(personIdentity);
 
             ResponseEntity<PersonIdentity> exchange = restTemplate.exchange(baseUrl + URI + "/personIdentity", HttpMethod.POST, httpEntity, PersonIdentity.class);
             switch (exchange.getStatusCode()) {
@@ -116,7 +119,7 @@ public class PeopleClient extends AbstractClient {
 
     public PersonIdentity updatePersonIdentity(PersonIdentity personIdentity) {
         try {
-            HttpEntity<PersonIdentity> httpEntity = createEntityBody(personIdentity);
+            HttpEntity<PersonIdentity> httpEntity = createSystemEntityBody(personIdentity);
 
             ResponseEntity<PersonIdentity> exchange = restTemplate.exchange(baseUrl + URI + "/personIdentity", HttpMethod.PUT, httpEntity, PersonIdentity.class);
             switch (exchange.getStatusCode()) {
@@ -134,7 +137,7 @@ public class PeopleClient extends AbstractClient {
 
     public String createPerson(Person person) {
         try {
-            HttpEntity<Person> httpEntity = createEntityBody(person);
+            HttpEntity<Person> httpEntity = createSystemEntityBody(person);
 
             ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI + "/person", HttpMethod.POST, httpEntity, Void.class);
             switch (exchange.getStatusCode()) {
@@ -153,7 +156,7 @@ public class PeopleClient extends AbstractClient {
 
     public void updatePerson(Person person) {
         try {
-            HttpEntity<Person> httpEntity = createEntityBody(person);
+            HttpEntity<Person> httpEntity = createSystemEntityBody(person);
 
             ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI + "/person", HttpMethod.PUT, httpEntity, Void.class);
             switch (exchange.getStatusCode()) {

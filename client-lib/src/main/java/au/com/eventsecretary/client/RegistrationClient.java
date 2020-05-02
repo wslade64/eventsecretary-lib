@@ -2,7 +2,7 @@ package au.com.eventsecretary.client;
 
 import au.com.eventsecretary.ResourceExistsException;
 import au.com.eventsecretary.UnexpectedSystemException;
-import au.com.eventsecretary.accounting.membership.Membership;
+import au.com.eventsecretary.accounting.registration.Registration;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
@@ -15,53 +15,53 @@ import java.util.Map;
 /**
  * @author sladew
  */
-public class MembershipClient extends AbstractClient {
-    private static final String URI = "/payment/membership";
+public class RegistrationClient extends AbstractClient {
+    private static final String URI = "/payment/registration";
 
-    public MembershipClient(String baseUrl, RestTemplateBuilder restTemplateBuilder) {
+    public RegistrationClient(String baseUrl, RestTemplateBuilder restTemplateBuilder) {
         super(baseUrl, restTemplateBuilder);
     }
 
-    public List<Membership> getMembershipsByPersonId(String personId) {
+    public List<Registration> getRegistrationsByOwnerId(String ownerId) {
         try {
             HttpEntity<Void> httpEntity = createSystemEntity();
 
             Map<String, String> uriVariables = new HashMap<>();
-            uriVariables.put("personId", personId);
-            ResponseEntity<List<Membership>> exchange = restTemplate.exchange(baseUrl + URI + "?personId={personId}"
-                    , HttpMethod.GET, httpEntity, new ParameterizedTypeReference<List<Membership>>(){}, uriVariables);
+            uriVariables.put("ownerId", ownerId);
+            ResponseEntity<List<Registration>> exchange = restTemplate.exchange(baseUrl + URI + "?ownerId={ownerId}"
+                    , HttpMethod.GET, httpEntity, new ParameterizedTypeReference<List<Registration>>(){}, uriVariables);
             if (exchange.getStatusCode() == HttpStatus.OK) {
                 return exchange.getBody();
             }
             return null;
         }
         catch (RestClientException e) {
-            logger.error("getMembership:" + e.getMessage());
-            throw new UnexpectedSystemException("getMembership");
+            logger.error("getRegistration:" + e.getMessage());
+            throw new UnexpectedSystemException("getRegistration");
         }
     }
 
-    public Membership getMembership(String membershipRef) {
+    public Registration getRegistration(String registrationRef) {
         try {
             HttpEntity<Void> httpEntity = createSystemEntity();
 
-            ResponseEntity<Membership> exchange = restTemplate.exchange(baseUrl + URI + "/" + membershipRef, HttpMethod.GET, httpEntity, Membership.class);
+            ResponseEntity<Registration> exchange = restTemplate.exchange(baseUrl + URI + "/" + registrationRef, HttpMethod.GET, httpEntity, Registration.class);
             if (exchange.getStatusCode() == HttpStatus.OK) {
                 return exchange.getBody();
             }
             return null;
         }
         catch (RestClientException e) {
-            logger.error("getMembership:" + e.getMessage());
-            throw new UnexpectedSystemException("getMembership");
+            logger.error("getRegistration:" + e.getMessage());
+            throw new UnexpectedSystemException("getRegistration");
         }
     }
 
-    public String createMembership(Membership membership) {
+    public String createRegistration(Registration registration) {
         try {
-            logger.info("create:" + membership.getName());
+            logger.info("create:" + registration.getName());
 
-            HttpEntity<Membership> httpEntity = createSystemEntityBody(membership);
+            HttpEntity<Registration> httpEntity = createSystemEntityBody(registration);
 
             ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI, HttpMethod.POST, httpEntity, Void.class);
             switch (exchange.getStatusCode()) {
@@ -69,46 +69,46 @@ public class MembershipClient extends AbstractClient {
                     List<String> locationHeader = exchange.getHeaders().get(HttpHeaders.LOCATION);
                     return locationHeader.get(0);
                 case CONFLICT:
-                    throw new ResourceExistsException("Membership already exists.");
+                    throw new ResourceExistsException("Registration already exists.");
                 default:
                     throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
             }
         }
         catch (RestClientException e) {
-            logger.error("createMembership:" + e.getMessage());
+            logger.error("createRegistration:" + e.getMessage());
             throw new UnexpectedSystemException(e);
         }
     }
 
-    public void updateMembership(Membership Membership) {
+    public void updateRegistration(Registration Registration) {
         try {
-            logger.info("update:" + Membership.getName());
+            logger.info("update:" + Registration.getName());
 
-            HttpEntity<Membership> httpEntity = createSystemEntityBody(Membership);
+            HttpEntity<Registration> httpEntity = createSystemEntityBody(Registration);
 
-            ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI + "/" + Membership.getId(), HttpMethod.PUT, httpEntity, Void.class);
+            ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI + "/" + Registration.getId(), HttpMethod.PUT, httpEntity, Void.class);
             switch (exchange.getStatusCode()) {
                 case OK:
                     return;
                 case CONFLICT:
-                    throw new ResourceExistsException("Membership already exists.");
+                    throw new ResourceExistsException("Registration already exists.");
                 default:
                     throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
             }
         }
         catch (RestClientException e) {
-            logger.error("updateMembership:" + e.getMessage());
+            logger.error("updateRegistration:" + e.getMessage());
             throw new UnexpectedSystemException(e);
         }
     }
 
-    public void deleteMemberships(String personId) {
+    public void deleteRegistrations(String ownerId) {
         try {
-            logger.info("delete:" + personId);
+            logger.info("delete:" + ownerId);
 
-            HttpEntity<Membership> httpEntity = createSystemEntity();
+            HttpEntity<Registration> httpEntity = createSystemEntity();
 
-            ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI + "/person/" + personId, HttpMethod.DELETE, httpEntity, Void.class);
+            ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI + "/owner/" + ownerId, HttpMethod.DELETE, httpEntity, Void.class);
             switch (exchange.getStatusCode()) {
                 case OK:
                     return;
@@ -122,13 +122,13 @@ public class MembershipClient extends AbstractClient {
         }
     }
 
-    public void deleteMembership(String membershipId) {
+    public void deleteRegistration(String registrationId) {
         try {
-            logger.info("delete:" + membershipId);
+            logger.info("delete:" + registrationId);
 
-            HttpEntity<Membership> httpEntity = createSystemEntity();
+            HttpEntity<Registration> httpEntity = createSystemEntity();
 
-            ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI + "/" + membershipId, HttpMethod.DELETE, httpEntity, Void.class);
+            ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI + "/" + registrationId, HttpMethod.DELETE, httpEntity, Void.class);
             switch (exchange.getStatusCode()) {
                 case OK:
                     return;
