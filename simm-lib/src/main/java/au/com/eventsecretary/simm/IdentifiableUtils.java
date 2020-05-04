@@ -11,6 +11,13 @@ import java.util.UUID;
  * @author sladew
  */
 public interface IdentifiableUtils {
+    static boolean isId(String guid) {
+        if (guid == null || guid.length() == 0) {
+            return false;
+        }
+        return guid.length() == 36 && guid.indexOf("-") == 8;
+    }
+
     static String id() {
         return UUID.randomUUID().toString();
     }
