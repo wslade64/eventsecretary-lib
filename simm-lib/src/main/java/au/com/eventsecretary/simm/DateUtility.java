@@ -240,6 +240,11 @@ public interface DateUtility {
         return timestamp;
     }
 
+    static int nowDate() {
+        LocalDate localDate = LocalDate.now();
+        return splitToDate(localDate.getYear(), localDate.getMonthOfYear(), localDate.getDayOfMonth());
+    }
+
     static String shorterTime(Timestamp timestamp) {
         if (timestamp == null) {
             return "";
