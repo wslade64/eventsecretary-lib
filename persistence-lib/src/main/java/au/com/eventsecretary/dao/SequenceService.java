@@ -57,12 +57,15 @@ public class SequenceService {
 
     public synchronized String deriveNext(String name) {
         Sequence searchSequence = new Sequence();
+        if (isSandbox()) {
+            name += "-sandbox";
+        }
         searchSequence.setName(name);
         Sequence currentSequence = persistence.findObject(searchSequence);
         if (currentSequence == null) {
             currentSequence = new Sequence();
             currentSequence.setName(name);
-            currentSequence.setSequence((name.contains(".") ? 1 : (isSandbox() ? 90001 : 10001)));
+            currentSequence.setSequence((name.contains(".") ? 1 : (isSandbox() ? 90001 : 61291)));
         } else {
             currentSequence.setSequence(currentSequence.getSequence() + 1);
         }

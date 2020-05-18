@@ -12,6 +12,8 @@ import org.springframework.util.MultiValueMap;
 
 import java.util.Collections;
 
+import static au.com.eventsecretary.Request.bearer;
+
 /**
  * TODO
  *
@@ -25,7 +27,7 @@ public class NotificationClient extends AbstractClient {
     }
 
     public void send(Notification notification, Resource file) {
-        HttpHeaders requestHeaders = new HttpHeaders();
+        HttpHeaders requestHeaders = headers(bearer());
         requestHeaders.setContentType(MediaType.APPLICATION_JSON);
         requestHeaders.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
 

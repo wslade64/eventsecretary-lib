@@ -81,4 +81,23 @@ public class ResourceClient<T extends Identifiable> extends AbstractClient {
             throw new UnexpectedSystemException(e);
         }
     }
+
+    public void deleteResource(String resourceId) {
+        try {
+            logger.info("delete:" + resourceId);
+
+            HttpEntity<T> httpEntity = createEntity();
+            ResponseEntity<T> exchange = restTemplate.exchange(baseUrl + "/" + resourceId, HttpMethod.DELETE, httpEntity, targetClass);
+            switch (exchange.getStatusCode()) {
+                case OK:
+                    return;
+                default:
+                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+            }
+        }
+        catch (RestClientException e) {
+            logger.error("deleteResource:" + e.getMessage());
+            throw new UnexpectedSystemException(e);
+        }
+    }
 }
