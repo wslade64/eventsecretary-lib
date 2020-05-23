@@ -1,5 +1,6 @@
 package au.com.eventsecretary.client;
 
+import au.com.eventsecretary.equestrian.event.EventImpl;
 import au.com.eventsecretary.equestrian.organisation.HorseImpl;
 import au.com.eventsecretary.equestrian.organisation.RiderImpl;
 import au.com.eventsecretary.user.identity.AuthorisationImpl;
@@ -68,6 +69,11 @@ public class ClientConfiguration {
     @Bean
     public ResourceClient horseClient(@Value("${userUrl}") String baseUrl, RestTemplateBuilder restTemplateBuilder) {
         return new ResourceClient(baseUrl + "/equestrian-ms/horse", restTemplateBuilder, HorseImpl.class);
+    }
+
+    @Bean
+    public ResourceClient eventClient(@Value("${userUrl}") String baseUrl, RestTemplateBuilder restTemplateBuilder) {
+        return new ResourceClient(baseUrl + "/equestrian-ms/v1/event", restTemplateBuilder, EventImpl.class);
     }
 
     @Bean

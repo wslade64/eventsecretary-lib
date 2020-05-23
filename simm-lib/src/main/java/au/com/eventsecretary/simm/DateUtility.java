@@ -5,6 +5,8 @@ import au.com.eventsecretary.common.TimestampImpl;
 import org.joda.time.*;
 import org.joda.time.format.DateTimeFormat;
 
+import java.util.Date;
+
 /**
  * TODO
  *
@@ -151,6 +153,10 @@ public interface DateUtility {
         clone.setDate(timestamp.getDate());
         clone.setTime(timestamp.getTime());
         return clone;
+    }
+
+    static Timestamp createTimestamp(Date date) {
+        return createTimestamp(date(LocalDate.fromDateFields(date)), time(LocalTime.fromDateFields(date)));
     }
 
     static Timestamp createTimestamp(int date, int time) {
