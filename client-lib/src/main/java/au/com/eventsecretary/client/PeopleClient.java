@@ -62,6 +62,24 @@ public class PeopleClient extends AbstractClient {
         }
     }
 
+    public Person findPersonByIdentityId(String identityId) {
+        try {
+            HttpEntity<Void> httpEntity = createSystemEntity();
+
+            ResponseEntity<Person> exchange = restTemplate.exchange(baseUrl + URI + "/identity/" + identityId, HttpMethod.GET, httpEntity, Person.class);
+            switch (exchange.getStatusCode()) {
+                case OK:
+                    return exchange.getBody();
+                default:
+                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+            }
+        }
+        catch (RestClientException e) {
+            logger.error("findPersonByIdentityId:" + e.getMessage());
+            throw new UnexpectedSystemException(e);
+        }
+    }
+
     public PersonIdentity findPersonIdentityByPersonId(String personId) {
         try {
             HttpEntity<Void> httpEntity = createSystemEntity();

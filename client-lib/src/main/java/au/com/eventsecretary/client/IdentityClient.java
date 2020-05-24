@@ -5,7 +5,6 @@ import au.com.eventsecretary.ResourceNotFoundException;
 import au.com.eventsecretary.UnexpectedSystemException;
 import au.com.eventsecretary.user.identity.Identity;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.web.client.RestClientException;
 
@@ -44,18 +43,11 @@ public class IdentityClient extends AbstractClient {
             HttpEntity<Void> httpEntity = createSystemEntity();
 
             Map<String, String> params = new HashMap<>();
-            params.put("emailAddress", emailAddress);
-            ResponseEntity<List<Identity>> exchange = restTemplate.exchange(baseUrl + URI + "?email={emailAddress}", HttpMethod.GET, httpEntity, new ParameterizedTypeReference<List<Identity>>() {}, params);
+            params.put("emailAddress", "=" + emailAddress);
+            ResponseEntity<Identity> exchange = restTemplate.exchange(baseUrl + URI + "?email={emailAddress}", HttpMethod.GET, httpEntity, Identity.class, params);
             switch (exchange.getStatusCode()) {
                 case OK:
-                    List<Identity> identityList = exchange.getBody();
-                    if (identityList == null || identityList.isEmpty()) {
-                        throw new ResourceNotFoundException(emailAddress);
-                    }
-                    if (identityList.size() > 1) {
-                        throw new UnexpectedSystemException("Multiple identity for " + emailAddress);
-                    }
-                    return identityList.get(0);
+                    return exchange.getBody();
                 case NOT_FOUND:
                     throw new ResourceNotFoundException(emailAddress);
                 default:
@@ -64,6 +56,26 @@ public class IdentityClient extends AbstractClient {
         }
         catch (RestClientException e) {
             logger.error("get:could not connect to identity service" + e.getMessage());
+            throw new UnexpectedSystemException(e);
+        }
+    }
+
+    public Identity findById(String id) {
+        try {
+            HttpEntity<Void> httpEntity = createSystemEntity();
+
+            ResponseEntity<Identity> exchange = restTemplate.exchange(baseUrl + URI + "/" + id, HttpMethod.GET, httpEntity, Identity.class);
+            switch (exchange.getStatusCode()) {
+                case OK:
+                    return exchange.getBody();
+                case NOT_FOUND:
+                    throw new ResourceNotFoundException(id);
+                default:
+                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+            }
+        }
+        catch (RestClientException e) {
+            logger.error("findById:" + e.getMessage());
             throw new UnexpectedSystemException(e);
         }
     }

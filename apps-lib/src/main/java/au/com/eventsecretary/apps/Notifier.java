@@ -22,6 +22,12 @@ public class Notifier {
     }
 
     public void notifyError(String msg, Exception e) {
+        if (msg == null && e != null) {
+            msg = e.getMessage();
+            if (msg == null) {
+                msg = e.getClass().getName();
+            }
+        }
         if (e != null) {
             logger.error(msg, e);
         }
