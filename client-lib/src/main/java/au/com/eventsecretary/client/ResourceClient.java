@@ -3,6 +3,7 @@ package au.com.eventsecretary.client;
 import au.com.eventsecretary.ResourceExistsException;
 import au.com.eventsecretary.UnexpectedSystemException;
 import au.com.eventsecretary.common.Identifiable;
+import org.apache.commons.lang3.reflect.TypeUtils;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -11,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClientException;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.List;
 
 /**
@@ -18,17 +21,29 @@ import java.util.List;
  */
 public class ResourceClient<T extends Identifiable> extends AbstractClient {
     Class<T> targetClass;
+    ParameterizedTypeReference<List<T>> parameterizedTypeReference;
 
     public ResourceClient(String baseUrl, RestTemplateBuilder restTemplateBuilder, Class<T> targetClass) {
         super(baseUrl, restTemplateBuilder);
         this.targetClass = targetClass;
+
+        this.parameterizedTypeReference = new ParameterizedTypeReference<List<T>>() {
+            @Override
+            public Type getType() {
+                Type type = super.getType();
+                if (type instanceof ParameterizedType) {
+                    return TypeUtils.parameterize(List.class, targetClass);
+                }
+                return type;
+            }
+        };
     }
 
     public List<T> getResources() {
         try {
             HttpEntity<Void> httpEntity = createEntity();
 
-            ResponseEntity<List<T>> exchange = restTemplate.exchange(baseUrl, HttpMethod.GET, httpEntity, ParameterizedTypeReference.forType(targetClass));
+            ResponseEntity<List<T>> exchange = restTemplate.exchange(baseUrl, HttpMethod.GET, httpEntity, parameterizedTypeReference);
             if (exchange.getStatusCode() == HttpStatus.OK) {
                 return exchange.getBody();
             }

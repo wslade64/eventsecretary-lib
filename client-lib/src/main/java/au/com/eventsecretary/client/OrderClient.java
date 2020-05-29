@@ -49,6 +49,24 @@ public class OrderClient extends AbstractClient {
         }
     }
 
+    public Order updateOrder(String accountCode, Order order) {
+        try {
+            HttpEntity<Order> httpEntity = createSystemEntityBody(order);
+
+            ResponseEntity<Order> exchange = restTemplate.exchange(baseUrl + URI, HttpMethod.PUT, httpEntity, Order.class, params("accountCode",accountCode));
+            switch (exchange.getStatusCode()) {
+                case OK:
+                    return exchange.getBody();
+                default:
+                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+            }
+        }
+        catch (RestClientException e) {
+            logger.error("updateOrder:{}" + e.getMessage());
+            throw new UnexpectedSystemException(e);
+        }
+    }
+
 
     public Order fetchOrderByName(String orderName) {
         String[] split = orderName.split("-");
