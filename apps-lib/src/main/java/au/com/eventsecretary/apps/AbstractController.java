@@ -1,13 +1,18 @@
 package au.com.eventsecretary.apps;
 
+import au.com.eventsecretary.client.AuthorisationClient;
 import au.com.eventsecretary.client.UnauthorizedException;
+import au.com.eventsecretary.user.identity.Authorisation;
 import au.com.eventsecretary.user.identity.Identity;
+import au.com.eventsecretary.user.identity.Permissions;
 import au.com.eventsecretary.user.identity.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * TODO
@@ -22,6 +27,23 @@ public abstract class AbstractController
     public Identity getIdentity(HttpServletRequest request) {
         return (Identity) request.getAttribute(Identity.class.getName());
     }
+
+    @Autowired
+    AuthorisationClient authorisationClient;
+
+    protected void authorise(Identity userIdentity, String contextName, String targetId, String area, Permissions read) {
+        if (userIdentity.getRole() == Role.SYSTEM) {
+            return;
+        }
+        List<Authorisation> authorisations = authorisationClient.getAuthorisations(userIdentity.getId());
+        if (!authorisations.stream().anyMatch(authorisation -> authorisation.getContextName().equals(contextName)
+            && authorisation.getTargetId().equals(targetId)
+            && authorisation.getRoles().stream().anyMatch(areaRole
+                -> areaRole.getArea().equals(area) && areaRole.getPermissions().contains(read)))) {
+            throw new UnauthorizedException();
+        }
+    }
+
 
     protected Identity authorize(Identity identity, String siteCode) {
         if (identity == null) {
