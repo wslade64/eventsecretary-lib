@@ -118,6 +118,25 @@ public class OrganisationClient extends AbstractClient {
         }
     }
 
+    public void deleteOrganisation(String id) {
+        try {
+            HttpEntity<Void> httpEntity = createSystemEntity();
+
+            ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI + "/" + id
+                    , HttpMethod.DELETE, httpEntity, Void.class);
+            switch (exchange.getStatusCode()) {
+                case OK:
+                    return;
+                default:
+                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+            }
+        }
+        catch (RestClientException e) {
+            logger.error("delete:could not connect to organisation service" + e.getMessage());
+            throw new UnexpectedSystemException(e);
+        }
+    }
+
     public void reset() {
         try {
             logger.info("reset");
