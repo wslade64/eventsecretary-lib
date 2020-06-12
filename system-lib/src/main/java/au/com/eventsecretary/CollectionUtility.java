@@ -22,8 +22,11 @@ public interface CollectionUtility {
     }
 
     static Collection<? extends Integer> toIntegerList(String list) {
-        String[] split = list.split(",");
         List<Integer> ilist = new ArrayList<>();
+        if (list == null || list.length() == 0) {
+            return ilist;
+        }
+        String[] split = list.split(",");
         for (String s : split) {
             ilist.add(Integer.parseInt(s));
         }
