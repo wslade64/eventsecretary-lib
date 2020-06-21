@@ -4,12 +4,14 @@ import au.com.eventsecretary.ResourceNotFoundException;
 import au.com.eventsecretary.UnexpectedSystemException;
 import au.com.eventsecretary.accounting.account.Order;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClientException;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -82,6 +84,27 @@ public class OrderClient extends AbstractClient {
 
             ResponseEntity<Order> exchange = restTemplate.exchange(baseUrl + URI + "/{orderCode}"
                     , HttpMethod.GET, httpEntity, Order.class, params("accountCode", accountCode, "orderCode", orderCode));
+            switch (exchange.getStatusCode()) {
+                case OK:
+                    return exchange.getBody();
+                case NOT_FOUND:
+                    throw new ResourceNotFoundException("order");
+                default:
+                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+            }
+        }
+        catch (RestClientException e) {
+            logger.error("could not connect to service" + e.getMessage());
+            throw new UnexpectedSystemException(e);
+        }
+    }
+
+    public List<Order> fetchOrders(String accountCode) {
+        try {
+            HttpEntity<Void> httpEntity = createSystemEntity();
+
+            ResponseEntity<List<Order>> exchange = restTemplate.exchange(baseUrl + URI
+                    , HttpMethod.GET, httpEntity, new ParameterizedTypeReference<List<Order>>(){}, params("accountCode", accountCode));
             switch (exchange.getStatusCode()) {
                 case OK:
                     return exchange.getBody();

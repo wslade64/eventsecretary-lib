@@ -1,0 +1,13 @@
+archivesBaseName = 'eventsecretary-export-lib'
+
+dependencies {
+    compile("au.com.eventsecretary:eventsecretary-simm-lib:x.x.x-SNAPSHOT")
+
+    compile("org.apache.poi:poi:4.1.2")
+    compile("org.apache.poi:poi-ooxml:4.1.2")
+    compile("org.springframework:spring-context:${springVersion}")
+    compile("org.springframework:spring-context-support:${springVersion}")
+    compile project(":system-lib")
+    testCompile("junit:junit:4.12")
+}
+

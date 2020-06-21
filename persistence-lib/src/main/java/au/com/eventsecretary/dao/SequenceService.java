@@ -3,8 +3,6 @@ package au.com.eventsecretary.dao;
 import au.com.eventsecretary.persistence.BusinessObjectPersistence;
 import org.springframework.stereotype.Component;
 
-import static au.com.eventsecretary.Request.isSandbox;
-
 /**
  * Generates the next sequence number for a specific name.
  *
@@ -57,15 +55,12 @@ public class SequenceService {
 
     public synchronized String deriveNext(String name) {
         Sequence searchSequence = new Sequence();
-        if (isSandbox()) {
-            name += "-sandbox";
-        }
         searchSequence.setName(name);
         Sequence currentSequence = persistence.findObject(searchSequence);
         if (currentSequence == null) {
             currentSequence = new Sequence();
             currentSequence.setName(name);
-            currentSequence.setSequence((name.contains(".") ? 1 : (isSandbox() ? 90001 : 61291)));
+            currentSequence.setSequence((name.contains(".") ? 1 : 16290));
         } else {
             currentSequence.setSequence(currentSequence.getSequence() + 1);
         }
