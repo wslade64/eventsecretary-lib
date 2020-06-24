@@ -39,6 +39,22 @@ public class ResourceClient<T extends Identifiable> extends AbstractClient {
         };
     }
 
+    public T getResourceById(String id) {
+        try {
+            HttpEntity<Void> httpEntity = createEntity();
+
+            ResponseEntity<T> exchange = restTemplate.exchange(baseUrl + "/" + id, HttpMethod.GET, httpEntity, targetClass);
+            if (exchange.getStatusCode() == HttpStatus.OK) {
+                return exchange.getBody();
+            }
+            return null;
+        }
+        catch (RestClientException e) {
+            logger.error("getResource:" + e.getMessage());
+            throw new UnexpectedSystemException("getResource");
+        }
+    }
+
     public List<T> getResources() {
         try {
             HttpEntity<Void> httpEntity = createEntity();

@@ -4,6 +4,7 @@ import au.com.eventsecretary.accounting.account.CatalogueImpl;
 import au.com.eventsecretary.equestrian.event.EventImpl;
 import au.com.eventsecretary.equestrian.organisation.HorseImpl;
 import au.com.eventsecretary.equestrian.organisation.RiderImpl;
+import au.com.eventsecretary.user.access.AccessCodeImpl;
 import au.com.eventsecretary.user.identity.AuthorisationImpl;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -85,5 +86,10 @@ public class ClientConfiguration {
     @Bean
     public AuthorisationClient authorisationClient(@Value("${userUrl}") String baseUrl, RestTemplateBuilder restTemplateBuilder) {
         return new AuthorisationClient(baseUrl + "/user/v1/authorisation", restTemplateBuilder, AuthorisationImpl.class);
+    }
+
+    @Bean
+    public ResourceClient accessCodeClient(@Value("${userUrl}") String baseUrl, RestTemplateBuilder restTemplateBuilder) {
+        return new ResourceClient(baseUrl + "/user/v1/access-code", restTemplateBuilder, AccessCodeImpl.class);
     }
 }
