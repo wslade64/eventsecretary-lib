@@ -10,9 +10,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClientException;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author sladew
@@ -22,15 +20,6 @@ public class OrderClient extends AbstractClient {
 
     public OrderClient(String baseUrl, RestTemplateBuilder restTemplateBuilder) {
         super(baseUrl, restTemplateBuilder);
-    }
-
-    private static Map<String, String> params(String... values) {
-        HashMap<String, String> params = new HashMap<>();
-        for (int i = 0; i < values.length; i++) {
-            params.put(values[i], values[i+1]);
-            i++;
-        }
-        return params;
     }
 
     public Order createOrder(String accountCode, Order order) {

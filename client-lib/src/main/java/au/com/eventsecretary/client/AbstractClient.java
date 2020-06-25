@@ -13,6 +13,8 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import static au.com.eventsecretary.Request.*;
 
@@ -62,6 +64,28 @@ public abstract class AbstractClient {
             headers.put(SANDBOX, Collections.singletonList("true"));
         }
         return headers;
+    }
+
+    protected static Map<String, String> params(String... values) {
+        HashMap<String, String> params = new HashMap<>();
+        for (int i = 0; i < values.length; i++) {
+            params.put(values[i], values[i+1]);
+            i++;
+        }
+        return params;
+    }
+
+    protected static String queryParams(String[] keyValueList) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < keyValueList.length; i += 2) {
+            stringBuilder.append(i == 0 ? "?" : "&");
+            stringBuilder.append(keyValueList[i]);
+            stringBuilder.append("=");
+            stringBuilder.append("{");
+            stringBuilder.append(keyValueList[i]);
+            stringBuilder.append("}");
+        }
+        return stringBuilder.toString();
     }
 
     protected <T> HttpEntity<T> createEntity() {

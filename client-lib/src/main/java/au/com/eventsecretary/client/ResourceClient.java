@@ -39,6 +39,22 @@ public class ResourceClient<T extends Identifiable> extends AbstractClient {
         };
     }
 
+    public List<T> getResourceByQuery(String... keyValueList) {
+        try {
+            HttpEntity<Void> httpEntity = createEntity();
+
+            ResponseEntity<List<T>> exchange = restTemplate.exchange(baseUrl + queryParams(keyValueList), HttpMethod.GET, httpEntity, parameterizedTypeReference, params(keyValueList));
+            if (exchange.getStatusCode() == HttpStatus.OK) {
+                return exchange.getBody();
+            }
+            return null;
+        }
+        catch (RestClientException e) {
+            logger.error("getResource:" + e.getMessage());
+            throw new UnexpectedSystemException("getResource");
+        }
+    }
+
     public T getResourceById(String id) {
         try {
             HttpEntity<Void> httpEntity = createEntity();
@@ -113,7 +129,7 @@ public class ResourceClient<T extends Identifiable> extends AbstractClient {
         }
     }
 
-    public void deleteResource(String resourceId) {
+    public T deleteResource(String resourceId) {
         try {
             logger.info("delete:" + resourceId);
 
@@ -121,7 +137,7 @@ public class ResourceClient<T extends Identifiable> extends AbstractClient {
             ResponseEntity<T> exchange = restTemplate.exchange(baseUrl + "/" + resourceId, HttpMethod.DELETE, httpEntity, targetClass);
             switch (exchange.getStatusCode()) {
                 case OK:
-                    return;
+                    return exchange.getBody();
                 default:
                     throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
             }
