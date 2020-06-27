@@ -92,7 +92,7 @@ public class OrderClient extends AbstractClient {
         try {
             HttpEntity<Void> httpEntity = createSystemEntity();
 
-            ResponseEntity<List<Order>> exchange = restTemplate.exchange(baseUrl + URI
+            ResponseEntity<List<Order>> exchange = restTemplate.exchange(baseUrl + URI + "?filter=ACCOUNT"
                     , HttpMethod.GET, httpEntity, new ParameterizedTypeReference<List<Order>>(){}, params("accountCode", accountCode));
             switch (exchange.getStatusCode()) {
                 case OK:
