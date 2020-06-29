@@ -12,6 +12,7 @@ public interface Request {
     String IDENTITY_KEY = "Identity";
     String BEARER_KEY = "Bearer";
     String SANDBOX_KEY = "Sandbox";
+    String PERSON_KEY = "Person";
 
     static boolean isSandbox() {
         return MDC.get(SANDBOX_KEY) != null;
@@ -19,5 +20,13 @@ public interface Request {
 
     static String bearer() {
         return MDC.get(BEARER_KEY);
+    }
+
+    static String person() {
+        return MDC.get(PERSON_KEY);
+    }
+
+    static String identity() {
+        return MDC.get(IDENTITY_KEY);
     }
 }

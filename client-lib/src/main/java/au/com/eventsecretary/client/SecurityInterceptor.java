@@ -35,6 +35,9 @@ public class SecurityInterceptor extends HandlerInterceptorAdapter {
             Identity identity = fetchIdentity(bearer);
             if (identity != null) {
                 request.setAttribute(Identity.class.getName(), identity);
+                if (identity.getPersonId() != null) {
+                    MDC.put(PERSON_KEY, identity.getPersonId());
+                }
                 MDC.put(IDENTITY_KEY, identity.getEmail());
                 MDC.put(BEARER_KEY, bearer);
             }
@@ -58,5 +61,6 @@ public class SecurityInterceptor extends HandlerInterceptorAdapter {
         MDC.remove(IDENTITY_KEY);
         MDC.remove(BEARER_KEY);
         MDC.remove(SANDBOX_KEY);
+        MDC.remove(PERSON_KEY);
     }
 }
