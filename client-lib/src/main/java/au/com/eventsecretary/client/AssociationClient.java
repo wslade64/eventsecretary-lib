@@ -96,13 +96,37 @@ public class AssociationClient extends AbstractClient {
                     List<String> locationHeader = exchange.getHeaders().get(HttpHeaders.LOCATION);
                     return locationHeader.get(0);
                 case CONFLICT:
-                    throw new ResourceExistsException("Association already exists.");
+                case PRECONDITION_FAILED:
+                    throw new ResourceExistsException("Code exists");
                 default:
                     throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
             }
         }
         catch (RestClientException e) {
             logger.error("createAssociation:" + e.getMessage());
+            throw new UnexpectedSystemException(e);
+        }
+    }
+
+    public void updateAssociation(Association association) {
+        try {
+            logger.info("update:" + association.getName());
+
+            HttpEntity<Association> httpEntity = createSystemEntityBody(association);
+
+            ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI + "/" + association.getId(), HttpMethod.PUT, httpEntity, Void.class);
+            switch (exchange.getStatusCode()) {
+                case OK:
+                    return;
+                case CONFLICT:
+                case PRECONDITION_FAILED:
+                    throw new ResourceExistsException("Code exists");
+                default:
+                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+            }
+        }
+        catch (RestClientException e) {
+            logger.error("updateAssociation:" + e.getMessage());
             throw new UnexpectedSystemException(e);
         }
     }
@@ -126,4 +150,24 @@ public class AssociationClient extends AbstractClient {
             throw new UnexpectedSystemException(e);
         }
     }
+
+    public void deleteAssociation(String associationId) {
+        try {
+            logger.info("delete:" + associationId);
+
+            HttpEntity<Void> httpEntity = createEntity();
+            ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI + "/" + associationId, HttpMethod.DELETE, httpEntity, Void.class);
+            switch (exchange.getStatusCode()) {
+                case OK:
+                    return ;
+                default:
+                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+            }
+        }
+        catch (RestClientException e) {
+            logger.error("deleteResource:" + e.getMessage());
+            throw new UnexpectedSystemException(e);
+        }
+    }
+
 }
