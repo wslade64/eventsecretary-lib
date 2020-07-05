@@ -32,6 +32,10 @@ public abstract class AbstractController
     AuthorisationClient authorisationClient;
 
     protected void authorise(Identity userIdentity, String contextName, String targetId, String area, Permissions read) {
+        if (userIdentity == null) {
+            throw new UnauthorizedException();
+        }
+
         if (userIdentity.getRole() == Role.SYSTEM) {
             return;
         }
