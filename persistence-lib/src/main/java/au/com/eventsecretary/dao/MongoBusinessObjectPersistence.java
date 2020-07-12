@@ -56,6 +56,12 @@ public class MongoBusinessObjectPersistence implements BusinessObjectPersistence
         {
             query.addCriteria(criteria);
         }
+        if (search instanceof FindBy) {
+            Integer limit = ((FindBy)search).getLimit();
+            if (limit != null) {
+                query.limit(limit);
+            }
+        }
 
         Class<T> targetClass = targetClass(search);
 
@@ -161,28 +167,29 @@ public class MongoBusinessObjectPersistence implements BusinessObjectPersistence
             Object value = wrapper.getPropertyValue(propertyDescriptor.getName());
             if (value != null)
             {
-                if (value instanceof Boolean)
+                Class<?> propertyType = propertyDescriptor.getPropertyType();
+                if (propertyType.isPrimitive() && propertyType.equals(boolean.class))
                 {
                     if (((Boolean)value) == false)
                     {
                         continue;
                     }
                 }
-                if (value instanceof Long)
+                if (propertyType.isPrimitive() && propertyType.equals(long.class))
                 {
                     if (((Long)value) == 0)
                     {
                         continue;
                     }
                 }
-                if (value instanceof Integer)
+                if (propertyType.isPrimitive() && propertyType.equals(int.class))
                 {
                     if (((Integer)value) == 0)
                     {
                         continue;
                     }
                 }
-                if (value instanceof  String)
+                if (propertyType.equals(String.class))
                 {
                     String svalue = (String)value;
                     if (svalue.length() > 1 && svalue.startsWith("~") && svalue.endsWith("~"))

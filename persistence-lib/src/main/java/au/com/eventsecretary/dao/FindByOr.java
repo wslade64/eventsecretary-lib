@@ -5,22 +5,17 @@ package au.com.eventsecretary.dao;
  *
  * @author Warwick Slade
  */
-public class FindByOr<T>
+public class FindByOr<T> extends FindBy<T>
 {
-    private T t;
-
-    public static <T> T findBy(T t)
-    {
-        return (T)new FindByOr<T>(t);
+    public static <T> T findBy(T t) {
+        return (T)new FindByOr<T>(t, null);
     }
 
-    public FindByOr(T t)
-    {
-        this.t = t;
+    public static <T> T findBy(T t, Integer limit) {
+        return (T)new FindByOr<T>(t, limit);
     }
 
-    public T getTarget()
-    {
-        return t;
+    public FindByOr(T t, Integer limit) {
+        super(t, limit);
     }
 }

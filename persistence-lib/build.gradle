@@ -4,7 +4,7 @@ dependencies {
     compile("org.apache.commons:commons-lang3:${commonsLang3Version}")
     compile("commons-beanutils:commons-beanutils:${commonsBeanutilsVersion}")
     compile("org.springframework.boot:spring-boot-starter-web:${springBootStarterWebVersion}")
-    compile("org.springframework.data:spring-data-mongodb:1.10.4.RELEASE")
+    compile("org.springframework.data:spring-data-mongodb:1.10.18.RELEASE")
     compile project(":system-lib")
 }
 
