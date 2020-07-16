@@ -45,7 +45,24 @@ public class AuthorisationClient extends ResourceClient {
         }
     }
 
-    public List<Authorisation> getAuthorisations(String identityId) {
+    public List<Authorisation> getAuthorisations() {
+        try {
+            HttpEntity<Void> httpEntity = createEntity();
+
+            ResponseEntity<List<Authorisation>> exchange = restTemplate.exchange(baseUrl
+                    , HttpMethod.GET, httpEntity, new ParameterizedTypeReference<List<Authorisation>>(){});
+            if (exchange.getStatusCode() == HttpStatus.OK) {
+                return exchange.getBody();
+            }
+            return null;
+        }
+        catch (RestClientException e) {
+            logger.error("getAuthorisation:" + e.getMessage());
+            throw new UnexpectedSystemException("getAuthorisation");
+        }
+    }
+
+    public List<Authorisation> getAuthorisationsByIdentityId(String identityId) {
         try {
             HttpEntity<Void> httpEntity = createEntity();
 

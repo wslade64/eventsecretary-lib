@@ -41,12 +41,9 @@ public class PeopleClient extends AbstractClient {
         }
     }
 
-    public Person findCurrentPerson() {
+    public Person findPerson() {
         try {
-            if (true) {
-                throw new UnexpectedSystemException("This function does not work");
-            }
-            HttpEntity<Void> httpEntity = createSystemEntity();
+            HttpEntity<Void> httpEntity = createEntity();
 
             ResponseEntity<Person[]> exchange = restTemplate.exchange(baseUrl + URI + "/person", HttpMethod.GET, httpEntity, Person[].class);
             switch (exchange.getStatusCode()) {

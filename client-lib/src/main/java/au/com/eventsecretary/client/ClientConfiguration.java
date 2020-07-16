@@ -92,4 +92,14 @@ public class ClientConfiguration {
     public ResourceClient accessCodeClient(@Value("${userUrl}") String baseUrl, RestTemplateBuilder restTemplateBuilder) {
         return new ResourceClient(baseUrl + "/user/v1/access-code", restTemplateBuilder, AccessCodeImpl.class);
     }
+
+    @Bean
+    public SessionService sessionService(AuthenticateClient authenticateClient) {
+        return new SessionService(authenticateClient);
+    }
+
+    @Bean
+    public AuthenticateClient authenticateClient(IdentityClient identityClient, AuthorisationClient authorisationClient, PeopleClient peopleClient) {
+        return new AuthenticateClientDelegate(identityClient, authorisationClient, peopleClient);
+    }
 }

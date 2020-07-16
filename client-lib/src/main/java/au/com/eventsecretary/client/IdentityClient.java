@@ -22,9 +22,9 @@ public class IdentityClient extends AbstractClient {
         super(baseUrl, restTemplateBuilder);
     }
 
-    public Identity get(String bearer) {
+    public Identity findIdentity() {
         try {
-            HttpEntity<Void> httpEntity = new HttpEntity<>(headers(bearer));
+            HttpEntity<Void> httpEntity = createEntity();
 
             ResponseEntity<Identity> exchange = restTemplate.exchange(baseUrl + URI, HttpMethod.GET, httpEntity, Identity.class);
             if (exchange.getStatusCode() == HttpStatus.OK) {

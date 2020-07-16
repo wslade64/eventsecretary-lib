@@ -1,18 +1,13 @@
 package au.com.eventsecretary.apps;
 
-import au.com.eventsecretary.client.AuthorisationClient;
+import au.com.eventsecretary.client.SessionService;
 import au.com.eventsecretary.client.UnauthorizedException;
-import au.com.eventsecretary.user.identity.Authorisation;
 import au.com.eventsecretary.user.identity.Identity;
 import au.com.eventsecretary.user.identity.Permissions;
 import au.com.eventsecretary.user.identity.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.ModelAttribute;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 /**
  * TODO
@@ -23,32 +18,19 @@ public abstract class AbstractController
 {
     protected Logger logger = LoggerFactory.getLogger(getClass());
 
-    @ModelAttribute("identity")
-    public Identity getIdentity(HttpServletRequest request) {
-        return (Identity) request.getAttribute(Identity.class.getName());
-    }
-
     @Autowired
-    AuthorisationClient authorisationClient;
+    protected SessionService sessionService;
 
-    protected void authorise(Identity userIdentity, String contextName, String targetId, String area, Permissions read) {
-        if (userIdentity == null) {
-            throw new UnauthorizedException();
-        }
-
-        if (userIdentity.getRole() == Role.SYSTEM) {
-            return;
-        }
-        List<Authorisation> authorisations = authorisationClient.getAuthorisations(userIdentity.getId());
-        if (!authorisations.stream().anyMatch(authorisation -> authorisation.getContextName().equals(contextName)
-            && authorisation.getTargetId().equals(targetId)
-            && authorisation.getRoles().stream().anyMatch(areaRole
-                -> areaRole.getArea().equals(area) && areaRole.getPermissions().contains(read)))) {
-            throw new UnauthorizedException();
-        }
+    protected void authorise(String contextName, String targetId, String area, Permissions read) {
+        sessionService.authorise(contextName, targetId, area, read);
     }
 
+    @Deprecated
+    protected void authorise(Identity userIdentity, String contextName, String targetId, String area, Permissions read) {
+        sessionService.authorise(contextName, targetId, area, read);
+    }
 
+    @Deprecated
     protected Identity authorize(Identity identity, String siteCode) {
         if (identity == null) {
             throw new UnauthorizedException();
@@ -68,6 +50,23 @@ public abstract class AbstractController
         throw new UnauthorizedException();
     }
 
+    protected Identity system() {
+        return system(sessionService.getIdentity());
+    }
+
+    protected Identity authenticated() {
+        Identity identity = sessionService.getIdentity();
+        if (identity == null) {
+            throw new UnauthorizedException();
+        }
+        return identity;
+    }
+
+    protected Identity identity() {
+        return sessionService.getIdentity();
+    }
+
+    @Deprecated
     protected Identity system(Identity identity) {
         if (identity == null) {
             throw new UnauthorizedException();
@@ -80,16 +79,20 @@ public abstract class AbstractController
         throw new UnauthorizedException();
     }
 
+    @Deprecated
     protected void authenticated(Identity identity) {
         if (identity == null) {
             throw new UnauthorizedException();
         }
     }
+
+    @Deprecated
     protected boolean isSystem(Identity identity) {
         authenticated(identity);
         return identity.getRole() == Role.SYSTEM;
     }
 
+    @Deprecated
     protected boolean isUser(Identity identity) {
         authenticated(identity);
         return (identity.getRole() == null || identity.getRole() == Role.USER) && identity.getPersonId() != null;
