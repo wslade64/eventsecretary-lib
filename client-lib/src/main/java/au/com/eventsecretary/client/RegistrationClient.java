@@ -80,13 +80,13 @@ public class RegistrationClient extends AbstractClient {
         }
     }
 
-    public void updateRegistration(Registration Registration) {
+    public void updateRegistration(Registration registration) {
         try {
-            logger.info("update:" + Registration.getName());
+            logger.info("update:" + registration.getName());
 
-            HttpEntity<Registration> httpEntity = createSystemEntityBody(Registration);
+            HttpEntity<Registration> httpEntity = createSystemEntityBody(registration);
 
-            ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI + "/" + Registration.getId(), HttpMethod.PUT, httpEntity, Void.class);
+            ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI + "/" + registration.getId(), HttpMethod.PUT, httpEntity, Void.class);
             switch (exchange.getStatusCode()) {
                 case OK:
                     return;
