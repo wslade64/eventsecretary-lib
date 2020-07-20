@@ -13,6 +13,7 @@ public interface Request {
     String BEARER_KEY = "Bearer";
     String SANDBOX_KEY = "Sandbox";
     String PERSON_KEY = "Person";
+    String AUTH_COOKIE = "es-auth";
 
     static boolean isSandbox() {
         return MDC.get(SANDBOX_KEY) != null;

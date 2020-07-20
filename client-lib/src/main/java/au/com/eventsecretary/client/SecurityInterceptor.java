@@ -1,5 +1,7 @@
 package au.com.eventsecretary.client;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -17,7 +19,8 @@ import static au.com.eventsecretary.Request.*;
  * @author sladew
  */
 public class SecurityInterceptor extends HandlerInterceptorAdapter {
-    private static final String AUTH_COOKIE = "es-auth";
+
+    Logger logger = LoggerFactory.getLogger(SecurityInterceptor.class);
 
     @Autowired
     private SessionService sessionService;
@@ -28,12 +31,21 @@ public class SecurityInterceptor extends HandlerInterceptorAdapter {
             , Object handler) throws Exception {
 
         String token = extractTokenFromCookie(request);
-        String bearer = request.getHeader(HttpHeaders.AUTHORIZATION);
-
-        if (StringUtils.isEmpty(bearer)) {
-            bearer = request.getParameter("bearer");
+        if (token != null) {
+            logger.info("has token:{}"  + token);
+        } else {
+            token = request.getHeader(HttpHeaders.AUTHORIZATION);
         }
-        sessionService.begin(bearer);
+
+        if (StringUtils.isEmpty(token)) {
+            token = request.getParameter("bearer");
+        }
+
+        if (StringUtils.isEmpty(token)) {
+            token = null;
+        }
+
+        sessionService.begin(token);
 
         String sandbox = request.getHeader(SANDBOX);
         if ("true".equals(sandbox)) {
@@ -46,8 +58,8 @@ public class SecurityInterceptor extends HandlerInterceptorAdapter {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                if (cookie.getSecure() && cookie.isHttpOnly() && cookie.getName().equals(AUTH_COOKIE)) {
-                    return cookie.getValue();
+                if (cookie.getSecure() == request.isSecure() && cookie.isHttpOnly() && cookie.getName().equals(AUTH_COOKIE)) {
+                    return StringUtils.isEmpty(cookie.getValue()) ? null : cookie.getValue();
                 }
             }
         }
@@ -58,24 +70,7 @@ public class SecurityInterceptor extends HandlerInterceptorAdapter {
     public void postHandle(
             HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView)
             throws Exception {
-        addCookie(request, response);
         MDC.remove(SANDBOX_KEY);
         sessionService.end();
-    }
-
-    private void addCookie(HttpServletRequest request, HttpServletResponse httpResponse) {
-        String header = httpResponse.getHeader(HttpHeaders.AUTHORIZATION);
-        if (!StringUtils.hasLength(header)) {
-            return;
-        }
-//        httpResponse.setHeader(HttpHeaders.AUTHORIZATION, null);
-        Cookie cookie = new Cookie(AUTH_COOKIE, header);
-        cookie.setPath("/");
-        cookie.setDomain(request.getServerName());
-        httpResponse.addHeader("Access-Control-Allow-Origin", request.getServerName());
-        cookie.setSecure(request.isSecure());
-        cookie.setHttpOnly(true);
-        cookie.setMaxAge(-1);
-        httpResponse.addCookie(cookie);
     }
 }
