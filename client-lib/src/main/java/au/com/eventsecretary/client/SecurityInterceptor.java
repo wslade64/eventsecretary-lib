@@ -31,12 +31,11 @@ public class SecurityInterceptor extends HandlerInterceptorAdapter {
             , Object handler) throws Exception {
 
         String token = extractTokenFromCookie(request);
-        if (token != null) {
-            logger.info("has token:{}"  + token);
-        } else {
+        if (StringUtils.isEmpty(token)) {
             token = request.getHeader(HttpHeaders.AUTHORIZATION);
         }
 
+        // This will be deprecated -> Only here for url downloads
         if (StringUtils.isEmpty(token)) {
             token = request.getParameter("bearer");
         }
@@ -58,7 +57,7 @@ public class SecurityInterceptor extends HandlerInterceptorAdapter {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                if (cookie.getSecure() == request.isSecure() && cookie.isHttpOnly() && cookie.getName().equals(AUTH_COOKIE)) {
+                if (cookie.getName().equals(AUTH_COOKIE)) {
                     return StringUtils.isEmpty(cookie.getValue()) ? null : cookie.getValue();
                 }
             }
