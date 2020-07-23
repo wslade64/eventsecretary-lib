@@ -9,6 +9,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import static au.com.eventsecretary.Request.AUTH_COOKIE;
+
 /**
  * TODO
  *
@@ -115,4 +121,16 @@ public abstract class AbstractController
         }
         return false;
     }
+
+    protected void addCookie(HttpServletRequest request, HttpServletResponse httpResponse, String token) {
+        Cookie cookie = new Cookie(AUTH_COOKIE, token);
+        cookie.setPath("/");
+        cookie.setDomain(request.getServerName());
+        cookie.setSecure(request.isSecure());
+        cookie.setHttpOnly(true);
+        cookie.setMaxAge(-1);
+        cookie.setVersion(1);
+        httpResponse.addCookie(cookie);
+    }
+
 }
