@@ -2,7 +2,6 @@ package au.com.eventsecretary.client;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.util.StringUtils;
@@ -13,12 +12,13 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static au.com.eventsecretary.Request.*;
+import static au.com.eventsecretary.Request.AUTH_COOKIE;
 
 /**
  * @author sladew
  */
 public class SecurityInterceptor extends HandlerInterceptorAdapter {
+    final static String SANDBOX = "sandbox";
 
     Logger logger = LoggerFactory.getLogger(SecurityInterceptor.class);
 
@@ -44,12 +44,10 @@ public class SecurityInterceptor extends HandlerInterceptorAdapter {
             token = null;
         }
 
-        sessionService.begin(token);
-
         String sandbox = request.getHeader(SANDBOX);
-        if ("true".equals(sandbox)) {
-            MDC.put(SANDBOX_KEY, sandbox);
-        }
+
+        sessionService.begin(token, "true".equals(sandbox));
+
         return true;
     }
 
@@ -69,7 +67,6 @@ public class SecurityInterceptor extends HandlerInterceptorAdapter {
     public void postHandle(
             HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView)
             throws Exception {
-        MDC.remove(SANDBOX_KEY);
         sessionService.end();
     }
 }

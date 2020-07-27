@@ -12,7 +12,7 @@ import org.springframework.util.MultiValueMap;
 
 import java.util.Collections;
 
-import static au.com.eventsecretary.Request.bearer;
+import static au.com.eventsecretary.client.SessionService.bearer;
 
 /**
  * TODO

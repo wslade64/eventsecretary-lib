@@ -17,6 +17,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static au.com.eventsecretary.Request.*;
+import static au.com.eventsecretary.client.SessionService.bearer;
+import static au.com.eventsecretary.client.SessionService.isSandbox;
 
 /**
  * @author sladew
@@ -61,7 +63,7 @@ public abstract class AbstractClient {
             headers.put(HttpHeaders.AUTHORIZATION, Collections.singletonList(bearer));
         }
         if (isSandbox()) {
-            headers.put(SANDBOX, Collections.singletonList("true"));
+            headers.put(SecurityInterceptor.SANDBOX, Collections.singletonList("true"));
         }
         return headers;
     }

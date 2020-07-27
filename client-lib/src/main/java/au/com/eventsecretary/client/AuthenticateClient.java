@@ -12,7 +12,7 @@ import java.util.List;
  * @author Warwick Slade
  */
 public interface AuthenticateClient {
-    Identity findIdentity();
-    Person findPerson();
-    List<Authorisation> findAuthorisations();
+    Identity findIdentity(String token);
+    Person findPerson(String personId);
+    List<Authorisation> findAuthorisations(String personId);
 }

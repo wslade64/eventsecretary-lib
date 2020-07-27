@@ -11,9 +11,11 @@ import org.springframework.util.StringUtils;
 
 import java.util.List;
 
-import static au.com.eventsecretary.Request.*;
-
 public class SessionService {
+    private static final String IDENTITY_KEY = "Identity";
+    private static final String BEARER_KEY = "Bearer";
+    private static final String SANDBOX_KEY = "Sandbox";
+
     private final AuthenticateClient authenticateClient;
     private final ThreadLocal<Session> cache = new ThreadLocal<>();
 
@@ -24,17 +26,10 @@ public class SessionService {
 
         private Session(String token) {
             if (StringUtils.hasLength(token)) {
-                try {
-                    MDC.put(BEARER_KEY, token);
-                    identity = authenticateClient.findIdentity();
-                    if (identity != null) {
-                        if (identity.getPersonId() != null) {
-                            MDC.put(PERSON_KEY, identity.getPersonId());
-                        }
-                        MDC.put(IDENTITY_KEY, identity.getId());
-                    }
-                } catch (Exception e) {
-                    MDC.remove(BEARER_KEY);
+                MDC.put(BEARER_KEY, token);
+                identity = authenticateClient.findIdentity(token);
+                if (identity != null) {
+                    MDC.put(IDENTITY_KEY, identity.getEmail());
                 }
             }
         }
@@ -42,7 +37,6 @@ public class SessionService {
         private void end() {
             MDC.remove(IDENTITY_KEY);
             MDC.remove(BEARER_KEY);
-            MDC.remove(SANDBOX_KEY);
         }
 
         private Identity getIdentity() {
@@ -57,7 +51,7 @@ public class SessionService {
                 return person;
             }
             if (identity.getPersonId() != null) {
-                return person = authenticateClient.findPerson();
+                return person = authenticateClient.findPerson(identity.getPersonId());
             }
             return null;
         }
@@ -68,11 +62,12 @@ public class SessionService {
             }
 
             if (authorisations == null) {
-                authorisations = authenticateClient.findAuthorisations();
+                authorisations = authenticateClient.findAuthorisations(identity.getId());
             }
             return authorisations;
 
         }
+
         private void authorise(String contextName, String targetId, String area, Permissions read) {
             if (identity == null) {
                 throw new UnauthorizedException();
@@ -85,7 +80,7 @@ public class SessionService {
             List<Authorisation> authorisations = getAuthorisations();
 
             if (!authorisations.stream().anyMatch(authorisation -> authorisation.getContextName().equals(contextName)
-                    && authorisation.getTargetId().equals(targetId)
+                    && (targetId == null || authorisation.getTargetId().equals(targetId))
                     && authorisation.getRoles().stream().anyMatch(areaRole
                     -> areaRole.getArea().equals(area) && areaRole.getPermissions().contains(read)))) {
                 throw new UnauthorizedException();
@@ -97,17 +92,22 @@ public class SessionService {
         this.authenticateClient = authenticateClient;
     }
 
-    void begin(String token) {
+    void begin(String token, boolean sandbox) {
         if (cache.get() != null) {
             new UnexpectedSystemException("cache present");
+        }
+        if (sandbox) {
+            MDC.put(SANDBOX_KEY, "sandbox");
         }
         cache.set(new Session(token));
     }
 
     void end() {
+        MDC.remove(SANDBOX_KEY);
         session().end();
         cache.remove();
     }
+
 
     public Identity getIdentity() {
         return session().getIdentity();
@@ -131,5 +131,13 @@ public class SessionService {
             new UnexpectedSystemException("cache not present");
         }
         return session;
+    }
+
+    public static boolean isSandbox() {
+        return MDC.get(SANDBOX_KEY) != null;
+    }
+
+    public static String bearer() {
+        return MDC.get(BEARER_KEY);
     }
 }

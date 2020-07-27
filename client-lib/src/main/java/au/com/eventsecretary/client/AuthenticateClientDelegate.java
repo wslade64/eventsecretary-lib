@@ -24,17 +24,17 @@ public class AuthenticateClientDelegate implements AuthenticateClient {
 
 
     @Override
-    public Identity findIdentity() {
+    public Identity findIdentity(String token) {
         return identityClient.findIdentity();
     }
 
     @Override
-    public Person findPerson() {
+    public Person findPerson(String personId) {
         return peopleClient.findPerson();
     }
 
     @Override
-    public List<Authorisation> findAuthorisations() {
+    public List<Authorisation> findAuthorisations(String identityId) {
         return authorisationClient.getAuthorisations();
     }
 }
