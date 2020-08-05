@@ -10,7 +10,7 @@ import java.util.List;
  * @author Warwick Slade
  */
 public class RowBuilder {
-    final SheetBuilder sheetBuilder;
+    public final SheetBuilder sheetBuilder;
     private final int firstRow;
 
     RowBuilder(SheetBuilder sheetBuilder, int firstRow) {

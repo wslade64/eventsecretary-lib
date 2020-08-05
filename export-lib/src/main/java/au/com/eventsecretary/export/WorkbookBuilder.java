@@ -18,23 +18,47 @@ import java.text.SimpleDateFormat;
  * @author Warwick Slade
  */
 public class WorkbookBuilder {
-    protected XSSFWorkbook workbook;
-    protected CellStyle currencyCellStyle;
-    protected CellStyle numericCellStyle;
-    protected CellStyle dateStyle;
-    protected CellStyle dateTimeStyle;
-    protected CellStyle headerStyle;
+    protected final XSSFWorkbook workbook;
+    public final CellStyle currencyCellStyle;
+    public final CellStyle numericCellStyle;
+    public final CellStyle dateStyle;
+    public final CellStyle dateTimeStyle;
+    public final CellStyle headerStyle;
+    public final SimpleDateFormat sdf;
+    public final SimpleDateFormat sdtf;
+    public final Font boldFont;
 
-    protected SimpleDateFormat sdf;
-    protected SimpleDateFormat sdtf;
-    protected Font boldFont;
-
-    public WorkbookBuilder open() {
+    public WorkbookBuilder() {
         workbook = new XSSFWorkbook();
         POIXMLProperties.CoreProperties coreProperties = workbook.getProperties().getCoreProperties();
         coreProperties.setCreator("Event Secretary Pty Ltd");
-        setupStyles();
-        return this;
+
+        currencyCellStyle = workbook.createCellStyle();
+        currencyCellStyle.setDataFormat((short)7);
+        currencyCellStyle.setAlignment(HorizontalAlignment.RIGHT);
+
+        numericCellStyle = workbook.createCellStyle();
+        numericCellStyle.setDataFormat((short)1);
+        numericCellStyle.setAlignment(HorizontalAlignment.RIGHT);
+
+        dateStyle = workbook.createCellStyle();
+        dateStyle.setAlignment(HorizontalAlignment.LEFT);
+        short df = workbook.createDataFormat().getFormat("dd-mm-yyyy");
+        sdf = new SimpleDateFormat("dd-MM-yyyy");
+        dateStyle.setDataFormat(df);
+
+        dateTimeStyle = workbook.createCellStyle();
+        dateTimeStyle.setAlignment(HorizontalAlignment.LEFT);
+        sdtf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        short dtf = workbook.createDataFormat().getFormat("dd-mm-yyyy hh:mm:ss");
+        dateTimeStyle.setDataFormat(dtf);
+
+        boldFont = workbook.createFont();
+        boldFont.setBold(true);
+
+        headerStyle = workbook.createCellStyle();
+        headerStyle.setAlignment(HorizontalAlignment.CENTER);
+        headerStyle.setFont(boldFont);
     }
 
     public WorkbookBuilder title(String title) {
@@ -64,36 +88,4 @@ public class WorkbookBuilder {
             }
         }
     }
-
-    private void setupStyles()
-    {
-        currencyCellStyle = workbook.createCellStyle();
-        currencyCellStyle.setDataFormat((short)7);
-        currencyCellStyle.setAlignment(HorizontalAlignment.RIGHT);
-
-        numericCellStyle = workbook.createCellStyle();
-        numericCellStyle.setDataFormat((short)1);
-        numericCellStyle.setAlignment(HorizontalAlignment.RIGHT);
-
-        dateStyle = workbook.createCellStyle();
-        dateStyle.setAlignment(HorizontalAlignment.LEFT);
-        short df = workbook.createDataFormat().getFormat("dd-mm-yyyy");
-        sdf = new SimpleDateFormat("dd-MM-yyyy");
-        dateStyle.setDataFormat(df);
-
-        dateTimeStyle = workbook.createCellStyle();
-        dateTimeStyle.setAlignment(HorizontalAlignment.LEFT);
-        sdtf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-        short dtf = workbook.createDataFormat().getFormat("dd-mm-yyyy hh:mm:ss");
-        dateTimeStyle.setDataFormat(dtf);
-
-        boldFont = workbook.createFont();
-        boldFont.setBold(true);
-
-        headerStyle = workbook.createCellStyle();
-        headerStyle.setAlignment(HorizontalAlignment.CENTER);
-        headerStyle.setFont(boldFont);
-
-    }
-
 }

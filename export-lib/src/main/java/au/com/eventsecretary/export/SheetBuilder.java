@@ -1,7 +1,5 @@
 package au.com.eventsecretary.export;
 
-import au.com.auspost.simm.model.Attribute;
-import au.com.auspost.simm.model.ComplexType;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -9,22 +7,22 @@ import org.apache.poi.ss.usermodel.Sheet;
 import java.util.ArrayList;
 import java.util.List;
 
-import static au.com.eventsecretary.simm.ExtensionUtils.alias;
-
 /**
  * TODO
  *
  * @author Warwick Slade
  */
 public class SheetBuilder {
-    final WorkbookBuilder workbookBuilder;
+    public final WorkbookBuilder workbookBuilder;
     final Sheet sheet;
     List<String> exclusions;
     List<Column> columns = new ArrayList<>();
 
-    static class Column {
-        String label;
+    static class Column<T> {
+        List<String> labels;
         List<String> conditionals = new ArrayList<>();
+        CellRenderer<T> cellRenderer;
+        ValueFormatter<T, T> valueFormatter;
     }
 
     SheetBuilder(WorkbookBuilder workbookBuilder, String sheetName) {
@@ -37,6 +35,11 @@ public class SheetBuilder {
         return this;
     }
 
+    public SheetBuilder column$(SheetBuilderFunction sheetBuilderFunction) {
+        sheetBuilderFunction.build(this);
+        return this;
+    }
+
     public ColumnBuilder column() {
         return new ColumnBuilder(this);
     }
@@ -44,23 +47,14 @@ public class SheetBuilder {
     public SheetBuilder column$(String label) {
         ColumnBuilder columnBuilder = new ColumnBuilder(this);
         columnBuilder.label(label);
+        columnBuilder.stringFormat();
         return this;
     }
 
-    public SheetBuilder columns(List<String> columns) {
-        for (String column : columns) {
-            column$(column);
-        }
-        return this;
-    }
-
-    public SheetBuilder columns(ComplexType complexType) {
-        if (complexType == null) {
-            return this;
-        }
-        for (Attribute attribute : complexType.getAttributes()) {
-            column$(alias(attribute));
-        }
+    public SheetBuilder column$(List<String> labels) {
+        ColumnBuilder columnBuilder = new ColumnBuilder(this);
+        columnBuilder.labels(labels);
+        columnBuilder.stringFormat();
         return this;
     }
 
@@ -75,9 +69,11 @@ public class SheetBuilder {
             if (exclude(column.conditionals)) {
                 continue;
             }
-            Cell cell = row.createCell(col++);
-            cell.setCellValue(column.label);
-            cell.setCellStyle(workbookBuilder.headerStyle);
+            for (Object label : column.labels) {
+                Cell cell = row.createCell(col++);
+                cell.setCellValue((String)label);
+                cell.setCellStyle(workbookBuilder.headerStyle);
+            }
         }
     }
 
@@ -87,7 +83,12 @@ public class SheetBuilder {
     }
 
     public SheetBuilder autoSize() {
-        for (int i = 0; i < columns.size(); i++) {
+        int columnCount = 0;
+        for (Column column : columns) {
+            columnCount += column.labels.size();
+        }
+
+        for (int i = 0; i < columnCount; i++) {
             sheet.autoSizeColumn(i);
         }
         return this;
@@ -103,6 +104,9 @@ public class SheetBuilder {
     }
 
     boolean exclude(List<String> conditionals) {
+        if (exclusions == null) {
+            return false;
+        }
         for (String conditional : conditionals) {
             if (exclusions.contains(conditional)) {
                 return true;
@@ -112,6 +116,9 @@ public class SheetBuilder {
     }
 
     boolean test(String[] conditionals) {
+        if (exclusions == null) {
+            return true;
+        }
         for (String conditional : conditionals) {
             if (exclusions.contains(conditional)) {
                 return false;
@@ -119,5 +126,4 @@ public class SheetBuilder {
         }
         return true;
     }
-
 }

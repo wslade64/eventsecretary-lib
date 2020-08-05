@@ -1,10 +1,9 @@
 package au.com.eventsecretary.export;
 
+import au.com.eventsecretary.UnexpectedSystemException;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -13,10 +12,11 @@ import java.util.List;
  * @author Warwick Slade
  */
 public class CellBuilder {
-    final RowBuilder rowBuilder;
+    public final RowBuilder rowBuilder;
 
     private Row row;
-    private int col;
+    private int sheetColumn;
+    private int attributeColumn;
 
     CellBuilder(RowBuilder rowBuilder) {
         this.rowBuilder = rowBuilder;
@@ -24,145 +24,54 @@ public class CellBuilder {
 
     CellBuilder row(Row row) {
         this.row = row;
-        this.col = 0;
+        this.sheetColumn = 0;
+        this.attributeColumn = 0;
         return this;
     }
 
-    public CellBuilder _boolean(String val, String... conditionals)
-    {
-        if (!test(conditionals)) {
-            return this;
-        }
-
-        val = val == null || val.equals("false") ? "No" : "Yes";
-
-        Cell cell = row.createCell(col++);
-        cell.setCellType(CellType.STRING);
-        cell.setCellValue(val);
-
-        return this;
-    }
-
-    public CellBuilder string(String val, String... conditionals)
-    {
-        if (!test(conditionals)) {
-            return this;
-        }
-
-        if (val == null) {
-            val = "";
-        }
-
-        Cell cell = row.createCell(col++);
-        cell.setCellType(CellType.STRING);
-        cell.setCellValue(val);
-
-        return this;
-    }
-
-    public CellBuilder strings(List<String> vals, String... conditionals)
-    {
-        if (!test(conditionals)) {
-            return this;
-        }
-        for (String val : vals) {
-            Cell cell = row.createCell(col++);
-            cell.setCellType(CellType.STRING);
-            cell.setCellValue(val);
+    public <T> CellBuilder column(T value) {
+        SheetBuilder.Column<T> column = attributeColumn();
+        if (column != null) {
+            Cell cell = row.createCell(sheetColumn++);
+            if (column.valueFormatter != null) {
+                value = column.valueFormatter.format(value);
+            }
+            column.cellRenderer.render(cell, value, this);
         }
         return this;
     }
 
-    public CellBuilder date(Date val, String... conditionals)
-    {
-        if (!test(conditionals)) {
-            return this;
-        }
-        Cell cell = row.createCell(col++);
-        cell.setCellType(CellType.NUMERIC);
-        if (val != null)
-        {
-            cell.setCellValue(val);
-        }
-        else
-        {
-            cell.setCellValue("");
-        }
+    public <T> CellBuilder column(List<T> values) {
+        SheetBuilder.Column<T> column = attributeColumn();
 
-        cell.setCellStyle(rowBuilder.sheetBuilder.workbookBuilder.dateStyle);
+        if (column != null) {
+            values.forEach(value -> {
+                Cell cell = row.createCell(sheetColumn++);
+                column.cellRenderer.render(cell, value, this);
+            });
+        }
         return this;
     }
 
-    public CellBuilder dateTime(Date val, String... conditionals) {
-        if (!test(conditionals)) {
-            return this;
-        }
-        Cell cell = row.createCell(col++);
-        cell.setCellType(CellType.NUMERIC);
-        if (val != null)
-        {
-            cell.setCellValue(val);
-        }
-        else
-        {
-            cell.setCellValue("");
-        }
-
-        cell.setCellStyle(rowBuilder.sheetBuilder.workbookBuilder.dateTimeStyle);
+    public <T> CellBuilder columns(List<T> values) {
+        values.forEach(value -> {
+            SheetBuilder.Column<T> column = attributeColumn();
+            if (column != null) {
+                Cell cell = row.createCell(sheetColumn++);
+                column.cellRenderer.render(cell, value, this);
+            }
+        });
         return this;
     }
 
-    public CellBuilder currency(int val, String... conditionals) {
-        if (!test(conditionals)) {
-            return this;
+    private <T> SheetBuilder.Column<T> attributeColumn() {
+        if (attributeColumn >= rowBuilder.sheetBuilder.columns.size()) {
+            throw new UnexpectedSystemException("sheet:" + rowBuilder.sheetBuilder.sheet.getSheetName() + ":toManyDataColumns");
         }
-        String sval = convertCurrency(val);
-
-        Cell cell = row.createCell(col++);
-        cell.setCellType(CellType.NUMERIC);
-        cell.setCellValue(Double.parseDouble(sval));
-        cell.setCellStyle(rowBuilder.sheetBuilder.workbookBuilder.currencyCellStyle);
-        return this;
-    }
-
-    public CellBuilder numeric(Double val) {
-        Cell cell = row.createCell(col++);
-        cell.setCellType(CellType.NUMERIC);
-        if (val != null)
-        {
-            cell.setCellValue(val);
+        SheetBuilder.Column<T> column = rowBuilder.sheetBuilder.columns.get(attributeColumn++);
+        if (rowBuilder.sheetBuilder.exclude(column.conditionals)) {
+            return null;
         }
-        cell.setCellStyle(rowBuilder.sheetBuilder.workbookBuilder.numericCellStyle);
-        return this;
+        return column;
     }
-
-    public CellBuilder integer(Integer val, String... conditionals) {
-        if (!test(conditionals)) {
-            return this;
-        }
-        Cell cell = row.createCell(col++);
-        cell.setCellType(CellType.NUMERIC);
-        if (val != null)
-        {
-            cell.setCellValue(val);
-        }
-        cell.setCellStyle(rowBuilder.sheetBuilder.workbookBuilder.numericCellStyle);
-        return this;
-    }
-
-    private boolean test(String... conditionals) {
-        return rowBuilder.sheetBuilder.test(conditionals);
-    }
-
-
-    public static String convertCurrency(int val)
-    {
-        String sval = String.format("%1$d.%2$02d", val / 100, Math.abs(val % 100));
-        if (val > -100 && val < 0)
-        {
-            sval = "-" + sval;
-        }
-        return sval;
-    }
-
 }
