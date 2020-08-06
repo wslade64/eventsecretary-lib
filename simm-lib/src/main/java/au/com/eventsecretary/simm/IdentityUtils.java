@@ -15,11 +15,18 @@ public interface IdentityUtils {
             return phoneNumber;
         }
         phoneNumber = phoneNumber.trim();
-        phoneNumber = phoneNumber.replaceAll("/(/)/ -", "");
+        phoneNumber = phoneNumber.replaceAll("[\\s()-]+", "");
         if (phoneNumber.startsWith("+61")) {
             phoneNumber = "0" + phoneNumber.substring("+61".length());
         }
         return phoneNumber;
+    }
+
+    static String cleanEmailAddress(String emailAddress) {
+        if (emailAddress == null) {
+            return emailAddress;
+        }
+        return emailAddress.trim().toLowerCase();
     }
 
     static <T extends Identifiable> T sanitise(T identifiable, Identity requestIdentity) {
