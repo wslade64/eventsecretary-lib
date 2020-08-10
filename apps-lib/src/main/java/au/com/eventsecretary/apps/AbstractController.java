@@ -2,6 +2,7 @@ package au.com.eventsecretary.apps;
 
 import au.com.eventsecretary.client.SessionService;
 import au.com.eventsecretary.client.UnauthorizedException;
+import au.com.eventsecretary.user.identity.Authorisation;
 import au.com.eventsecretary.user.identity.Identity;
 import au.com.eventsecretary.user.identity.Permissions;
 import au.com.eventsecretary.user.identity.Role;
@@ -120,6 +121,11 @@ public abstract class AbstractController
             }
         }
         return false;
+    }
+
+    public static boolean hasRole(Authorisation authorisation, String authorisationArea, Permissions permission) {
+        return authorisation.getRoles().stream().filter(areaRole -> areaRole.getArea().equals(authorisationArea)
+                && areaRole.getPermissions().contains(permission)).findFirst().isPresent();
     }
 
     protected void addCookie(HttpServletRequest request, HttpServletResponse httpResponse, String token) {

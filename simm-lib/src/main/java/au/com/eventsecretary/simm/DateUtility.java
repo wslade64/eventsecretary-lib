@@ -324,5 +324,17 @@ public interface DateUtility {
         return ints[2] + " " + longMonths[ints[1] - 1] + " " + ints[0];
     }
 
+    static Timestamp timestamp(LocalDateTime localDateTime) {
+        Timestamp timestamp = new TimestampImpl();
+        timestamp.setDate(date(localDateTime.toLocalDate()));
+        timestamp.setTime(time(localDateTime.toLocalTime()));
+        return timestamp;
+    }
 
+    static Timestamp endOfDay(int date) {
+        Timestamp timestamp = new TimestampImpl();
+        timestamp.setDate(date);
+        timestamp.setTime(235959);
+        return timestamp;
+    }
 }
