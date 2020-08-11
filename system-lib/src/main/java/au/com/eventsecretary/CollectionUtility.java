@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * TODO
@@ -13,6 +15,15 @@ import java.util.function.Function;
  * @author Warwick Slade
  */
 public interface CollectionUtility {
+    static <T> T getSafe(Supplier<T> get, Consumer<T> set, Supplier<T> supplier) {
+        T t = get.get();
+        if (t == null) {
+            t = supplier.get();
+            set.accept(t);
+        }
+        return t;
+    }
+
     static <T> void addArrayToList(T target, Function<T, List<String>> function, String[] items)  {
         if (items == null || items.length == 0) {
             return;

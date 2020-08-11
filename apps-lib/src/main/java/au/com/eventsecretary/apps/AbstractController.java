@@ -2,6 +2,7 @@ package au.com.eventsecretary.apps;
 
 import au.com.eventsecretary.client.SessionService;
 import au.com.eventsecretary.client.UnauthorizedException;
+import au.com.eventsecretary.people.Person;
 import au.com.eventsecretary.user.identity.Authorisation;
 import au.com.eventsecretary.user.identity.Identity;
 import au.com.eventsecretary.user.identity.Permissions;
@@ -73,6 +74,14 @@ public abstract class AbstractController
         return sessionService.getIdentity();
     }
 
+    protected Person person() {
+        Person person = sessionService.getPerson();
+        if (person == null) {
+            throw new UnauthorizedException();
+        }
+        return person;
+    }
+
     @Deprecated
     protected Identity system(Identity identity) {
         if (identity == null) {
@@ -91,6 +100,14 @@ public abstract class AbstractController
         if (identity == null) {
             throw new UnauthorizedException();
         }
+    }
+
+    protected boolean isSystem() {
+        Identity identity = sessionService.getIdentity();
+        if (identity == null) {
+            return false;
+        }
+        return identity.getRole() == Role.SYSTEM;
     }
 
     @Deprecated

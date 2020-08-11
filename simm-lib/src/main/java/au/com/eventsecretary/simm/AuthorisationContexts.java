@@ -9,5 +9,6 @@ public enum AuthorisationContexts {
    association,
    organisation,
    companion,
-   competitor
+   competitor,
+   person
 }
