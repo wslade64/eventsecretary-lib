@@ -5,9 +5,12 @@ import au.com.eventsecretary.people.Person;
 import au.com.eventsecretary.user.identity.Identity;
 import au.com.eventsecretary.user.identity.Role;
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.WordUtils;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static au.com.eventsecretary.simm.IdentifiableUtils.cloneIdentifiable;
@@ -37,6 +40,59 @@ public interface IdentityUtils {
             return name;
         }
         return WordUtils.capitalizeFully(name.trim());
+    }
+
+    static String[] splitName(String name) {
+        if (StringUtils.isEmpty(name)) {
+            return new String[] {};
+        }
+        name = name.trim();
+        int index = name.indexOf(" ");
+        if (index == -1) {
+            return new String[] {
+                    name
+            };
+        }
+        String part1 = name.substring(0, index);
+        String part2 = name.substring(index + 1).trim();
+        if (part2.length() == 1) {
+            return new String[] {
+                    part1
+            };
+        }
+        return new String[] {
+                part1,
+                part2
+        };
+
+    }
+
+    static Map<String, String> stringsToMap(String string) {
+        Map<String, String> map = new HashMap<>();
+        if (StringUtils.isBlank(string)) {
+            return map;
+        }
+        String[] list = string.split(",");
+        for (String pairString : list) {
+            String[] pair = pairString.split("=");
+            map.put(pair[0], pair.length == 2 ? pair[1] : null);
+        }
+        return map;
+    }
+
+    static Map<String, String> stringsToMapReverse(String string) {
+        Map<String, String> map = new HashMap<>();
+        if (StringUtils.isBlank(string)) {
+            return map;
+        }
+        String[] list = string.split(",");
+        for (String pairString : list) {
+            String[] pair = pairString.split("=");
+            if (pair.length == 2) {
+                map.put(pair[1], pair[0]);
+            }
+        }
+        return map;
     }
 
     static <T extends Identifiable> T sanitise(T identifiable, Identity requestIdentity) {

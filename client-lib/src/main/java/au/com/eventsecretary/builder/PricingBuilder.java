@@ -2,6 +2,7 @@ package au.com.eventsecretary.builder;
 
 import au.com.eventsecretary.accounting.pricing.AmountPrice;
 import au.com.eventsecretary.accounting.pricing.AmountPriceImpl;
+import au.com.eventsecretary.accounting.pricing.Comparator;
 import au.com.eventsecretary.accounting.pricing.ConditionalPricing;
 import au.com.eventsecretary.accounting.pricing.ConditionalPricingImpl;
 import au.com.eventsecretary.accounting.pricing.FixedPrice;
@@ -11,6 +12,8 @@ import au.com.eventsecretary.accounting.pricing.ListPriceImpl;
 import au.com.eventsecretary.accounting.pricing.Price;
 import au.com.eventsecretary.accounting.pricing.PricingSchedule;
 import au.com.eventsecretary.accounting.pricing.PricingScheduleImpl;
+import au.com.eventsecretary.accounting.pricing.Selector;
+import au.com.eventsecretary.accounting.pricing.SelectorImpl;
 import au.com.eventsecretary.accounting.pricing.UnitPrice;
 import au.com.eventsecretary.accounting.pricing.UnitPriceImpl;
 import au.com.eventsecretary.accounting.pricing.ValuePrice;
@@ -44,6 +47,16 @@ public class PricingBuilder {
     static public ListPrice listPrice() {
         ListPrice listPrice = new ListPriceImpl();
         listPrice.setId(id());
+        return listPrice;
+    }
+
+    static public ListPrice listPrice(String[] values, BigDecimal[] amounts) {
+        ListPrice listPrice = listPrice();
+
+        for (int i = 0; i < values.length; i++) {
+            ValuePrice valuePrice = valuePrice(values[i], amounts[i]);
+            listPrice.getItem().add(valuePrice);
+        }
         return listPrice;
     }
 
@@ -93,14 +106,32 @@ public class PricingBuilder {
 
     static public PricingSchedule listPricing(String target, String[] values, BigDecimal ...amounts) {
         PricingSchedule pricingSchedule = pricingSchedule(target);
-
-        ListPrice listPrice = listPrice();
-
-        for (int i = 0; i < values.length; i++) {
-            ValuePrice valuePrice = valuePrice(values[i], amounts[i]);
-            listPrice.getItem().add(valuePrice);
-        }
+        ListPrice listPrice = listPrice(values, amounts);
         conditionalPricing(pricingSchedule, listPrice);
         return pricingSchedule;
     }
+
+    static public Selector dateRangeSelector(ConditionalPricing conditionalPricing, int from, int to) {
+        Selector selector = new SelectorImpl();
+        selector.setSelector("dateRange");
+        selector.setValue(String.format("%d-%d", from, to));
+        conditionalPricing.getSelector().add(selector);
+        return selector;
+    }
+
+    static public Selector ageSelector(ConditionalPricing conditionalPricing, Comparator comparator, int value) {
+        Selector selector = new SelectorImpl();
+        selector.setSelector("age");
+        selector.setValue(String.format("%s:%d", comparator, value));
+        conditionalPricing.getSelector().add(selector);
+        return selector;
+    }
+
+    static public Selector optionalSelector(ConditionalPricing conditionalPricing) {
+        Selector selector = new SelectorImpl();
+        selector.setSelector("optional");
+        conditionalPricing.getSelector().add(selector);
+        return selector;
+    }
+
 }
