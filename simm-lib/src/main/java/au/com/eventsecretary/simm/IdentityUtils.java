@@ -1,6 +1,7 @@
 package au.com.eventsecretary.simm;
 
 import au.com.eventsecretary.common.Identifiable;
+import au.com.eventsecretary.people.Address;
 import au.com.eventsecretary.people.Person;
 import au.com.eventsecretary.user.identity.Identity;
 import au.com.eventsecretary.user.identity.Role;
@@ -42,6 +43,19 @@ public interface IdentityUtils {
         return WordUtils.capitalizeFully(name.trim());
     }
 
+    static String join(Address address) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(address.getAddressLineOne());
+        stringBuilder.append(",");
+        stringBuilder.append(address.getAddressLineTwo());
+        stringBuilder.append(",");
+        stringBuilder.append(address.getSuburb());
+        stringBuilder.append(",");
+        stringBuilder.append(address.getState());
+        stringBuilder.append(",");
+        stringBuilder.append(address.getPostCode());
+        return stringBuilder.toString();
+    }
     static String[] splitName(String name) {
         if (StringUtils.isEmpty(name)) {
             return new String[] {};

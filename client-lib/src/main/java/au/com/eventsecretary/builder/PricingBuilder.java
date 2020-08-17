@@ -9,6 +9,7 @@ import au.com.eventsecretary.accounting.pricing.FixedPrice;
 import au.com.eventsecretary.accounting.pricing.FixedPriceImpl;
 import au.com.eventsecretary.accounting.pricing.ListPrice;
 import au.com.eventsecretary.accounting.pricing.ListPriceImpl;
+import au.com.eventsecretary.accounting.pricing.Operator;
 import au.com.eventsecretary.accounting.pricing.Price;
 import au.com.eventsecretary.accounting.pricing.PricingSchedule;
 import au.com.eventsecretary.accounting.pricing.PricingScheduleImpl;
@@ -113,16 +114,26 @@ public class PricingBuilder {
 
     static public Selector dateRangeSelector(ConditionalPricing conditionalPricing, int from, int to) {
         Selector selector = new SelectorImpl();
-        selector.setSelector("dateRange");
-        selector.setValue(String.format("%d-%d", from, to));
+        selector.setSelector("date");
+        selector.setValue(Integer.toString(from));
+        selector.setComparator(Comparator.gte);
         conditionalPricing.getSelector().add(selector);
+
+        selector = new SelectorImpl();
+        selector.setSelector("date");
+        selector.setValue(Integer.toString(to));
+        selector.setComparator(Comparator.lte);
+        conditionalPricing.getSelector().add(selector);
+
+        conditionalPricing.setOperator(Operator.and);
         return selector;
     }
 
     static public Selector ageSelector(ConditionalPricing conditionalPricing, Comparator comparator, int value) {
         Selector selector = new SelectorImpl();
         selector.setSelector("age");
-        selector.setValue(String.format("%s:%d", comparator, value));
+        selector.setValue(Integer.toString(value));
+        selector.setComparator(comparator);
         conditionalPricing.getSelector().add(selector);
         return selector;
     }

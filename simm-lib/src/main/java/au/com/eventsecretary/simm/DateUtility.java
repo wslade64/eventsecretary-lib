@@ -264,6 +264,12 @@ public interface DateUtility {
         return splitToDate(localDate.getYear(), localDate.getMonthOfYear(), localDate.getDayOfMonth());
     }
 
+    static int addYear(int date, int years) {
+        int[] ints = dateToSplit(date);
+        ints[0] += years;
+        return splitToDate(ints[0], ints[1], ints[2]);
+    }
+
     static String dayOfWeek(int date) {
         return dateToLocal(date).dayOfWeek().getAsText();
     }
