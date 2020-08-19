@@ -95,6 +95,24 @@ public class PeopleClient extends AbstractClient {
         }
     }
 
+    public PersonIdentity findPersonIdentityByIdentityId(String identityId) {
+        try {
+            HttpEntity<Void> httpEntity = createSystemEntity();
+
+            ResponseEntity<PersonIdentity> exchange = restTemplate.exchange(baseUrl + URI + "/personIdentity?identityId=" + identityId, HttpMethod.GET, httpEntity, PersonIdentity.class);
+            switch (exchange.getStatusCode()) {
+                case OK:
+                    return exchange.getBody();
+                default:
+                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+            }
+        }
+        catch (RestClientException e) {
+            logger.error("get:could not connect to people service" + e.getMessage());
+            throw new UnexpectedSystemException(e);
+        }
+    }
+
     public void reset() {
         try {
             HttpEntity<PersonIdentity> httpEntity = createSystemEntity();

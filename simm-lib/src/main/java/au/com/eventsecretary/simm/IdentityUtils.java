@@ -9,9 +9,11 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.WordUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static au.com.eventsecretary.simm.IdentifiableUtils.cloneIdentifiable;
@@ -37,7 +39,7 @@ public interface IdentityUtils {
     }
 
     static String cleanName(String name) {
-        if (name == null) {
+        if (name == null || name.indexOf("'") != -1) {
             return name;
         }
         return WordUtils.capitalizeFully(name.trim());
@@ -107,6 +109,19 @@ public interface IdentityUtils {
             }
         }
         return map;
+    }
+
+    static <T> List<T> distinct(List<T> source, Function<T, String> supplier) {
+        List<String> keys = new ArrayList<>();
+        List<T> copy = new ArrayList<>();
+        source.forEach(contact -> {
+            String key = supplier.apply(contact);
+            if (!keys.contains(key)) {
+                copy.add(contact);
+                keys.add(key);
+            }
+        });
+        return copy;
     }
 
     static <T extends Identifiable> T sanitise(T identifiable, Identity requestIdentity) {

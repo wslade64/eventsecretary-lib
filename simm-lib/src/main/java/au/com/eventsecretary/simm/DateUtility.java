@@ -1,5 +1,7 @@
 package au.com.eventsecretary.simm;
 
+import au.com.eventsecretary.common.Period;
+import au.com.eventsecretary.common.PeriodImpl;
 import au.com.eventsecretary.common.Timestamp;
 import au.com.eventsecretary.common.TimestampImpl;
 import org.joda.time.*;
@@ -164,6 +166,20 @@ public interface DateUtility {
         clone.setDate(date);
         clone.setTime(time);
         return clone;
+    }
+
+    static Period createPeriod(int dateFrom, int dateTo) {
+        Period period = new PeriodImpl();
+        period.setStart(createTimestamp(dateFrom, 0));
+        period.setEnd(createTimestamp(dateTo, 0));
+        return period;
+    }
+
+    static Period createPeriod(Timestamp from, Timestamp to) {
+        Period period = new PeriodImpl();
+        period.setStart(from);
+        period.setEnd(to);
+        return period;
     }
 
     static void addMinutes(Timestamp current, int minutes) {

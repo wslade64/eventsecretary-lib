@@ -5,6 +5,7 @@ import au.com.eventsecretary.equestrian.event.EventImpl;
 import au.com.eventsecretary.equestrian.organisation.HorseImpl;
 import au.com.eventsecretary.equestrian.organisation.RiderImpl;
 import au.com.eventsecretary.user.access.AccessCodeImpl;
+import au.com.eventsecretary.user.identity.ActivationImpl;
 import au.com.eventsecretary.user.identity.AuthorisationImpl;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -81,6 +82,11 @@ public class ClientConfiguration {
     @Bean
     public ResourceClient catalogueClient(@Value("${userUrl}") String baseUrl, RestTemplateBuilder restTemplateBuilder) {
         return new ResourceClient(baseUrl + "/payment/catalogue", restTemplateBuilder, CatalogueImpl.class);
+    }
+
+    @Bean
+    public ResourceClient activationClient(@Value("${userUrl}") String baseUrl, RestTemplateBuilder restTemplateBuilder) {
+        return new ResourceClient(baseUrl + "/user/v2/activate", restTemplateBuilder, ActivationImpl.class);
     }
 
     @Bean

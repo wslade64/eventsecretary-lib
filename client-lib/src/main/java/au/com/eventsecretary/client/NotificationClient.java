@@ -1,5 +1,6 @@
 package au.com.eventsecretary.client;
 
+import au.com.eventsecretary.UnexpectedSystemException;
 import net.sf.javaprinciples.notification.Notification;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.io.Resource;
@@ -7,10 +8,12 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import java.util.Collections;
+import java.util.List;
 
 import static au.com.eventsecretary.client.SessionService.bearer;
 
@@ -46,4 +49,20 @@ public class NotificationClient extends AbstractClient {
         }
     }
 
+    public String uploadDocument(Resource resource) {
+        HttpHeaders requestHeaders = headers(bearer());
+        requestHeaders.setContentType(MediaType.MULTIPART_FORM_DATA);
+
+        MultiValueMap<String, Object> parts = new LinkedMultiValueMap<>();
+        parts.add("document", resource);
+        HttpEntity requestEntity = new HttpEntity(parts, requestHeaders);
+        ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI + "/v1/document", HttpMethod.POST, requestEntity, Void.class);
+        switch (exchange.getStatusCode()) {
+            case CREATED:
+                List<String> locationHeader = exchange.getHeaders().get(HttpHeaders.LOCATION);
+                return locationHeader.get(0);
+            default:
+                throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+        }
+    }
 }

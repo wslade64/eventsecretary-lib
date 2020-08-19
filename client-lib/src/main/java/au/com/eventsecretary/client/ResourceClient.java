@@ -2,7 +2,7 @@ package au.com.eventsecretary.client;
 
 import au.com.eventsecretary.ResourceExistsException;
 import au.com.eventsecretary.UnexpectedSystemException;
-import au.com.eventsecretary.common.Identifiable;
+import au.com.eventsecretary.common.Entity;
 import org.apache.commons.lang3.reflect.TypeUtils;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * @author sladew
  */
-public class ResourceClient<T extends Identifiable> extends AbstractClient {
+public class ResourceClient<T extends Entity> extends AbstractClient {
     Class<T> targetClass;
     ParameterizedTypeReference<List<T>> parameterizedTypeReference;
 
@@ -41,7 +41,7 @@ public class ResourceClient<T extends Identifiable> extends AbstractClient {
 
     public List<T> getResourceByQuery(String... keyValueList) {
         try {
-            HttpEntity<Void> httpEntity = createEntity();
+            HttpEntity<Void> httpEntity = createSystemEntity();
 
             ResponseEntity<List<T>> exchange = restTemplate.exchange(baseUrl + queryParams(keyValueList), HttpMethod.GET, httpEntity, parameterizedTypeReference, params(keyValueList));
             if (exchange.getStatusCode() == HttpStatus.OK) {
@@ -57,7 +57,7 @@ public class ResourceClient<T extends Identifiable> extends AbstractClient {
 
     public T getResourceById(String id) {
         try {
-            HttpEntity<Void> httpEntity = createEntity();
+            HttpEntity<Void> httpEntity = createSystemEntity();
 
             ResponseEntity<T> exchange = restTemplate.exchange(baseUrl + "/" + id, HttpMethod.GET, httpEntity, targetClass);
             if (exchange.getStatusCode() == HttpStatus.OK) {
@@ -73,7 +73,7 @@ public class ResourceClient<T extends Identifiable> extends AbstractClient {
 
     public List<T> getResources() {
         try {
-            HttpEntity<Void> httpEntity = createEntity();
+            HttpEntity<Void> httpEntity = createSystemEntity();
 
             ResponseEntity<List<T>> exchange = restTemplate.exchange(baseUrl, HttpMethod.GET, httpEntity, parameterizedTypeReference);
             if (exchange.getStatusCode() == HttpStatus.OK) {
@@ -89,9 +89,7 @@ public class ResourceClient<T extends Identifiable> extends AbstractClient {
 
     public T createResource(T resource) {
         try {
-            logger.info("create:" + resource.getName());
-
-            HttpEntity<T> httpEntity = createEntityBody(resource);
+            HttpEntity<T> httpEntity = createSystemEntityBody(resource);
 
             ResponseEntity<T> exchange = restTemplate.exchange(baseUrl, HttpMethod.POST, httpEntity, targetClass);
             switch (exchange.getStatusCode()) {
@@ -111,9 +109,7 @@ public class ResourceClient<T extends Identifiable> extends AbstractClient {
 
     public T updateResource(T resource) {
         try {
-            logger.info("update:" + resource.getName());
-
-            HttpEntity<T> httpEntity = createEntityBody(resource);
+            HttpEntity<T> httpEntity = createSystemEntityBody(resource);
 
             ResponseEntity<T> exchange = restTemplate.exchange(baseUrl, HttpMethod.PUT, httpEntity, targetClass);
             switch (exchange.getStatusCode()) {
@@ -133,7 +129,7 @@ public class ResourceClient<T extends Identifiable> extends AbstractClient {
         try {
             logger.info("delete:" + resourceId);
 
-            HttpEntity<T> httpEntity = createEntity();
+            HttpEntity<T> httpEntity = createSystemEntity();
             ResponseEntity<T> exchange = restTemplate.exchange(baseUrl + "/" + resourceId, HttpMethod.DELETE, httpEntity, targetClass);
             switch (exchange.getStatusCode()) {
                 case OK:
