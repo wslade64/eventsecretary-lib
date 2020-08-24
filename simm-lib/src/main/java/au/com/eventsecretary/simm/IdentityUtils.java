@@ -141,14 +141,14 @@ public interface IdentityUtils {
     static int comparePersonName(Person left, Person right) {
         String leftLastName = left != null ? left.getLastName() : null;
         String rightLastName = right != null ? right.getLastName() : null;
-        int c = ObjectUtils.compare(leftLastName, rightLastName);
+        int c = StringUtils.compareIgnoreCase(leftLastName, rightLastName);
         if (c != 0) {
             return c;
         }
 
         String leftFirstName = left != null ? left.getFirstName() : null;
         String rightFirstName = right != null ? right.getFirstName() : null;
-        return ObjectUtils.compare(leftFirstName, rightFirstName);
+        return StringUtils.compareIgnoreCase(leftFirstName, rightFirstName);
     }
 
     static int comparePersonPhoneNumber(Person left, Person right) {
