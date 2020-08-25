@@ -1,5 +1,6 @@
 package au.com.eventsecretary.client;
 
+import au.com.eventsecretary.ResourceExistsException;
 import au.com.eventsecretary.UnexpectedSystemException;
 import au.com.eventsecretary.people.Person;
 import au.com.eventsecretary.people.presentation.PersonIdentity;
@@ -140,6 +141,8 @@ public class PeopleClient extends AbstractClient {
                 case CREATED:
                     // List<String> locationHeader = exchange.getHeaders().get(HttpHeaders.LOCATION);
                     return exchange.getBody();
+                case CONFLICT:
+                    throw new ResourceExistsException("email");
                 default:
                     throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
             }
@@ -158,6 +161,8 @@ public class PeopleClient extends AbstractClient {
             switch (exchange.getStatusCode()) {
                 case OK:
                     return exchange.getBody();
+                case CONFLICT:
+                    throw new ResourceExistsException("email");
                 default:
                     throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
             }
@@ -177,6 +182,8 @@ public class PeopleClient extends AbstractClient {
                 case CREATED:
                     List<String> locationHeader = exchange.getHeaders().get(HttpHeaders.LOCATION);
                     return locationHeader.get(0);
+                case CONFLICT:
+                    throw new ResourceExistsException("email");
                 default:
                     throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
             }
@@ -195,6 +202,8 @@ public class PeopleClient extends AbstractClient {
             switch (exchange.getStatusCode()) {
                 case OK:
                     return;
+                case CONFLICT:
+                    throw new ResourceExistsException("email");
                 default:
                     throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
             }

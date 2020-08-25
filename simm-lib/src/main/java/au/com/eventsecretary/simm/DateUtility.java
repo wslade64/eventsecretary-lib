@@ -359,4 +359,21 @@ public interface DateUtility {
         timestamp.setTime(235959);
         return timestamp;
     }
+
+    static int age(int dateOfBirth, int reference){
+        if (dateOfBirth > reference) {
+            return 0;
+        }
+        int[] dobSplit = dateToSplit(dateOfBirth);
+        int[] refSplit = dateToSplit(reference);
+        int years = refSplit[0] - dobSplit[0];
+        if (refSplit[2] < dobSplit[2]) {
+            refSplit[1]--;
+        }
+        if (refSplit[1] < dobSplit[1]) {
+            years--;
+        }
+        return years;
+    }
+
 }

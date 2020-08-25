@@ -160,6 +160,6 @@ public interface IdentityUtils {
     static int comparePersonEmailAddress(Person left, Person right) {
         String leftEmailAddress = left != null && left.getContactDetails() != null ? left.getContactDetails().getEmailAddress() : null;
         String rightEmailAddress = right != null && right.getContactDetails() != null ? right.getContactDetails().getEmailAddress() : null;
-        return ObjectUtils.compare(leftEmailAddress, rightEmailAddress);
+        return StringUtils.compareIgnoreCase(leftEmailAddress, rightEmailAddress);
     }
 }
