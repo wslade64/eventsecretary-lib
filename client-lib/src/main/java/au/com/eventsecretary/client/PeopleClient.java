@@ -2,6 +2,7 @@ package au.com.eventsecretary.client;
 
 import au.com.eventsecretary.ResourceExistsException;
 import au.com.eventsecretary.UnexpectedSystemException;
+import au.com.eventsecretary.people.Address;
 import au.com.eventsecretary.people.Person;
 import au.com.eventsecretary.people.presentation.PersonIdentity;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -9,6 +10,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestClientException;
 
 import java.util.Arrays;
@@ -19,6 +21,31 @@ import java.util.List;
  */
 public class PeopleClient extends AbstractClient {
     private static final String URI = "/user/v1/people";
+
+    public static boolean hasAddress(Person person) {
+        Address mailingAddress = person.getMailingAddress();
+        return mailingAddress != null && StringUtils.hasLength(mailingAddress.getPostCode());
+    }
+
+    public static void assignName(Person person) {
+        if (person == null) {
+            return;
+        }
+        person.setName(personName(person));
+    }
+
+    public static String personName(Person person) {
+        if (person == null) {
+            return null;
+        }
+        if (person.getFirstName() == null) {
+            return person.getLastName();
+        }
+        if (person.getLastName() == null) {
+            return person.getFirstName();
+        }
+        return String.format("%s %s", person.getFirstName(), person.getLastName());
+    }
 
     public PeopleClient(String baseUrl, RestTemplateBuilder restTemplateBuilder) {
         super(baseUrl, restTemplateBuilder);

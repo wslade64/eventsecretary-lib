@@ -8,6 +8,7 @@ import au.com.eventsecretary.user.access.AccessCodeImpl;
 import au.com.eventsecretary.user.identity.ActivationImpl;
 import au.com.eventsecretary.user.identity.AuthorisationImpl;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -107,5 +108,11 @@ public class ClientConfiguration {
     @Bean
     public AuthenticateClient authenticateClient(IdentityClient identityClient, AuthorisationClient authorisationClient, PeopleClient peopleClient) {
         return new AuthenticateClientDelegate(identityClient, authorisationClient, peopleClient);
+    }
+
+    @Bean
+    @ConditionalOnProperty(prefix = "hrcav.validation", value = "systemToken")
+    public ValidationClient hrcavValidationClient(@Value("${hrcav.validation.systemToken}") String systemToken, @Value("${hrcav.validation.url}") String baseUrl, RestTemplateBuilder restTemplateBuilder) {
+        return new ValidationClient(systemToken, baseUrl, restTemplateBuilder);
     }
 }
