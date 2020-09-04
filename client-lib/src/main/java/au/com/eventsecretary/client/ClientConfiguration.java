@@ -111,6 +111,11 @@ public class ClientConfiguration {
     }
 
     @Bean
+    public TagsClient tagsClient(@Value("${userUrl}") String baseUrl, RestTemplateBuilder restTemplateBuilder) {
+        return new TagsClient(baseUrl, restTemplateBuilder);
+    }
+
+    @Bean
     @ConditionalOnProperty(prefix = "hrcav.validation", value = "systemToken")
     public ValidationClient hrcavValidationClient(@Value("${hrcav.validation.systemToken}") String systemToken, @Value("${hrcav.validation.url}") String baseUrl, RestTemplateBuilder restTemplateBuilder) {
         return new ValidationClient(systemToken, baseUrl, restTemplateBuilder);
