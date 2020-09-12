@@ -1,6 +1,7 @@
 package au.com.eventsecretary.builder;
 
 import au.com.auspost.simm.model.ComplexType;
+import au.com.eventsecretary.accounting.pricing.Operator;
 import au.com.eventsecretary.accounting.product.Product;
 import au.com.eventsecretary.accounting.product.ProductBase;
 import au.com.eventsecretary.accounting.product.ProductCatalogue;
@@ -117,6 +118,11 @@ public class ProductCatalogueBuilder {
 
         public ProductCatalogueBuilder end() {
             return ProductCatalogueBuilder.this;
+        }
+
+        public ProductFamilyBuilder operator(Operator operator) {
+           base.setOperator(operator);
+           return this;
         }
 
         public ProductBuilder product(String code) {

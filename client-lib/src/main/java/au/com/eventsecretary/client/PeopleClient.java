@@ -261,14 +261,14 @@ public class PeopleClient extends AbstractClient {
         }
     }
 
-    public Person getPersonByNames(String firstName, String lastName) {
+    public List<Person> getPersonsByNames(String firstName, String lastName) {
         try {
             HttpEntity<Void> httpEntity = createEntity();
 
             ResponseEntity<Person[]> exchange = restTemplate.exchange(baseUrl + URI + "/person?" + "firstName=" + firstName + "&lastName=" + lastName, HttpMethod.GET, httpEntity, Person[].class);
             switch (exchange.getStatusCode()) {
                 case OK:
-                    return exchange.getBody().length == 0 ? null : exchange.getBody()[0];
+                    return Arrays.asList(exchange.getBody());
                 default:
                     throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
             }
