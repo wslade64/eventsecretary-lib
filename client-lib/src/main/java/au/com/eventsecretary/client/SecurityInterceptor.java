@@ -58,6 +58,9 @@ public class SecurityInterceptor extends HandlerInterceptorAdapter {
                 if (cookie.getName().equals(AUTH_COOKIE)) {
                     return StringUtils.isEmpty(cookie.getValue()) ? null : cookie.getValue();
                 }
+                if (cookie.getName().equals("JSESSIONID")) {
+                    return StringUtils.isEmpty(cookie.getValue()) ? null : cookie.getValue();
+                }
             }
         }
         return null;
