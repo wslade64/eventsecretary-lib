@@ -58,6 +58,11 @@ public class SheetBuilder {
         return this;
     }
 
+    public SheetBuilder text(String text) {
+        sheet.createRow(sheet.getLastRowNum() + 1).createCell(1).setCellValue(text);
+        return this;
+    }
+
     private void headers()
     {
         Row row = sheet.createRow(0);
