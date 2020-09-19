@@ -3,6 +3,7 @@ package au.com.eventsecretary.client;
 import au.com.eventsecretary.ResourceExistsException;
 import au.com.eventsecretary.UnexpectedSystemException;
 import au.com.eventsecretary.people.Address;
+import au.com.eventsecretary.people.ContactDetails;
 import au.com.eventsecretary.people.Person;
 import au.com.eventsecretary.people.presentation.PersonIdentity;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -26,6 +27,24 @@ public class PeopleClient extends AbstractClient {
         Address mailingAddress = person.getMailingAddress();
         return mailingAddress != null && StringUtils.hasLength(mailingAddress.getPostCode());
     }
+
+    public static void copyContactDetails(Person from, Person to) {
+        if (to.getContactDetails() == null) {
+            to.setContactDetails(from.getContactDetails());
+        } else {
+            ContactDetails fromContactDetails = from.getContactDetails();
+            ContactDetails toContactDetails = to.getContactDetails();
+            if (fromContactDetails != null) {
+                if (org.apache.commons.lang3.StringUtils.isBlank(toContactDetails.getEmailAddress())) {
+                    toContactDetails.setEmailAddress(fromContactDetails.getEmailAddress());
+                }
+                if (org.apache.commons.lang3.StringUtils.isBlank(toContactDetails.getPhoneNumber())) {
+                    toContactDetails.setEmailAddress(fromContactDetails.getPhoneNumber());
+                }
+            }
+        }
+    }
+
 
     public static void assignName(Person person) {
         if (person == null) {
