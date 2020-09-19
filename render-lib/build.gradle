@@ -5,6 +5,7 @@ dependencies {
     compile("org.springframework:spring-context:${springVersion}")
     compile("org.springframework:spring-context-support:${springVersion}")
     compile project(":system-lib")
+    compile project(":simm-lib")
     testCompile("junit:junit:4.12")
 }
 
