@@ -61,7 +61,7 @@ public class AbstractRenderer {
         return alias(first.get());
     }
 
-    public static Map<String, Object> createModel()
+    public Map<String, Object> createModel()
     {
         Map<String, Object> model = new HashMap<>();
 
@@ -71,7 +71,7 @@ public class AbstractRenderer {
         {
             model.put("DateUtility", staticModels.get(DateUtility.class.getName()));
             model.put("Util", staticModels.get(IdentifiableUtils.class.getName()));
-            model.put("Tools", staticModels.get(AbstractRenderer.class.getName()));
+            model.put("Tools", staticModels.get(getClass().getName()));
         }
         catch (TemplateModelException e)
         {
