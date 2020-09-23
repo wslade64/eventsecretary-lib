@@ -49,7 +49,7 @@ public interface IdentityUtils {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(address.getAddressLineOne());
         stringBuilder.append(",");
-        stringBuilder.append(address.getAddressLineTwo());
+        stringBuilder.append(StringUtils.isNotBlank(address.getAddressLineTwo()) ? address.getAddressLineTwo() : "");
         stringBuilder.append(",");
         stringBuilder.append(address.getSuburb());
         stringBuilder.append(",");
