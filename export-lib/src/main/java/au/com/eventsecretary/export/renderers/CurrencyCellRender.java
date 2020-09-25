@@ -5,18 +5,29 @@ import au.com.eventsecretary.export.CellRenderer;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 
+import java.math.BigDecimal;
+
 /**
  * TODO
  *
  * @author Warwick Slade
  */
-public class CurrencyCellRender implements CellRenderer<Integer> {
+public class CurrencyCellRender implements CellRenderer<Object> {
     @Override
-    public void render(Cell cell, Integer value, CellBuilder cellBuilder) {
-        String sval = convertCurrency(value);
+    public void render(Cell cell, Object value, CellBuilder cellBuilder) {
+        double dvalue;
+        if (value instanceof Integer) {
+            dvalue = Double.parseDouble(convertCurrency((Integer)value));
+        } else if (value instanceof BigDecimal) {
+            dvalue = ((BigDecimal)value).doubleValue();
+        } else if (value instanceof String) {
+            dvalue = Double.parseDouble((String)value);
+        } else {
+            dvalue = 666666;
+        }
 
         cell.setCellType(CellType.NUMERIC);
-        cell.setCellValue(Double.parseDouble(sval));
+        cell.setCellValue(dvalue);
         cell.setCellStyle(cellBuilder.rowBuilder.sheetBuilder.workbookBuilder.currencyCellStyle);
     }
 

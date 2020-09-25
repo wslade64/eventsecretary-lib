@@ -92,7 +92,7 @@ public class SessionService {
         this.authenticateClient = authenticateClient;
     }
 
-    void begin(String token, boolean sandbox) {
+    public void begin(String token, boolean sandbox) {
         if (cache.get() != null) {
             new UnexpectedSystemException("cache present");
         }
@@ -102,7 +102,7 @@ public class SessionService {
         cache.set(new Session(token));
     }
 
-    void end() {
+    public void end() {
         MDC.remove(SANDBOX_KEY);
         session().end();
         cache.remove();
