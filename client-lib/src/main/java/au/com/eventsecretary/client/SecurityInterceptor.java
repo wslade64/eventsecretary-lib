@@ -46,7 +46,11 @@ public class SecurityInterceptor extends HandlerInterceptorAdapter {
 
         String sandbox = request.getHeader(SANDBOX);
 
-        sessionService.begin(token, "true".equals(sandbox));
+        try {
+            sessionService.begin(token, "true".equals(sandbox));
+        } catch (UnauthorizedException e) {
+            sessionService.begin(null, "true".equals(sandbox));
+        }
 
         return true;
     }

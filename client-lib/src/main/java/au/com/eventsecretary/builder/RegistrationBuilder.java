@@ -64,6 +64,11 @@ public class RegistrationBuilder {
         return this;
     }
 
+    public RegistrationBuilder renewal(Period period) {
+        registration.getRenewals().add(period);
+        return this;
+    }
+
     public class RegistrationValueBuilder {
         RegistrationValue value;
 

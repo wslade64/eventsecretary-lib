@@ -15,8 +15,11 @@ import java.math.BigDecimal;
 public class CurrencyCellRender implements CellRenderer<Object> {
     @Override
     public void render(Cell cell, Object value, CellBuilder cellBuilder) {
-        double dvalue;
-        if (value instanceof Integer) {
+        Object dvalue;
+        if (value == null) {
+            dvalue = null;
+        }
+        else if (value instanceof Integer) {
             dvalue = Double.parseDouble(convertCurrency((Integer)value));
         } else if (value instanceof BigDecimal) {
             dvalue = ((BigDecimal)value).doubleValue();
@@ -27,7 +30,11 @@ public class CurrencyCellRender implements CellRenderer<Object> {
         }
 
         cell.setCellType(CellType.NUMERIC);
-        cell.setCellValue(dvalue);
+        if (dvalue == null) {
+            cell.setCellValue((String)dvalue);
+        } else {
+            cell.setCellValue((double)dvalue);
+        }
         cell.setCellStyle(cellBuilder.rowBuilder.sheetBuilder.workbookBuilder.currencyCellStyle);
     }
 
