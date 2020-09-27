@@ -17,6 +17,9 @@ import org.springframework.web.client.RestClientException;
 import java.util.Arrays;
 import java.util.List;
 
+import static au.com.eventsecretary.simm.IdentityUtils.cleanEmailAddress;
+import static au.com.eventsecretary.simm.IdentityUtils.cleanPhoneNumber;
+
 /**
  * @author sladew
  */
@@ -64,6 +67,18 @@ public class PeopleClient extends AbstractClient {
             return person.getFirstName();
         }
         return String.format("%s %s", person.getFirstName(), person.getLastName());
+    }
+
+    public static void cleanPerson(Person person) {
+        ContactDetails contactDetails = person.getContactDetails();
+        if (contactDetails != null) {
+            contactDetails.setPhoneNumber(cleanPhoneNumber(contactDetails.getPhoneNumber()));
+            contactDetails.setEmailAddress(cleanEmailAddress(contactDetails.getEmailAddress()));
+        }
+
+        person.setFirstName(org.apache.commons.lang3.StringUtils.trim(person.getFirstName()));
+        person.setLastName(org.apache.commons.lang3.StringUtils.trim(person.getLastName()));
+        assignName(person);
     }
 
     public PeopleClient(String baseUrl, RestTemplateBuilder restTemplateBuilder) {

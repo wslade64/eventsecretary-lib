@@ -36,6 +36,9 @@ public class AbstractRenderer {
     }
 
     public static String resolveValue(Map<String, ComplexType> model, Attribute attribute, String value) {
+        if (value == null) {
+            return "";
+        }
         if (attribute.getType() == Type.ENUM) {
             ComplexType enumComplexType = model.get(attribute.getClassifier());
             Optional<Attribute> first = enumComplexType.getAttributes().stream().filter(aAttribute -> aAttribute.getName().equals(value)).findFirst();

@@ -2,6 +2,7 @@ package au.com.eventsecretary.simm;
 
 import au.com.eventsecretary.common.Identifiable;
 import au.com.eventsecretary.people.Address;
+import au.com.eventsecretary.people.ContactDetails;
 import au.com.eventsecretary.people.Person;
 import au.com.eventsecretary.user.identity.Identity;
 import au.com.eventsecretary.user.identity.Role;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 import static au.com.eventsecretary.simm.IdentifiableUtils.cloneIdentifiable;
 
 public interface IdentityUtils {
+
     static String cleanPhoneNumber(String phoneNumber) {
         if (phoneNumber == null) {
             return phoneNumber;
