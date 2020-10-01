@@ -56,6 +56,9 @@ public class AbstractRenderer {
     }
 
     public static String resolveEnum(String value, String complexTypeName, Map<String, ComplexType> model) {
+        if (value == null) {
+            return "";
+        }
         ComplexType complexType = model.get(complexTypeName);
         Optional<Attribute> first = complexType.getAttributes().stream().filter(attribute -> attribute.getName().equals(value)).findFirst();
         if (!first.isPresent()) {
