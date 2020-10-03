@@ -1,6 +1,7 @@
 package au.com.eventsecretary.simm;
 
 import au.com.eventsecretary.ResourceExistsException;
+import au.com.eventsecretary.common.Entity;
 import au.com.eventsecretary.common.Identifiable;
 import au.com.eventsecretary.common.IdentifiableImpl;
 
@@ -56,11 +57,11 @@ public interface IdentifiableUtils {
         return copy(from, to);
     }
 
-    static <T extends Identifiable> boolean hasById(List<T> list, String id) {
+    static <T extends Entity> boolean hasById(List<T> list, String id) {
         return findById(list, id) != null;
     }
 
-    static <T extends Identifiable> T findById(List<T> list, String id) {
+    static <T extends Entity> T findById(List<T> list, String id) {
 
         for (T item : list) {
             if (item.getId().equals(id)) {
