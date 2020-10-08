@@ -42,7 +42,7 @@ public class PeopleClient extends AbstractClient {
                     toContactDetails.setEmailAddress(fromContactDetails.getEmailAddress());
                 }
                 if (org.apache.commons.lang3.StringUtils.isBlank(toContactDetails.getPhoneNumber())) {
-                    toContactDetails.setEmailAddress(fromContactDetails.getPhoneNumber());
+                    toContactDetails.setPhoneNumber(fromContactDetails.getPhoneNumber());
                 }
             }
         }
