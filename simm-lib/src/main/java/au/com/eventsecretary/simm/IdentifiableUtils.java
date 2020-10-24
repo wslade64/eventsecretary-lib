@@ -16,7 +16,7 @@ public interface IdentifiableUtils {
         if (guid == null || guid.length() == 0) {
             return false;
         }
-        if (guid.length() == 24 && guid.startsWith("5a")) {
+        if (guid.length() == 24 && guid.startsWith("5")) {
             return true;
         }
         return guid.length() == 36 && guid.indexOf("-") == 8;
