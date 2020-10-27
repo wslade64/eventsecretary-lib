@@ -164,4 +164,17 @@ public interface IdentityUtils {
         String rightEmailAddress = right != null && right.getContactDetails() != null ? right.getContactDetails().getEmailAddress() : null;
         return StringUtils.compareIgnoreCase(leftEmailAddress, rightEmailAddress);
     }
+
+    static String emailAddress(Person person) {
+        if (person == null) {
+            return null;
+        }
+        return emailAddress(person.getContactDetails());
+    }
+    static String emailAddress(ContactDetails contactDetails) {
+        if (contactDetails == null) {
+            return null;
+        }
+        return contactDetails.getEmailAddress();
+    }
 }
