@@ -38,6 +38,9 @@ public interface ValueFormatter<S, T> {
 
     static ValueFormatter<Enum, String> enumFormatterClassifier(ComplexType enumComplexType) {
         return value -> {
+            if (value == null) {
+                return "";
+            }
             for (Attribute attribute : enumComplexType.getAttributes()) {
                 if (attribute.getName().equals(value.name())) {
                     return alias(attribute);
