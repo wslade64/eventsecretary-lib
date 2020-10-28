@@ -81,6 +81,11 @@ public class ClientConfiguration {
     }
 
     @Bean
+    public ResourceClient entryClient(@Value("${userUrl}") String baseUrl, RestTemplateBuilder restTemplateBuilder) {
+        return new ResourceClient(baseUrl + "/equestrian-ms/v1/entry", restTemplateBuilder, EventImpl.class);
+    }
+
+    @Bean
     public ResourceClient catalogueClient(@Value("${userUrl}") String baseUrl, RestTemplateBuilder restTemplateBuilder) {
         return new ResourceClient(baseUrl + "/payment/catalogue", restTemplateBuilder, CatalogueImpl.class);
     }

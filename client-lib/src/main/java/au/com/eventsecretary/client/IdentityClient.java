@@ -60,6 +60,29 @@ public class IdentityClient extends AbstractClient {
         }
     }
 
+    public Identity findByExactEmailAddress(String emailAddress) {
+        try {
+            HttpEntity<Void> httpEntity = createSystemEntity();
+
+            Map<String, String> params = new HashMap<>();
+            params.put("emailAddress", emailAddress);
+            params.put("match", "exact");
+            ResponseEntity<Identity> exchange = restTemplate.exchange(baseUrl + URI + "?email={emailAddress}&match={match}", HttpMethod.GET, httpEntity, Identity.class, params);
+            switch (exchange.getStatusCode()) {
+                case OK:
+                    return exchange.getBody();
+                case NOT_FOUND:
+                    throw new ResourceNotFoundException(emailAddress);
+                default:
+                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+            }
+        }
+        catch (RestClientException e) {
+            logger.error("get:could not connect to identity service" + e.getMessage());
+            throw new UnexpectedSystemException(e);
+        }
+    }
+
     public Identity findById(String id) {
         try {
             HttpEntity<Void> httpEntity = createSystemEntity();
