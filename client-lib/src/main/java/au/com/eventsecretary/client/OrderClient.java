@@ -3,6 +3,7 @@ package au.com.eventsecretary.client;
 import au.com.eventsecretary.ResourceNotFoundException;
 import au.com.eventsecretary.UnexpectedSystemException;
 import au.com.eventsecretary.accounting.account.Order;
+import au.com.eventsecretary.accounting.registration.Registration;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -105,6 +106,26 @@ public class OrderClient extends AbstractClient {
         }
         catch (RestClientException e) {
             logger.error("could not connect to service" + e.getMessage());
+            throw new UnexpectedSystemException(e);
+        }
+    }
+
+    public void deleteOrder(String orderId) {
+        try {
+            logger.info("delete:" + orderId);
+
+            HttpEntity<Registration> httpEntity = createSystemEntity();
+
+            ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI + "/" + orderId, HttpMethod.DELETE, httpEntity, Void.class);
+            switch (exchange.getStatusCode()) {
+                case OK:
+                    return;
+                default:
+                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+            }
+        }
+        catch (RestClientException e) {
+            logger.error("delete:" + e.getMessage());
             throw new UnexpectedSystemException(e);
         }
     }
