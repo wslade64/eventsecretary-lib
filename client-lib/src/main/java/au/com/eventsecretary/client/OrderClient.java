@@ -110,13 +110,13 @@ public class OrderClient extends AbstractClient {
         }
     }
 
-    public void deleteOrder(String orderId) {
+    public void deleteOrder(String accountCode, String orderId) {
         try {
-            logger.info("delete:" + orderId);
+            logger.info("delete:{}", orderId);
 
             HttpEntity<Registration> httpEntity = createSystemEntity();
 
-            ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI + "/" + orderId, HttpMethod.DELETE, httpEntity, Void.class);
+            ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI + "/{orderId}", HttpMethod.DELETE, httpEntity, Void.class, params("accountCode", accountCode, "orderId", orderId));
             switch (exchange.getStatusCode()) {
                 case OK:
                     return;
