@@ -177,4 +177,7 @@ public interface IdentityUtils {
         }
         return contactDetails.getEmailAddress();
     }
+    static String name(String name) {
+        return name != null ? name : "?";
+    }
 }
