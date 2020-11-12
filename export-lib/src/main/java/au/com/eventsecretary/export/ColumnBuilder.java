@@ -27,6 +27,11 @@ public class ColumnBuilder {
         sheetBuilder.columns.add(column);
     }
 
+    public ColumnBuilder sum() {
+        column.sum = true;
+        return this;
+    }
+
     public ColumnBuilder stringFormat() {
         column.cellRenderer = new StringCellRender();
         return this;

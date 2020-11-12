@@ -23,6 +23,7 @@ public class SheetBuilder {
         List<String> conditionals = new ArrayList<>();
         CellRenderer<T> cellRenderer;
         ValueFormatter<T, T> valueFormatter;
+        boolean sum;
     }
 
     SheetBuilder(WorkbookBuilder workbookBuilder, String sheetName) {
@@ -104,6 +105,7 @@ public class SheetBuilder {
         headers();
         return new RowBuilder(this, 1);
     }
+
     public WorkbookBuilder end() {
         return workbookBuilder;
     }

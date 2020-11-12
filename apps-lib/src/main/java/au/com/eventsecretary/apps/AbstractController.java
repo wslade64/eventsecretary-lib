@@ -10,6 +10,8 @@ import au.com.eventsecretary.user.identity.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -156,4 +158,14 @@ public abstract class AbstractController
         httpResponse.addCookie(cookie);
     }
 
+    public static void decorateResponse(HttpHeaders headers, String filename)
+    {
+        if (filename.endsWith("pdf")) {
+            headers.setContentType(MediaType.parseMediaType("application/pdf"));
+        } else if (filename.endsWith("xlsx")) {
+            headers.setContentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
+        }
+        String format = String.format("attachment; filename=%s", filename);
+        headers.set("Content-Disposition", format);
+    }
 }
