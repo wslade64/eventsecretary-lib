@@ -177,6 +177,21 @@ public interface IdentityUtils {
         }
         return contactDetails.getEmailAddress();
     }
+
+    static String phoneNumber(Person person) {
+        if (person == null) {
+            return null;
+        }
+        return phoneNumber(person.getContactDetails());
+    }
+
+    static String phoneNumber(ContactDetails contactDetails) {
+        if (contactDetails == null) {
+            return null;
+        }
+        return contactDetails.getPhoneNumber();
+    }
+
     static String name(String name) {
         return name != null ? name : "?";
     }
