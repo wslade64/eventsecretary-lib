@@ -65,16 +65,20 @@ public class RegistrationDestructor {
         if (registration == null) {
             return null;
         }
-        RegistrationValue registrationValue = registration
-                .getValue()
-                .stream()
-                .filter(registrationValue1 -> StringUtils.equals(registrationValue1.getRegistrationValueMetadataId(), pair.getRight().getId()))
-                .findFirst()
-                .orElse(null);
-        if (registrationValue == null) {
+        try {
+            RegistrationValue registrationValue = registration
+                    .getValue()
+                    .stream()
+                    .filter(registrationValue1 -> StringUtils.equals(registrationValue1.getRegistrationValueMetadataId(), pair.getRight().getId()))
+                    .findFirst()
+                    .orElse(null);
+            if (registrationValue == null) {
+                return null;
+            }
+            return registrationValue.getValue();
+        } catch (Exception e) {
             return null;
         }
-        return registrationValue.getValue();
     }
 
     public static Pair<RegistrationMetadata, RegistrationValueMetadata> hasClubs(List<RegistrationMetadata> registrationMetadata) {
@@ -82,12 +86,16 @@ public class RegistrationDestructor {
         if (riderRegistration == null) {
             return null;
         }
-        return Pair.of(riderRegistration, riderRegistration.getRegistrationValueMetadata()
+        RegistrationValueMetadata registrationValueMetadata = riderRegistration.getRegistrationValueMetadata()
                 .stream()
-                .filter(registrationValueMetadata -> registrationValueMetadata.getRegistrationType() == RegistrationType.organisation
-                        && registrationValueMetadata.getRegistrationValueType() == RegistrationValueType.reference)
+                .filter(registrationValueMetadata1 -> registrationValueMetadata1.getRegistrationType() == RegistrationType.organisation
+                        && registrationValueMetadata1.getRegistrationValueType() == RegistrationValueType.reference)
                 .findFirst()
-                .orElse(null));
+                .orElse(null);
+        if (registrationValueMetadata == null) {
+            return null;
+        }
+        return Pair.of(riderRegistration, registrationValueMetadata);
     }
 
     public static Pair<RegistrationMetadata, RegistrationValueMetadata> hasRiderMembershipNumber(List<RegistrationMetadata> registrationMetadata) {
@@ -95,12 +103,16 @@ public class RegistrationDestructor {
         if (riderRegistration == null) {
             return null;
         }
-        return Pair.of(riderRegistration, riderRegistration.getRegistrationValueMetadata()
+        RegistrationValueMetadata registrationValueMetadata = riderRegistration.getRegistrationValueMetadata()
                 .stream()
-                .filter(registrationValueMetadata -> registrationValueMetadata.getRegistrationType() == RegistrationType.number
-                        && registrationValueMetadata.getRegistrationValueType() == RegistrationValueType.pattern)
+                .filter(registrationValueMetadata1 -> registrationValueMetadata1.getRegistrationType() == RegistrationType.number
+                        && registrationValueMetadata1.getRegistrationValueType() == RegistrationValueType.pattern)
                 .findFirst()
-                .orElse(null));
+                .orElse(null);
+        if (registrationValueMetadata == null) {
+            return null;
+        }
+        return Pair.of(riderRegistration, registrationValueMetadata);
     }
 
     public static Pair<RegistrationMetadata, RegistrationValueMetadata> hasHorseMembershipNumber(List<RegistrationMetadata> registrationMetadata) {
@@ -108,11 +120,15 @@ public class RegistrationDestructor {
         if (riderRegistration == null) {
             return null;
         }
-        return Pair.of(riderRegistration, riderRegistration.getRegistrationValueMetadata()
+        RegistrationValueMetadata registrationValueMetadata = riderRegistration.getRegistrationValueMetadata()
                 .stream()
-                .filter(registrationValueMetadata -> registrationValueMetadata.getRegistrationType() == RegistrationType.number
-                        && registrationValueMetadata.getRegistrationValueType() == RegistrationValueType.pattern)
+                .filter(registrationValueMetadata1 -> registrationValueMetadata1.getRegistrationType() == RegistrationType.number
+                        && registrationValueMetadata1.getRegistrationValueType() == RegistrationValueType.pattern)
                 .findFirst()
-                .orElse(null));
+                .orElse(null);
+        if (registrationValueMetadata == null) {
+            return null;
+        }
+        return Pair.of(riderRegistration, registrationValueMetadata);
     }
 }
