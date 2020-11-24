@@ -4,6 +4,7 @@ import au.com.eventsecretary.ResourceExistsException;
 import au.com.eventsecretary.common.Entity;
 import au.com.eventsecretary.common.Identifiable;
 import au.com.eventsecretary.common.IdentifiableImpl;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.UUID;
@@ -74,7 +75,7 @@ public interface IdentifiableUtils {
     static <T extends Identifiable> T findByCode(List<T> list, String code) {
 
         for (T item : list) {
-            if (item.getCode().equals(code)) {
+            if (StringUtils.equals(item.getCode(), code)) {
                 return item;
             }
         }
@@ -84,7 +85,7 @@ public interface IdentifiableUtils {
     static <T extends Identifiable> T findByName(List<T> list, String name) {
 
         for (T item : list) {
-            if (item.getName().equals(name)) {
+            if (StringUtils.equals(item.getName(), name)) {
                 return item;
             }
         }
