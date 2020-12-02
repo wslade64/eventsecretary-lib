@@ -67,7 +67,7 @@ public class Notifier {
         notification.setSubject(subject);
 
         Message message = new Message();
-        message.setTo(supportEmailAddress);
+        message.setTo(officeEmailAddress);
         message.setMessage(msg);
         messageList.add(message);
 
