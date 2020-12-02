@@ -9,7 +9,8 @@ import org.springframework.context.annotation.Configuration;
 public class AppsConfiguration {
     @Bean
     public Notifier notifier(@Value("${supportEmailAddress}") String supportEmailAddress
+             , @Value("${officeEmailAddress}") String officeEmailAddress
             , NotificationClient notificationClient) {
-        return new Notifier(supportEmailAddress, notificationClient);
+        return new Notifier(supportEmailAddress, officeEmailAddress, notificationClient);
     }
 }

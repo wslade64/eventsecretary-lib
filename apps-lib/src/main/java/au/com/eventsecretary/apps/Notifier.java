@@ -13,12 +13,14 @@ import java.util.List;
 public class Notifier {
     private final NotificationClient notificationClient;
     private final String supportEmailAddress;
+    private final String officeEmailAddress;
 
     private Logger logger = LoggerFactory.getLogger(Notifier.class);
 
-    public Notifier(String supportEmailAddress, NotificationClient notificationClient) {
+    public Notifier(String supportEmailAddress, String officeEmailAddress, NotificationClient notificationClient) {
         this.notificationClient = notificationClient;
         this.supportEmailAddress = supportEmailAddress;
+        this.officeEmailAddress = officeEmailAddress;
     }
 
     public void notifyError(String msg, Exception e) {
@@ -53,4 +55,26 @@ public class Notifier {
         }
     }
 
+    public void notifyOffice(String subject, String msg) {
+        if (StringUtils.isBlank(this.supportEmailAddress)) {
+            return;
+        }
+
+        Notification notification = new Notification();
+        List<Message> messageList = new ArrayList<>();
+        notification.setMessage(messageList);
+        notification.setFrom("support@eventsecretary.com.au");
+        notification.setSubject(subject);
+
+        Message message = new Message();
+        message.setTo(supportEmailAddress);
+        message.setMessage(msg);
+        messageList.add(message);
+
+        try {
+            notificationClient.send(notification, null);
+        } catch (Exception e2) {
+            logger.error("Failed to send error notification", e2);
+        }
+    }
 }
