@@ -1,7 +1,7 @@
 package au.com.eventsecretary.export.renderers;
 
-import au.com.eventsecretary.export.CellBuilder;
 import au.com.eventsecretary.export.CellRenderer;
+import au.com.eventsecretary.export.WorkbookBuilder;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 
@@ -15,7 +15,7 @@ public class BooleanCellRender implements CellRenderer<Object> {
     private final static String TRUE = "Yes";
 
     @Override
-    public void render(Cell cell, Object value, CellBuilder cellBuilder) {
+    public void render(Cell cell, Object value, WorkbookBuilder workbookBuilder) {
         if (value == null) {
             value = FALSE;
         } else if (value instanceof Boolean) {

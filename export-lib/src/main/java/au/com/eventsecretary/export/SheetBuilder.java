@@ -64,6 +64,10 @@ public class SheetBuilder {
         return this;
     }
 
+    public MatrixBuilder matrix() {
+        return new MatrixBuilder(this);
+    }
+
     private void headers()
     {
         Row row = sheet.createRow(0);
@@ -93,7 +97,10 @@ public class SheetBuilder {
         for (Column column : columns) {
             columnCount += column.labels.size();
         }
+        return autoSize(columnCount);
+    }
 
+    public SheetBuilder autoSize(int columnCount) {
         for (int i = 0; i < columnCount; i++) {
             sheet.autoSizeColumn(i);
         }

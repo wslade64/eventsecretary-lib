@@ -5,6 +5,8 @@ import org.apache.poi.ooxml.POIXMLProperties;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.xssf.usermodel.XSSFColor;
+import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.File;
@@ -23,10 +25,13 @@ public class WorkbookBuilder {
     public final CellStyle numericCellStyle;
     public final CellStyle dateStyle;
     public final CellStyle dateTimeStyle;
+    public final CellStyle titleStyle;
     public final CellStyle headerStyle;
+    public final CellStyle header2Style;
     public final SimpleDateFormat sdf;
     public final SimpleDateFormat sdtf;
     public final Font boldFont;
+    public final Font titleFont;
 
     public WorkbookBuilder() {
         workbook = new XSSFWorkbook();
@@ -59,7 +64,22 @@ public class WorkbookBuilder {
         headerStyle = workbook.createCellStyle();
         headerStyle.setAlignment(HorizontalAlignment.CENTER);
         headerStyle.setFont(boldFont);
+
+        header2Style = workbook.createCellStyle();
+        header2Style.setAlignment(HorizontalAlignment.LEFT);
+        header2Style.setFont(boldFont);
+
+        titleFont = workbook.createFont();
+        titleFont.setFontHeightInPoints((short) 26);
+        // 192E5B
+        byte[] rgb = {0x19, 0x2E, 0x5B};
+        ((XSSFFont)titleFont).setColor(new XSSFColor(rgb, null));
+
+        titleStyle = workbook.createCellStyle();
+        titleStyle.setAlignment(HorizontalAlignment.LEFT);
+        titleStyle.setFont(titleFont);
     }
+
 
     public WorkbookBuilder title(String title) {
         POIXMLProperties.CoreProperties coreProperties = workbook.getProperties().getCoreProperties();

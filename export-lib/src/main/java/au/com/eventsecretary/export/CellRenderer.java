@@ -8,5 +8,5 @@ import org.apache.poi.ss.usermodel.Cell;
  * @author Warwick Slade
  */
 public interface CellRenderer<T> {
-    void render(Cell cell, T value, CellBuilder cellBuilder);
+    void render(Cell cell, T value, WorkbookBuilder workbookBuilder);
 }

@@ -325,6 +325,24 @@ public interface DateUtility {
             "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
     };
 
+    static String shortDuration(int date, Integer duration) {
+        if (duration == null || duration <= 1) {
+            return shortDay(date);
+        }
+
+        int[] startParts = DateUtility.dateToSplit(date);
+        int endDate = DateUtility.addDay(date, duration - 1);
+        int[] endParts = DateUtility.dateToSplit(endDate);
+
+        if (startParts[1] == endParts[1]) {
+            return String.format("%d-%d %s %s", startParts[2], endParts[2], shortMonths[startParts[1] - 1], startParts[0]);
+        } else if (startParts[0] == endParts[0]) {
+            return String.format("%d %s to %d %s %s", startParts[2], shortMonths[startParts[1] - 1], endParts[2], shortMonths[endParts[1] - 1], startParts[0]);
+        } else {
+            return String.format("%s to %s", shortDay(date), shortDay(endDate));
+        }
+    }
+
     static String shortDate(int date) {
         if (date == 0) {
             return "";
@@ -333,6 +351,17 @@ public interface DateUtility {
         int[] ints = dateToSplit(date);
 
         return shortMonths[ints[1] - 1] + " " + ints[2];
+    }
+
+    static String shortDay(int date) {
+
+        if (date == 0) {
+            return "";
+        }
+
+        int[] ints = dateToSplit(date);
+
+        return ints[2] + " " + shortMonths[ints[1] - 1] + " " + ints[0];
     }
 
     static String longDate(int date) {

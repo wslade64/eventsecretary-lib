@@ -72,7 +72,19 @@ public class RowBuilder {
         evaluator.evaluateAll();
     }
 
-    static String formatColumn(int column) {
+    public static String formatRange(int fromColumn, int fromRow, int toColumn, int toRow) {
+        return String.format("%s:%s", formatCell(fromColumn, fromRow), formatCell(toColumn, toRow));
+    }
+
+    public static String formatCell(int column, int row) {
+        return formatColumn(column) + formatRow(row);
+    }
+
+    public static String formatRow(int row) {
+        return Integer.toString(row + 1);
+    }
+
+    public static String formatColumn(int column) {
         char[] chars;
         if (column <= 25) {
             chars = new char[1];

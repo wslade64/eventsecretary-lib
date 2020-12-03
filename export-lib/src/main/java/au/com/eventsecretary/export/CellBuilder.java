@@ -36,7 +36,7 @@ public class CellBuilder {
             if (column.valueFormatter != null) {
                 value = column.valueFormatter.format(value);
             }
-            column.cellRenderer.render(cell, value, this);
+            column.cellRenderer.render(cell, value, this.rowBuilder.sheetBuilder.workbookBuilder);
         }
         return this;
     }
@@ -47,7 +47,7 @@ public class CellBuilder {
         if (column != null) {
             values.forEach(value -> {
                 Cell cell = row.createCell(sheetColumn++);
-                column.cellRenderer.render(cell, value, this);
+                column.cellRenderer.render(cell, value, this.rowBuilder.sheetBuilder.workbookBuilder);
             });
         }
         return this;
@@ -58,7 +58,7 @@ public class CellBuilder {
             SheetBuilder.Column<T> column = attributeColumn();
             if (column != null) {
                 Cell cell = row.createCell(sheetColumn++);
-                column.cellRenderer.render(cell, value, this);
+                column.cellRenderer.render(cell, value, this.rowBuilder.sheetBuilder.workbookBuilder);
             }
         });
         return this;

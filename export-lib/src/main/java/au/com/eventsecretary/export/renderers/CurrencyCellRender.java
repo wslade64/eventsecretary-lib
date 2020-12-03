@@ -1,7 +1,7 @@
 package au.com.eventsecretary.export.renderers;
 
-import au.com.eventsecretary.export.CellBuilder;
 import au.com.eventsecretary.export.CellRenderer;
+import au.com.eventsecretary.export.WorkbookBuilder;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 
@@ -14,7 +14,7 @@ import java.math.BigDecimal;
  */
 public class CurrencyCellRender implements CellRenderer<Object> {
     @Override
-    public void render(Cell cell, Object value, CellBuilder cellBuilder) {
+    public void render(Cell cell, Object value, WorkbookBuilder workbookBuilder) {
         Object dvalue;
         if (value == null) {
             dvalue = null;
@@ -35,7 +35,7 @@ public class CurrencyCellRender implements CellRenderer<Object> {
         } else {
             cell.setCellValue((double)dvalue);
         }
-        cell.setCellStyle(cellBuilder.rowBuilder.sheetBuilder.workbookBuilder.currencyCellStyle);
+        cell.setCellStyle(workbookBuilder.currencyCellStyle);
     }
 
     public static String convertCurrency(int val)

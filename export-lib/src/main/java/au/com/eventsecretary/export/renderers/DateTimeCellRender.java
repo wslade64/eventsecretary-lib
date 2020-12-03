@@ -1,7 +1,7 @@
 package au.com.eventsecretary.export.renderers;
 
-import au.com.eventsecretary.export.CellBuilder;
 import au.com.eventsecretary.export.CellRenderer;
+import au.com.eventsecretary.export.WorkbookBuilder;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 
@@ -14,7 +14,7 @@ import java.util.Date;
  */
 public class DateTimeCellRender implements CellRenderer<Date> {
     @Override
-    public void render(Cell cell, Date value, CellBuilder cellBuilder) {
+    public void render(Cell cell, Date value, WorkbookBuilder workbookBuilder) {
         cell.setCellType(CellType.NUMERIC);
         if (value != null)
         {
@@ -25,6 +25,6 @@ public class DateTimeCellRender implements CellRenderer<Date> {
             cell.setCellValue("");
         }
 
-        cell.setCellStyle(cellBuilder.rowBuilder.sheetBuilder.workbookBuilder.dateTimeStyle);
+        cell.setCellStyle(workbookBuilder.dateTimeStyle);
     }
 }
