@@ -1,9 +1,19 @@
 package au.com.eventsecretary.export;
 
+import au.com.eventsecretary.UnexpectedSystemException;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.ClientAnchor;
+import org.apache.poi.ss.usermodel.Drawing;
+import org.apache.poi.ss.usermodel.Picture;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.util.IOUtils;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -115,6 +125,34 @@ public class SheetBuilder {
 
     public WorkbookBuilder end() {
         return workbookBuilder;
+    }
+
+    public SheetBuilder logo(int col, int row, String pngName) {
+        int pictureIdx;
+        try {
+            InputStream is = new FileInputStream(String.format("/etc/www/logos/%s.png", pngName));
+            byte[] bytes = IOUtils.toByteArray(is);
+            pictureIdx = workbookBuilder.workbook.addPicture(bytes, Workbook.PICTURE_TYPE_PNG);
+            is.close();
+        } catch (FileNotFoundException e) {
+            throw new UnexpectedSystemException(e);
+        } catch (IOException e) {
+            throw new UnexpectedSystemException(e);
+        }
+
+        Drawing<?> drawing = sheet.createDrawingPatriarch();
+        ClientAnchor anchor = workbookBuilder.helper.createClientAnchor();
+        anchor.setCol1(col);
+        anchor.setRow1(row);
+        Picture pict = drawing.createPicture(anchor, pictureIdx);
+
+        pict.resize();
+        return this;
+    }
+
+    public SheetBuilder turnOffGridLines() {
+        sheet.setDisplayGridlines(false);
+        return this;
     }
 
     boolean exclude(List<String> conditionals) {

@@ -3,7 +3,6 @@ package au.com.eventsecretary.export.renderers;
 import au.com.eventsecretary.export.CellRenderer;
 import au.com.eventsecretary.export.WorkbookBuilder;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellType;
 
 /**
  * TODO
@@ -25,7 +24,6 @@ public class BooleanCellRender implements CellRenderer<Object> {
         } else if (value instanceof Integer) {
             value = ((Integer)value) > 1 ? TRUE : FALSE;
         }
-        cell.setCellType(CellType.STRING);
         cell.setCellValue(value.toString());
     }
 }

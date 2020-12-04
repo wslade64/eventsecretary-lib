@@ -3,7 +3,6 @@ package au.com.eventsecretary.export.renderers;
 import au.com.eventsecretary.export.CellRenderer;
 import au.com.eventsecretary.export.WorkbookBuilder;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellType;
 
 public class StringCellRender implements CellRenderer<String> {
 
@@ -12,7 +11,6 @@ public class StringCellRender implements CellRenderer<String> {
         if (value == null) {
             value = "";
         }
-        cell.setCellType(CellType.STRING);
         cell.setCellValue(value);
     }
 }

@@ -3,6 +3,7 @@ package au.com.eventsecretary.export;
 import au.com.eventsecretary.UnexpectedSystemException;
 import org.apache.poi.ooxml.POIXMLProperties;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.xssf.usermodel.XSSFColor;
@@ -20,6 +21,7 @@ import java.text.SimpleDateFormat;
  * @author Warwick Slade
  */
 public class WorkbookBuilder {
+    private final short FONT_SIZE = (short)11;
     protected final XSSFWorkbook workbook;
     public final CellStyle currencyCellStyle;
     public final CellStyle numericCellStyle;
@@ -28,10 +30,15 @@ public class WorkbookBuilder {
     public final CellStyle titleStyle;
     public final CellStyle headerStyle;
     public final CellStyle header2Style;
+    public final CellStyle wrappedStyle;
     public final SimpleDateFormat sdf;
     public final SimpleDateFormat sdtf;
+    public final Font normalFont;
     public final Font boldFont;
     public final Font titleFont;
+    public final short dateFormat;
+    public final short dateTimeFormat;
+    public final CreationHelper helper;
 
     public WorkbookBuilder() {
         workbook = new XSSFWorkbook();
@@ -48,18 +55,22 @@ public class WorkbookBuilder {
 
         dateStyle = workbook.createCellStyle();
         dateStyle.setAlignment(HorizontalAlignment.LEFT);
-        short df = workbook.createDataFormat().getFormat("dd-mm-yyyy");
+        dateFormat = workbook.createDataFormat().getFormat("dd-mm-yyyy");
         sdf = new SimpleDateFormat("dd-MM-yyyy");
-        dateStyle.setDataFormat(df);
+        dateStyle.setDataFormat(dateFormat);
 
         dateTimeStyle = workbook.createCellStyle();
         dateTimeStyle.setAlignment(HorizontalAlignment.LEFT);
         sdtf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-        short dtf = workbook.createDataFormat().getFormat("dd-mm-yyyy hh:mm:ss");
-        dateTimeStyle.setDataFormat(dtf);
+        dateTimeFormat = workbook.createDataFormat().getFormat("dd-mm-yyyy hh:mm:ss");
+        dateTimeStyle.setDataFormat(dateTimeFormat);
 
         boldFont = workbook.createFont();
         boldFont.setBold(true);
+        boldFont.setFontHeightInPoints(FONT_SIZE);
+
+        normalFont = workbook.createFont();
+        normalFont.setFontHeightInPoints(FONT_SIZE);
 
         headerStyle = workbook.createCellStyle();
         headerStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -78,6 +89,11 @@ public class WorkbookBuilder {
         titleStyle = workbook.createCellStyle();
         titleStyle.setAlignment(HorizontalAlignment.LEFT);
         titleStyle.setFont(titleFont);
+
+        wrappedStyle = workbook.createCellStyle();
+        wrappedStyle.setWrapText(true);
+
+        helper = workbook.getCreationHelper();
     }
 
 

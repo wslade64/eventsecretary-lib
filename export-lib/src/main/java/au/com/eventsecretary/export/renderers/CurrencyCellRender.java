@@ -3,7 +3,9 @@ package au.com.eventsecretary.export.renderers;
 import au.com.eventsecretary.export.CellRenderer;
 import au.com.eventsecretary.export.WorkbookBuilder;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
 
 import java.math.BigDecimal;
 
@@ -35,7 +37,11 @@ public class CurrencyCellRender implements CellRenderer<Object> {
         } else {
             cell.setCellValue((double)dvalue);
         }
-        cell.setCellStyle(workbookBuilder.currencyCellStyle);
+        CellStyle cellStyle = cell.getCellStyle();
+        cellStyle.setDataFormat((short)7);
+        cellStyle.setAlignment(HorizontalAlignment.RIGHT);
+
+//        cell.setCellStyle(workbookBuilder.currencyCellStyle);
     }
 
     public static String convertCurrency(int val)

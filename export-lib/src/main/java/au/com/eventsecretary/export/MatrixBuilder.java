@@ -8,6 +8,9 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.ss.util.RegionUtil;
+
+import java.util.function.Consumer;
 
 /**
  * TODO
@@ -17,6 +20,7 @@ import org.apache.poi.ss.util.CellRangeAddress;
 public class MatrixBuilder {
     private final Sheet sheet;
     private final SheetBuilder sheetBuilder;
+    private int rowIndex = 0;
 
     public MatrixBuilder(SheetBuilder sheetBuilder) {
         this.sheet = sheetBuilder.sheet;
@@ -29,6 +33,8 @@ public class MatrixBuilder {
 
         private CellBuilder(Cell cell) {
             this.cell = cell;
+            this.cell.setCellStyle(sheetBuilder.workbookBuilder.workbook.createCellStyle());
+            this.cell.getCellStyle().setFont(sheetBuilder.workbookBuilder.normalFont);
         }
 
         public CellBuilder stringFormat() {
@@ -67,23 +73,35 @@ public class MatrixBuilder {
             return this;
         }
 
+        public CellBuilder bold() {
+            cell.getCellStyle().setFont(sheetBuilder.workbookBuilder.boldFont);
+            return this;
+        }
+
+        public CellBuilder wrap() {
+            // Something about setting the font results in the wrap text not working.
+            cell.setCellStyle(sheetBuilder.workbookBuilder.workbook.createCellStyle());
+            cell.getCellStyle().setWrapText(true);
+            return this;
+        }
+
         public CellBuilder borderTop() {
-            cell.getCellStyle().setBorderTop(BorderStyle.THIN);
+            RegionUtil.setBorderTop(BorderStyle.THIN, new CellRangeAddress(cell.getRow().getRowNum(), cell.getRow().getRowNum(), cell.getColumnIndex(), cell.getColumnIndex()), sheet);
             return this;
         }
 
         public CellBuilder borderLeft() {
-            cell.getCellStyle().setBorderLeft(BorderStyle.THIN);
+            RegionUtil.setBorderLeft(BorderStyle.THIN, new CellRangeAddress(cell.getRow().getRowNum(), cell.getRow().getRowNum(), cell.getColumnIndex(), cell.getColumnIndex()), sheet);
             return this;
         }
 
         public CellBuilder borderRight() {
-            cell.getCellStyle().setBorderRight(BorderStyle.THIN);
+            RegionUtil.setBorderRight(BorderStyle.THIN, new CellRangeAddress(cell.getRow().getRowNum(), cell.getRow().getRowNum(), cell.getColumnIndex(), cell.getColumnIndex()), sheet);
             return this;
         }
 
         public CellBuilder borderBottom() {
-            cell.getCellStyle().setBorderBottom(BorderStyle.THIN);
+            RegionUtil.setBorderBottom(BorderStyle.THIN, new CellRangeAddress(cell.getRow().getRowNum(), cell.getRow().getRowNum(), cell.getColumnIndex(), cell.getColumnIndex()), sheet);
             return this;
         }
 
@@ -102,7 +120,7 @@ public class MatrixBuilder {
         }
     }
 
-    public CellBuilder cell(int colIndex, int rowIndex) {
+    public CellBuilder cell(int colIndex) {
         Row row = this.sheet.getRow(rowIndex);
         if (row == null) {
             row = this.sheet.createRow(rowIndex);
@@ -112,6 +130,17 @@ public class MatrixBuilder {
             cell = row.createCell(colIndex);
         }
         return new CellBuilder(cell);
+    }
+
+    public MatrixBuilder nextRow() {
+        rowIndex++;
+        return this;
+    }
+
+    public MatrixBuilder nextRow(Consumer<Integer> notify) {
+        rowIndex++;
+        notify.accept(rowIndex);
+        return this;
     }
 
     public SheetBuilder end() {
