@@ -39,7 +39,7 @@ public interface CollectionUtility {
         apply.addAll(Arrays.asList(items));
     }
 
-    static Collection<? extends Integer> toIntegerList(String list) {
+    static List<Integer> toIntegerList(String list) {
         List<Integer> ilist = new ArrayList<>();
         if (list == null || list.length() == 0) {
             return ilist;
@@ -50,6 +50,11 @@ public interface CollectionUtility {
         }
 
         return ilist;
+    }
+
+    static Collection<? extends String> toStringList(String list) {
+        String[] split = list.split(",");
+        return Arrays.asList(split);
     }
 
     static BigDecimal[] toBigDecimalArray(int[] values) {
