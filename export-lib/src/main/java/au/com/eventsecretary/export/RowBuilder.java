@@ -1,7 +1,9 @@
 package au.com.eventsecretary.export;
 
+import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.Row;
 
 import java.util.List;
@@ -61,9 +63,13 @@ public class RowBuilder {
             }
             for (Object label : column.labels) {
                 Cell cell = row.createCell(col);
+                cell.setCellStyle(sheetBuilder.workbookBuilder.workbook.createCellStyle());
+                cell.getCellStyle().setFont(sheetBuilder.workbookBuilder.normalFont);
+                cell.getCellStyle().setBorderTop(BorderStyle.THIN);
                 if (column.sum) {
                     cell.setCellFormula(String.format("sum(%s%d:%s%d)", formatColumn(col), startRow, formatColumn(col), endRow));
-                    cell.setCellStyle(sheetBuilder.workbookBuilder.currencyCellStyle);
+                    cell.getCellStyle().setDataFormat((short)7);
+                    cell.getCellStyle().setAlignment(HorizontalAlignment.RIGHT);
                 }
                 col++;
             }

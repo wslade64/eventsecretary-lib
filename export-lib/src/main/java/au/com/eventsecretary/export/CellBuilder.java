@@ -32,7 +32,7 @@ public class CellBuilder {
     public <T> CellBuilder column(T value) {
         SheetBuilder.Column<T> column = attributeColumn();
         if (column != null) {
-            Cell cell = row.createCell(sheetColumn++);
+            Cell cell = createCell();
             if (column.valueFormatter != null) {
                 value = column.valueFormatter.format(value);
             }
@@ -46,7 +46,7 @@ public class CellBuilder {
 
         if (column != null) {
             values.forEach(value -> {
-                Cell cell = row.createCell(sheetColumn++);
+                Cell cell = createCell();
                 column.cellRenderer.render(cell, value, this.rowBuilder.sheetBuilder.workbookBuilder);
             });
         }
@@ -57,11 +57,18 @@ public class CellBuilder {
         values.forEach(value -> {
             SheetBuilder.Column<T> column = attributeColumn();
             if (column != null) {
-                Cell cell = row.createCell(sheetColumn++);
+                Cell cell = createCell();
                 column.cellRenderer.render(cell, value, this.rowBuilder.sheetBuilder.workbookBuilder);
             }
         });
         return this;
+    }
+
+    private Cell createCell()  {
+        Cell cell = row.createCell(sheetColumn++);
+        cell.setCellStyle(rowBuilder.sheetBuilder.workbookBuilder.workbook.createCellStyle());
+        cell.getCellStyle().setFont(rowBuilder.sheetBuilder.workbookBuilder.normalFont);
+        return cell;
     }
 
     private <T> SheetBuilder.Column<T> attributeColumn() {
