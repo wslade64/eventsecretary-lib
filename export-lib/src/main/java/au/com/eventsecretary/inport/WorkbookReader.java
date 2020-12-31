@@ -11,6 +11,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.slf4j.Logger;
@@ -165,6 +166,11 @@ public class WorkbookReader {
                 return this;
             }
 
+            public RowReader<T> date(String column, BiConsumer<T, Integer> consumer) {
+                cellReaders.add(new DateCellReader(column, consumer, true));
+                return this;
+            }
+
             public CellReaderAdapter cell() {
                 return new CellReaderAdapter();
             }
@@ -190,6 +196,11 @@ public class WorkbookReader {
 
                 public CellReaderAdapter timestamp(String column, BiConsumer<T, Timestamp> consumer) {
                     cellReaders.add(new TimestampCellReader(column, consumer, optional));
+                    return this;
+                }
+
+                public CellReaderAdapter date(String column, BiConsumer<T, Integer> consumer) {
+                    cellReaders.add(new DateCellReader(column, consumer, true));
                     return this;
                 }
             }
@@ -359,10 +370,40 @@ public class WorkbookReader {
                             if (cellValue.length() <= 10) {
                                 cellValue += " 0:0:0";
                             }
-                            timestamp = DateUtility.timestamp(dateLocal(cellValue));
+                            timestamp = DateUtility.timestamp(dateTimeLocal(cellValue));
                         }
                     }
                     consumer.accept(row, timestamp);
+                }
+            }
+
+            public class DateCellReader<T> extends CellReader<T> {
+                BiConsumer<T, Integer> consumer;
+                DateCellReader(String index, BiConsumer<T, Integer> consumer, boolean optional) {
+                    super(index, optional);
+                    this.consumer = consumer;
+                }
+
+                @Override
+                void accept(Cell cell, T row) {
+                    if (cell == null) {
+                        consumer.accept(row, null);
+                        return;
+                    }
+                    Integer date = null;
+                    try {
+                        Date cellValue = cell.getDateCellValue();
+                        if (cellValue != null) {
+                            date = DateUtility.date(LocalDate.fromDateFields(cellValue));
+                        }
+                    } catch (Exception e) {
+                        String cellValue = cell.getStringCellValue();
+                        if (cellValue != null) {
+                            cellValue = cellValue.trim();
+                            date = DateUtility.date(dateLocal(cellValue));
+                        }
+                    }
+                    consumer.accept(row, date);
                 }
             }
 
@@ -424,8 +465,12 @@ public class WorkbookReader {
         return new SheetReader(sheetName);
     }
 
-    static LocalDateTime dateLocal(String date) {
+    static LocalDateTime dateTimeLocal(String date) {
         return DateTimeFormat.forPattern("dd/MM/yyyy HH:mm:ss").parseLocalDateTime(date);
+    }
+
+    static LocalDate dateLocal(String date) {
+        return DateTimeFormat.forPattern("dd MMMM yyyy").parseLocalDate(date);
     }
 
     public static void splitNameIntoPerson(final Person person, String name) {
