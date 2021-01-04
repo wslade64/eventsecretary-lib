@@ -4,7 +4,9 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -65,4 +67,12 @@ public interface CollectionUtility {
         return bigDecimals;
     }
 
+    static Map<String, String> nameValuePairs(String list) {
+        Map<String, String> nvp = new HashMap<>();
+        for (String s : list.split(",")) {
+            String[] split = s.split("=");
+            nvp.put(split[0], split[1]);
+        }
+        return nvp;
+    }
 }
