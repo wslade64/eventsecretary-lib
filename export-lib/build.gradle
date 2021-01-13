@@ -1,5 +1,8 @@
 archivesBaseName = 'eventsecretary-export-lib'
 
+configurations.all {
+    exclude group: "au.com.auspost.lodgement.trace", module: "trace-lib"
+}
 dependencies {
     compile project(":simm-lib")
 
