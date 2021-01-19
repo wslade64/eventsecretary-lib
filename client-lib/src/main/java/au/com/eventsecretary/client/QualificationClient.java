@@ -1,8 +1,8 @@
 package au.com.eventsecretary.client;
 
 import au.com.eventsecretary.UnexpectedSystemException;
-import au.com.eventsecretary.accounting.registration.validation.ValidationRequest;
-import au.com.eventsecretary.accounting.registration.validation.ValidationResponse;
+import au.com.eventsecretary.accounting.registration.validation.QualificationRequest;
+import au.com.eventsecretary.accounting.registration.validation.QualificationResponse;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,7 +22,7 @@ import java.util.List;
  *
  * @author Warwick Slade
  */
-public class ValidationClient extends AbstractClient {
+public class QualificationClient extends AbstractClient {
 
     private final String systemToken;
 
@@ -33,17 +33,17 @@ public class ValidationClient extends AbstractClient {
         }
     }
 
-    public ValidationClient(String systemToken, String baseUrl, RestTemplateBuilder restTemplateBuilder) {
+    public QualificationClient(String systemToken, String baseUrl, RestTemplateBuilder restTemplateBuilder) {
         super(baseUrl, restTemplateBuilder);
         this.systemToken = systemToken;
     }
 
-    public ValidationResponse validate(ValidationRequest request) {
+    public QualificationResponse validate(QualificationRequest request) {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.put(HttpHeaders.AUTHORIZATION, Collections.singletonList(systemToken));
 
-            HttpEntity<ValidationRequest> httpEntity = new HttpEntity<>(request, headers);
+            HttpEntity<QualificationRequest> httpEntity = new HttpEntity<>(request, headers);
             ResponseEntity<String> exchange = restTemplate.exchange(baseUrl, HttpMethod.POST, httpEntity, String.class);
             String body = exchange.getBody();
             ObjectMapper objectMapper = objectMapper();
@@ -51,7 +51,7 @@ public class ValidationClient extends AbstractClient {
                 switch (exchange.getStatusCode()) {
                     case CREATED:
                     case OK:
-                        return objectMapper.readValue(body, ValidationResponse.class);
+                        return objectMapper.readValue(body, QualificationResponse.class);
                     case PRECONDITION_FAILED:
                         throw new ValidationErrorException(objectMapper.readValue(body, ErrorResponse.class).getErrors());
                     default:

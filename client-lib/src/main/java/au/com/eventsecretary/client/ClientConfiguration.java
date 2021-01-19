@@ -125,4 +125,10 @@ public class ClientConfiguration {
     public ValidationClient hrcavValidationClient(@Value("${hrcav.validation.systemToken}") String systemToken, @Value("${hrcav.validation.url}") String baseUrl, RestTemplateBuilder restTemplateBuilder) {
         return new ValidationClient(systemToken, baseUrl, restTemplateBuilder);
     }
+
+    @Bean
+    @ConditionalOnProperty(prefix = "hrcav.qualification", value = "systemToken")
+    public QualificationClient hrcavQualificationClient(@Value("${hrcav.qualification.systemToken}") String systemToken, @Value("${hrcav.qualification.url}") String baseUrl, RestTemplateBuilder restTemplateBuilder) {
+        return new QualificationClient(systemToken, baseUrl, restTemplateBuilder);
+    }
 }
