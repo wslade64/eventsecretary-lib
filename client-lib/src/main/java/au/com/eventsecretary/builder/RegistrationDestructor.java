@@ -41,6 +41,10 @@ public class RegistrationDestructor {
         return value(hasHorseMembershipNumber(registrationMetadataList), registrations);
     }
 
+    public String horseLicenseNumber(List<Registration> registrations) {
+        return value(hasHorseLicenseNumber(registrationMetadataList), registrations);
+    }
+
     public boolean hasClubs() {
         return hasClubs(registrationMetadataList) != null;
     }
@@ -115,12 +119,12 @@ public class RegistrationDestructor {
         return Pair.of(riderRegistration, registrationValueMetadata);
     }
 
-    public static Pair<RegistrationMetadata, RegistrationValueMetadata> hasHorseMembershipNumber(List<RegistrationMetadata> registrationMetadata) {
-        RegistrationMetadata riderRegistration = findByCode(registrationMetadata, "horseRegistration");
-        if (riderRegistration == null) {
+    public static Pair<RegistrationMetadata, RegistrationValueMetadata> hasHorseMembershipNumber(List<RegistrationMetadata> registrationMetadataList) {
+        RegistrationMetadata registrationMetadata = findByCode(registrationMetadataList, "horseRegistration");
+        if (registrationMetadata == null) {
             return null;
         }
-        RegistrationValueMetadata registrationValueMetadata = riderRegistration.getRegistrationValueMetadata()
+        RegistrationValueMetadata registrationValueMetadata = registrationMetadata.getRegistrationValueMetadata()
                 .stream()
                 .filter(registrationValueMetadata1 -> registrationValueMetadata1.getRegistrationType() == RegistrationType.number
                         && registrationValueMetadata1.getRegistrationValueType() == RegistrationValueType.pattern)
@@ -129,6 +133,23 @@ public class RegistrationDestructor {
         if (registrationValueMetadata == null) {
             return null;
         }
-        return Pair.of(riderRegistration, registrationValueMetadata);
+        return Pair.of(registrationMetadata, registrationValueMetadata);
+    }
+
+    public static Pair<RegistrationMetadata, RegistrationValueMetadata> hasHorseLicenseNumber(List<RegistrationMetadata> registrationMetadataList) {
+        RegistrationMetadata registrationMetadata = findByCode(registrationMetadataList, "dressageLicense");
+        if (registrationMetadata == null) {
+            return null;
+        }
+        RegistrationValueMetadata registrationValueMetadata = registrationMetadata.getRegistrationValueMetadata()
+                .stream()
+                .filter(registrationValueMetadata1 -> registrationValueMetadata1.getRegistrationType() == RegistrationType.license
+                        && registrationValueMetadata1.getRegistrationValueType() == RegistrationValueType.pattern)
+                .findFirst()
+                .orElse(null);
+        if (registrationValueMetadata == null) {
+            return null;
+        }
+        return Pair.of(registrationMetadata, registrationValueMetadata);
     }
 }
