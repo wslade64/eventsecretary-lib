@@ -21,6 +21,11 @@ public class ClientConfiguration {
     }
 
     @Bean
+    public NoteClient noteClient(@Value("${userUrl}") String baseUrl, RestTemplateBuilder restTemplateBuilder) {
+        return new NoteClient(baseUrl, restTemplateBuilder);
+    }
+
+    @Bean
     public IdentityClient identityClient(@Value("${userUrl}") String baseUrl, RestTemplateBuilder restTemplateBuilder) {
         return new IdentityClient(baseUrl, restTemplateBuilder);
     }

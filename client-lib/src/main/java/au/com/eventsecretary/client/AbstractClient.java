@@ -74,7 +74,9 @@ public abstract class AbstractClient {
     protected static Map<String, String> params(String... values) {
         HashMap<String, String> params = new HashMap<>();
         for (int i = 0; i < values.length; i++) {
-            params.put(values[i], values[i+1]);
+            if (values[i+1] != null) {
+                params.put(values[i], values[i+1]);
+            }
             i++;
         }
         return params;
