@@ -75,4 +75,8 @@ public interface CollectionUtility {
         }
         return nvp;
     }
+
+    static String toString(Boolean value) {
+        return value == null ? "" : (value.booleanValue() ? "Yes" : "No");
+    }
 }
