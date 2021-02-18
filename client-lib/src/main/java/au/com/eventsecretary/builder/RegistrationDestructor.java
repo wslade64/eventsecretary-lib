@@ -45,6 +45,10 @@ public class RegistrationDestructor {
         return value(hasHorseLicenseNumber(registrationMetadataList), registrations);
     }
 
+    public String horseDressageLevel(List<Registration> registrations) {
+        return value(hasHorseDressageLevel(registrationMetadataList), registrations);
+    }
+
     public boolean hasClubs() {
         return hasClubs(registrationMetadataList) != null;
     }
@@ -145,6 +149,23 @@ public class RegistrationDestructor {
                 .stream()
                 .filter(registrationValueMetadata1 -> registrationValueMetadata1.getRegistrationType() == RegistrationType.license
                         && registrationValueMetadata1.getRegistrationValueType() == RegistrationValueType.pattern)
+                .findFirst()
+                .orElse(null);
+        if (registrationValueMetadata == null) {
+            return null;
+        }
+        return Pair.of(registrationMetadata, registrationValueMetadata);
+    }
+
+    public static Pair<RegistrationMetadata, RegistrationValueMetadata> hasHorseDressageLevel(List<RegistrationMetadata> registrationMetadataList) {
+        RegistrationMetadata registrationMetadata = findByCode(registrationMetadataList, "drLevel");
+        if (registrationMetadata == null) {
+            return null;
+        }
+        RegistrationValueMetadata registrationValueMetadata = registrationMetadata.getRegistrationValueMetadata()
+                .stream()
+                .filter(registrationValueMetadata1 -> registrationValueMetadata1.getRegistrationType() == RegistrationType.name
+                        && registrationValueMetadata1.getRegistrationValueType() == RegistrationValueType.list)
                 .findFirst()
                 .orElse(null);
         if (registrationValueMetadata == null) {
