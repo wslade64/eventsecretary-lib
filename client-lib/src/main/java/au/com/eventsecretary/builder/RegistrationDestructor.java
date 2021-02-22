@@ -61,6 +61,10 @@ public class RegistrationDestructor {
         return hasHorseMembershipNumber(registrationMetadataList) != null;
     }
 
+    public boolean hasHorseDressageLevel() {
+        return hasHorseDressageLevel(registrationMetadataList) != null;
+    }
+
     public static String value(Pair<RegistrationMetadata, RegistrationValueMetadata> pair, List<Registration> registrations) {
         if (pair == null) {
             return null;
