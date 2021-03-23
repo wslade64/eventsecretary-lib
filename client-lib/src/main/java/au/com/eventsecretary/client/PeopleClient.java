@@ -16,6 +16,7 @@ import org.springframework.web.client.RestClientException;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static au.com.eventsecretary.simm.IdentityUtils.cleanEmailAddress;
 import static au.com.eventsecretary.simm.IdentityUtils.cleanPhoneNumber;
@@ -330,6 +331,25 @@ public class PeopleClient extends AbstractClient {
         }
         catch (RestClientException e) {
             logger.error("getPersonByNames:could not connect to people service" + e.getMessage());
+            throw new UnexpectedSystemException(e);
+        }
+    }
+
+    public List<Person> findPeopleById(List<String> idList) {
+        try {
+            HttpEntity<Void> httpEntity = createEntity();
+
+            String ids = idList.stream().collect(Collectors.joining(","));
+            ResponseEntity<Person[]> exchange = restTemplate.exchange(baseUrl + URI + "/person?" + "ids=" + ids, HttpMethod.GET, httpEntity, Person[].class);
+            switch (exchange.getStatusCode()) {
+                case OK:
+                    return Arrays.asList(exchange.getBody());
+                default:
+                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+            }
+        }
+        catch (RestClientException e) {
+            logger.error("findPeople:could not connect to person service" + e.getMessage());
             throw new UnexpectedSystemException(e);
         }
     }
