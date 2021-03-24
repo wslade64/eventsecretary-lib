@@ -79,6 +79,42 @@ public class AccountClient extends AbstractClient {
         }
     }
 
+    public void sealAccount(String accountCode) {
+        try {
+            HttpEntity<Account> httpEntity = createSystemEntity();
+
+            ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI + "/" + accountCode + "/seal", HttpMethod.PUT, httpEntity, Void.class);
+            switch (exchange.getStatusCode()) {
+                case OK:
+                    return;
+                default:
+                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+            }
+        }
+        catch (RestClientException e) {
+            logger.error("seal:could not connect to service" + e.getMessage());
+            throw new UnexpectedSystemException(e);
+        }
+    }
+
+    public void unsealAccount(String accountCode) {
+        try {
+            HttpEntity<Account> httpEntity = createSystemEntity();
+
+            ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI + "/" + accountCode + "/unseal", HttpMethod.PUT, httpEntity, Void.class);
+            switch (exchange.getStatusCode()) {
+                case OK:
+                    return;
+                default:
+                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+            }
+        }
+        catch (RestClientException e) {
+            logger.error("seal:could not connect to service" + e.getMessage());
+            throw new UnexpectedSystemException(e);
+        }
+    }
+
     public Account fetchAccountByCode(String accountCode) {
         try {
             HttpEntity<Void> httpEntity = createSystemEntity();
