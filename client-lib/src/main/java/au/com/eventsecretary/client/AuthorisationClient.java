@@ -45,6 +45,26 @@ public class AuthorisationClient extends ResourceClient {
         }
     }
 
+    public List<Authorisation> getAuthorisationsByContext(String contextName, String targetId) {
+        try {
+            HttpEntity<Void> httpEntity = createEntity();
+
+            Map<String, String> uriVariables = new HashMap<>();
+            uriVariables.put("contextName", contextName);
+            uriVariables.put("targetId", targetId);
+            ResponseEntity<List<Authorisation>> exchange = restTemplate.exchange(baseUrl + "?contextName={contextName}&targetId={targetId}"
+                    , HttpMethod.GET, httpEntity, new ParameterizedTypeReference<List<Authorisation>>(){}, uriVariables);
+            if (exchange.getStatusCode() == HttpStatus.OK) {
+                return exchange.getBody();
+            }
+            return null;
+        }
+        catch (RestClientException e) {
+            logger.error("getAuthorisationsByContext:" + e.getMessage());
+            throw new UnexpectedSystemException("getAuthorisationsByContext");
+        }
+    }
+
     public List<Authorisation> getAuthorisations() {
         try {
             HttpEntity<Void> httpEntity = createEntity();
