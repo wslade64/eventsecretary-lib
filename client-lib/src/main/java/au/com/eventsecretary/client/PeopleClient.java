@@ -316,7 +316,7 @@ public class PeopleClient extends AbstractClient {
 
     public Person getPersonByDetails(String firstName, String lastName, String emailAddress) {
         try {
-            HttpEntity<Void> httpEntity = createEntity();
+            HttpEntity<Void> httpEntity = createSystemEntity();
 
             ResponseEntity<Person[]> exchange = restTemplate.exchange(baseUrl + URI + "/person?"
                     + "firstName=" + firstName
@@ -337,7 +337,7 @@ public class PeopleClient extends AbstractClient {
 
     public List<Person> findPeopleById(List<String> idList) {
         try {
-            HttpEntity<Void> httpEntity = createEntity();
+            HttpEntity<Void> httpEntity = createSystemEntity();
 
             String ids = idList.stream().collect(Collectors.joining(","));
             ResponseEntity<Person[]> exchange = restTemplate.exchange(baseUrl + URI + "/person?" + "ids=" + ids, HttpMethod.GET, httpEntity, Person[].class);
@@ -356,7 +356,7 @@ public class PeopleClient extends AbstractClient {
 
     public List<Person> findPeople(String query) {
         try {
-            HttpEntity<Void> httpEntity = createEntity();
+            HttpEntity<Void> httpEntity = createSystemEntity();
 
             ResponseEntity<Person[]> exchange = restTemplate.exchange(baseUrl + URI + "/person?" + "query=" + query, HttpMethod.GET, httpEntity, Person[].class);
             switch (exchange.getStatusCode()) {
