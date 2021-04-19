@@ -148,12 +148,31 @@ public abstract class AbstractController
     }
 
     protected void addCookie(HttpServletRequest request, HttpServletResponse httpResponse, String token) {
-        Cookie cookie = new Cookie(AUTH_COOKIE, token);
+        addCookie(request, httpResponse, AUTH_COOKIE, token);
+    }
+
+    public static void addCookie(HttpServletRequest request, HttpServletResponse httpResponse, String cookieName, String token) {
+        Cookie cookie = new Cookie(cookieName, token);
         cookie.setPath("/");
         cookie.setDomain(request.getServerName());
         cookie.setSecure(request.isSecure());
         cookie.setHttpOnly(true);
         cookie.setMaxAge(-1);
+        cookie.setVersion(1);
+        httpResponse.addCookie(cookie);
+    }
+
+    protected void clearCookie(HttpServletRequest request, HttpServletResponse httpResponse) {
+        clearCookie(request, httpResponse, AUTH_COOKIE);
+    }
+
+    public static void clearCookie(HttpServletRequest request, HttpServletResponse httpResponse, String cookieName) {
+        Cookie cookie = new Cookie(cookieName, "");
+        cookie.setPath("/");
+        cookie.setDomain(request.getServerName());
+        cookie.setSecure(request.isSecure());
+        cookie.setHttpOnly(true);
+        cookie.setMaxAge(0);
         cookie.setVersion(1);
         httpResponse.addCookie(cookie);
     }
