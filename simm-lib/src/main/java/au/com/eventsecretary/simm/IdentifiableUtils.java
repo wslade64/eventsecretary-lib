@@ -113,4 +113,18 @@ public interface IdentifiableUtils {
         identifiable.setName(name);
         return identifiable;
     }
+
+    static void ensureId(Identifiable identifiable) {
+        if (identifiable == null) {
+            return;
+        }
+        if (StringUtils.isBlank(identifiable.getId())) {
+            identifiable.setId(id());
+        }
+    }
+
+    static void ensureId(List<? extends Identifiable> identifiables) {
+        identifiables.forEach(ident -> ensureId(ident));
+    }
+
 }

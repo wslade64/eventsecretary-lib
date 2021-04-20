@@ -142,6 +142,25 @@ public class FacilityClient extends AbstractClient {
         }
     }
 
+    public Facility findFacilityById(String siteCode, String facilityId) {
+        try {
+            HttpEntity<Void> httpEntity = createEntity();
+
+            ResponseEntity<Facility> exchange = restTemplate.exchange(baseUrl + URI + "/site/" + siteCode + "/facility?id=" + facilityId
+                    , HttpMethod.GET, httpEntity, Facility.class);
+            switch (exchange.getStatusCode()) {
+                case OK:
+                    return exchange.getBody();
+                default:
+                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+            }
+        }
+        catch (RestClientException e) {
+            logger.error("findFacilityById:could not find facility" + e.getMessage());
+            throw new UnexpectedSystemException(e);
+        }
+    }
+
     public List<Facility> findFacilities(Site site, FacilityType facilityType) {
         try {
             HttpEntity<Void> httpEntity = createSystemEntity();
