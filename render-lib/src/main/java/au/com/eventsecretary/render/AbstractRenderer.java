@@ -36,6 +36,11 @@ public class AbstractRenderer {
     }
 
     public static String resolveValue(Map<String, ComplexType> model, Attribute attribute, String value) {
+        if (attribute.getType() == Type.INTRINSIC) {
+            if (attribute.getClassifier().equals(Intrinsic.BOOLEAN.name())) {
+                return "true".equals(value) ? "Yes" : "No";
+            }
+        }
         if (value == null) {
             return "";
         }
@@ -46,11 +51,6 @@ public class AbstractRenderer {
                 return value;
             }
             return alias(first.get());
-        }
-        if (attribute.getType() == Type.INTRINSIC) {
-            if (attribute.getClassifier().equals(Intrinsic.BOOLEAN.name())) {
-                return "true".equals(value) ? "Yes" : "No";
-            }
         }
         return value;
     }
