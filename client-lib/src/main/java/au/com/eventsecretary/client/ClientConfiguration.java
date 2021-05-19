@@ -7,6 +7,7 @@ import au.com.eventsecretary.equestrian.organisation.RiderImpl;
 import au.com.eventsecretary.user.access.AccessCodeImpl;
 import au.com.eventsecretary.user.identity.ActivationImpl;
 import au.com.eventsecretary.user.identity.AuthorisationImpl;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -33,6 +34,12 @@ public class ClientConfiguration {
     @Bean
     public AccountClient accountClient(@Value("${userUrl}") String baseUrl, RestTemplateBuilder restTemplateBuilder) {
         return new AccountClient(baseUrl, restTemplateBuilder);
+    }
+
+    @Bean
+    @Qualifier("equestrian")
+    public EventClient equestrianClient(@Value("${userUrl}") String baseUrl, RestTemplateBuilder restTemplateBuilder) {
+        return new EventClient(baseUrl, restTemplateBuilder);
     }
 
     @Bean
