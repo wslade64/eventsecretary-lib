@@ -21,6 +21,7 @@ public class SessionService {
 
     private class Session {
         private Person person;
+        private Person effectivePerson;
         private List<Authorisation> authorisations;
         private Identity identity;
 
@@ -54,6 +55,13 @@ public class SessionService {
                 return person = authenticateClient.findPerson(identity.getPersonId());
             }
             return null;
+        }
+
+        private Person getEffectivePerson() {
+            if (effectivePerson != null) {
+                return effectivePerson;
+            }
+            return getPerson();
         }
 
         private List<Authorisation> getAuthorisations() {
@@ -117,10 +125,17 @@ public class SessionService {
         return session().getPerson();
     }
 
+    public Person getEffectivePerson() {
+        return session().getEffectivePerson();
+    }
+
     public void authorise(String contextName, String targetId, String area, Permissions read) {
         session().authorise(contextName, targetId, area, read);
     }
 
+    public void effectivePerson(Person person) {
+        session().effectivePerson = person;
+    }
     public List<Authorisation> getAuthorisations() {
         return session().getAuthorisations();
     }
