@@ -2,10 +2,12 @@ package au.com.eventsecretary.export;
 
 import au.com.eventsecretary.UnexpectedSystemException;
 import org.apache.poi.ooxml.POIXMLProperties;
+import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -21,6 +23,10 @@ import java.text.SimpleDateFormat;
  * @author Warwick Slade
  */
 public class WorkbookBuilder {
+    public static double CM_H = 0.197; // units of inches
+    public static double CM_1 = 0.394; // units of inches
+    public static double CM_2 = 0.787; // units of inches
+
     private final short FONT_SIZE = (short)11;
     protected final XSSFWorkbook workbook;
     public final CellStyle currencyCellStyle;
@@ -107,6 +113,16 @@ public class WorkbookBuilder {
         return new SheetBuilder(this, sheetName);
     }
 
+    public WorkbookBuilder gridOn() {
+        for (int i = 0; i < workbook.getNumCellStyles(); i++) {
+            XSSFCellStyle cellStyleAt = workbook.getCellStyleAt(i);
+            cellStyleAt.setBorderBottom(BorderStyle.THIN);
+            cellStyleAt.setBorderTop(BorderStyle.THIN);
+            cellStyleAt.setBorderLeft(BorderStyle.THIN);
+            cellStyleAt.setBorderRight(BorderStyle.THIN);
+        }
+        return this;
+    }
     public void build(File outputFile) {
         FileOutputStream fos = null;
         try {

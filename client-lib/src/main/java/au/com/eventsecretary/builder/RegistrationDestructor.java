@@ -37,6 +37,11 @@ public class RegistrationDestructor {
         return value(hasRiderMembershipNumber(registrationMetadataList), registrations);
     }
 
+    public boolean riderInsurance(List<Registration> registrations) {
+        String value = value(hasRiderInsurance(registrationMetadataList), registrations);
+        return "true".equals(value);
+    }
+
     public String horseMembershipNumber(List<Registration> registrations) {
         return value(hasHorseMembershipNumber(registrationMetadataList), registrations);
     }
@@ -99,6 +104,10 @@ public class RegistrationDestructor {
 
     public static Pair<RegistrationMetadata, RegistrationValueMetadata> hasRiderMembershipNumber(List<RegistrationMetadata> registrationMetadataList) {
         return hasRegistration(registrationMetadataList, "riderRegistration", RegistrationType.number, RegistrationValueType.pattern);
+    }
+
+    public static Pair<RegistrationMetadata, RegistrationValueMetadata> hasRiderInsurance(List<RegistrationMetadata> registrationMetadataList) {
+        return hasRegistration(registrationMetadataList, "riderRegistration", RegistrationType.insurance, RegistrationValueType.binary);
     }
 
     public static Pair<RegistrationMetadata, RegistrationValueMetadata> hasHorseMembershipNumber(List<RegistrationMetadata> registrationMetadataList) {

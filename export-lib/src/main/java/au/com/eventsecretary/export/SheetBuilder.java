@@ -4,10 +4,12 @@ import au.com.eventsecretary.UnexpectedSystemException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.ClientAnchor;
 import org.apache.poi.ss.usermodel.Drawing;
+import org.apache.poi.ss.usermodel.Header;
 import org.apache.poi.ss.usermodel.Picture;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.util.IOUtils;
 
 import java.io.FileInputStream;
@@ -16,6 +18,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import static au.com.eventsecretary.export.WorkbookBuilder.CM_1;
+import static org.apache.poi.ss.usermodel.PrintSetup.A4_TRANSVERSE_PAPERSIZE;
 
 /**
  * TODO
@@ -39,6 +44,37 @@ public class SheetBuilder {
     SheetBuilder(WorkbookBuilder workbookBuilder, String sheetName) {
         this.workbookBuilder = workbookBuilder;
         sheet = this.workbookBuilder.workbook.createSheet(sheetName);
+        sheet.getPrintSetup().setPaperSize(A4_TRANSVERSE_PAPERSIZE);
+    }
+
+    public SheetBuilder landscape() {
+        sheet.getPrintSetup().setLandscape(true);
+        return this;
+    }
+
+    public SheetBuilder printArea(int column, int row, int width, int height ) {
+        sheet.getWorkbook().setPrintArea(sheet.getWorkbook().getSheetIndex(sheet), column, column + width - 1, row, row + height - 1);
+        return this;
+    }
+
+    public SheetBuilder repeatFirstRow() {
+        sheet.setRepeatingRows(CellRangeAddress.valueOf("1:1"));
+        return this;
+    }
+
+    public SheetBuilder margins(double left, double top, double right, double bottom) {
+        this.sheet.setMargin(Sheet.LeftMargin, left);
+        this.sheet.setMargin(Sheet.TopMargin, top);
+        this.sheet.setMargin(Sheet.RightMargin, right);
+        this.sheet.setMargin(Sheet.BottomMargin, bottom);
+        return this;
+    }
+
+    public SheetBuilder header(String text) {
+        Header header = this.sheet.getHeader();
+        header.setCenter(text);
+        this.sheet.setMargin(Sheet.HeaderMargin, CM_1);
+        return this;
     }
 
     public SheetBuilder exclusions(List<String> exclusions) {
