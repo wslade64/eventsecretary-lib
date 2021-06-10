@@ -47,14 +47,18 @@ public interface IdentifiableUtils {
     }
 
     static <T extends Identifiable> T copy(T from, T to) {
-        to.setCode(from.getCode());
-        to.setName(from.getName());
+        if (from != null) {
+            to.setCode(from.getCode());
+            to.setName(from.getName());
+        }
         return to;
     }
 
     static <T extends Identifiable> T cloneIdentifiable(T from) {
         T to = (T) new IdentifiableImpl();
-        to.setId(from.getId());
+        if (from != null) {
+            to.setId(from.getId());
+        }
         return copy(from, to);
     }
 
@@ -125,6 +129,26 @@ public interface IdentifiableUtils {
 
     static void ensureId(List<? extends Identifiable> identifiables) {
         identifiables.forEach(ident -> ensureId(ident));
+    }
+
+    static <T extends Identifiable> String name(T firstChoice, T secondChoice) {
+        if (firstChoice != null && StringUtils.isNotBlank(firstChoice.getName())) {
+            return firstChoice.getName();
+        }
+        if (secondChoice != null) {
+            return secondChoice.getName();
+        }
+        return null;
+    }
+
+    static <T extends Identifiable> String code(T firstChoice, T secondChoice) {
+        if (firstChoice != null && StringUtils.isNotBlank(firstChoice.getCode())) {
+            return firstChoice.getCode();
+        }
+        if (secondChoice != null) {
+            return secondChoice.getCode();
+        }
+        return null;
     }
 
 }
