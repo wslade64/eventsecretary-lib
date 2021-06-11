@@ -405,4 +405,11 @@ public interface DateUtility {
         return years;
     }
 
+    static String formatMilliSeconds(int milliseconds) {
+        int seconds = milliseconds / 1000;
+        int minutes = seconds / 60;
+        int hms = milliseconds % 1000;
+        int tms = hms / 10;
+        return String.format("%d:%02d.%02d", minutes, seconds, tms);
+    }
 }
