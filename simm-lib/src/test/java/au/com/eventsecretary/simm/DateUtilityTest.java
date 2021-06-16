@@ -126,4 +126,9 @@ public class DateUtilityTest {
         MatcherAssert.assertThat(timestamp.getTime(), is(93043));
     }
 
+    @Test
+    public void shouldFormatMilliSeconds() {
+        assertThat(DateUtility.formatMilliSeconds(8000), is("0:08.00"));
+        assertThat(DateUtility.formatMilliSeconds(88000), is("1:28.00"));
+    }
 }
