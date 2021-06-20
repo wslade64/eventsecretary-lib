@@ -413,4 +413,10 @@ public interface DateUtility {
         int tms = hms / 10;
         return String.format("%d:%02d.%02d", minutes, seconds, tms);
     }
+
+    static String formatSeconds(int seconds) {
+        int minutes = seconds / 60;
+        seconds = seconds % 60;
+        return String.format("%d:%02d", minutes, seconds);
+    }
 }
