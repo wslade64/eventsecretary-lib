@@ -19,6 +19,45 @@ public class PaymentClient extends AbstractClient
         super(baseUrl, restTemplateBuilder);
     }
 
+    static class CheckoutRequest {
+        private String system;
+        private String orderId;
+        private String amount;
+        private String nonce;
+
+        public void setOrderId(String orderId) {
+            this.orderId = orderId;
+        }
+
+        public void setSystem(String system) {
+            this.system = system;
+        }
+
+        public void setAmount(String amount) {
+            this.amount = amount;
+        }
+
+        public void setNonce(String nonce) {
+            this.nonce = nonce;
+        }
+
+        public String getSystem() {
+            return system;
+        }
+
+        public String getOrderId() {
+            return orderId;
+        }
+
+        public String getAmount() {
+            return amount;
+        }
+
+        public String getNonce() {
+            return nonce;
+        }
+    }
+
     private static class Refund {
         private String transactionId;
         private String amount;
@@ -69,4 +108,30 @@ public class PaymentClient extends AbstractClient
         }
     }
 
+    public void voucher(String amount, String orderName) {
+        try {
+            String url = baseUrl + URI + "/checkout2";
+
+            CheckoutRequest checkoutRequest = new CheckoutRequest();
+            checkoutRequest.setAmount(amount);
+            checkoutRequest.setNonce("voucher");
+            checkoutRequest.setSystem("order");
+            checkoutRequest.setOrderId(orderName);
+
+            HttpEntity<CheckoutRequest> httpEntity = createSystemEntityBody(checkoutRequest);
+
+            ResponseEntity<Void> exchange = restTemplate.exchange(url, HttpMethod.POST, httpEntity, Void.class);
+            switch (exchange.getStatusCode()) {
+                case OK:
+                    return;
+                case PRECONDITION_FAILED:
+                    throw new ResourceExistsException("");
+            }
+            throw new ResourceExistsException("Could not checkout at this moment." + exchange.getStatusCode());
+        }
+        catch (RestClientException e) {
+            logger.error("Could not connect to payment service:" + e.getMessage());
+            throw new UnexpectedSystemException("Could not perform checkout at this moment.");
+        }
+    }
 }
