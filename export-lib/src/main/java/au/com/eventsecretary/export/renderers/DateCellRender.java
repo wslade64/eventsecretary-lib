@@ -3,9 +3,7 @@ package au.com.eventsecretary.export.renderers;
 import au.com.eventsecretary.export.CellRenderer;
 import au.com.eventsecretary.export.WorkbookBuilder;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.HorizontalAlignment;
 
 import java.util.Date;
 
@@ -29,8 +27,8 @@ public class DateCellRender implements CellRenderer<Date> {
 
         cell.setCellStyle(workbookBuilder.dateStyle);
 
-        CellStyle cellStyle = cell.getCellStyle();
-        cellStyle.setAlignment(HorizontalAlignment.LEFT);
-        cellStyle.setDataFormat(workbookBuilder.dateFormat);
+//        CellStyle cellStyle = cell.getCellStyle();
+//        cellStyle.setAlignment(HorizontalAlignment.LEFT);
+//        cellStyle.setDataFormat(workbookBuilder.dateFormat);
     }
 }

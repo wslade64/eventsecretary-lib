@@ -66,8 +66,9 @@ public class CellBuilder {
 
     private Cell createCell()  {
         Cell cell = row.createCell(sheetColumn++);
-        cell.setCellStyle(rowBuilder.sheetBuilder.workbookBuilder.workbook.createCellStyle());
-        cell.getCellStyle().setFont(rowBuilder.sheetBuilder.workbookBuilder.normalFont);
+        cell.setCellStyle(rowBuilder.sheetBuilder.workbookBuilder.normalStyle);
+//        cell.setCellStyle(rowBuilder.sheetBuilder.workbookBuilder.workbook.createCellStyle());
+//        cell.getCellStyle().setFont(rowBuilder.sheetBuilder.workbookBuilder.normalFont);
         return cell;
     }
 

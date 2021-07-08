@@ -3,9 +3,7 @@ package au.com.eventsecretary.export.renderers;
 import au.com.eventsecretary.export.CellRenderer;
 import au.com.eventsecretary.export.WorkbookBuilder;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.HorizontalAlignment;
 
 public class IntegerCellRender implements CellRenderer<Object> {
 
@@ -27,8 +25,9 @@ public class IntegerCellRender implements CellRenderer<Object> {
             cell.setCellValue((Integer)value);
         }
 
-        CellStyle cellStyle = cell.getCellStyle();
-        cellStyle.setDataFormat((short)1);
-        cellStyle.setAlignment(HorizontalAlignment.RIGHT);
+        cell.setCellStyle(workbookBuilder.numericCellStyle);
+//        CellStyle cellStyle = cell.getCellStyle();
+//        cellStyle.setDataFormat((short)1);
+//        cellStyle.setAlignment(HorizontalAlignment.RIGHT);
     }
 }

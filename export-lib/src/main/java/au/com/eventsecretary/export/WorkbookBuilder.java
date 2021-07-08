@@ -29,6 +29,7 @@ public class WorkbookBuilder {
 
     private final short FONT_SIZE = (short)11;
     protected final XSSFWorkbook workbook;
+    public final CellStyle normalStyle;
     public final CellStyle currencyCellStyle;
     public final CellStyle numericCellStyle;
     public final CellStyle dateStyle;
@@ -37,6 +38,7 @@ public class WorkbookBuilder {
     public final CellStyle headerStyle;
     public final CellStyle header2Style;
     public final CellStyle wrappedStyle;
+    public final CellStyle formulaStyle;
     public final SimpleDateFormat sdf;
     public final SimpleDateFormat sdtf;
     public final Font normalFont;
@@ -51,32 +53,36 @@ public class WorkbookBuilder {
         POIXMLProperties.CoreProperties coreProperties = workbook.getProperties().getCoreProperties();
         coreProperties.setCreator("Event Secretary Pty Ltd");
 
-        currencyCellStyle = workbook.createCellStyle();
-        currencyCellStyle.setDataFormat((short)7);
-        currencyCellStyle.setAlignment(HorizontalAlignment.RIGHT);
+        normalFont = workbook.createFont();
+        normalFont.setFontHeightInPoints(FONT_SIZE);
+
+        boldFont = workbook.createFont();
+        boldFont.setBold(true);
+        boldFont.setFontHeightInPoints(FONT_SIZE);
 
         numericCellStyle = workbook.createCellStyle();
         numericCellStyle.setDataFormat((short)1);
         numericCellStyle.setAlignment(HorizontalAlignment.RIGHT);
+        numericCellStyle.setFont(normalFont);
 
         dateStyle = workbook.createCellStyle();
         dateStyle.setAlignment(HorizontalAlignment.LEFT);
         dateFormat = workbook.createDataFormat().getFormat("dd-mm-yyyy");
         sdf = new SimpleDateFormat("dd-MM-yyyy");
         dateStyle.setDataFormat(dateFormat);
+        dateStyle.setFont(normalFont);
 
         dateTimeStyle = workbook.createCellStyle();
         dateTimeStyle.setAlignment(HorizontalAlignment.LEFT);
         sdtf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         dateTimeFormat = workbook.createDataFormat().getFormat("dd-mm-yyyy hh:mm:ss");
         dateTimeStyle.setDataFormat(dateTimeFormat);
+        dateTimeStyle.setFont(normalFont);
 
-        boldFont = workbook.createFont();
-        boldFont.setBold(true);
-        boldFont.setFontHeightInPoints(FONT_SIZE);
-
-        normalFont = workbook.createFont();
-        normalFont.setFontHeightInPoints(FONT_SIZE);
+        formulaStyle = workbook.createCellStyle();
+        formulaStyle.setAlignment(HorizontalAlignment.RIGHT);
+        formulaStyle.setDataFormat(dateFormat);
+        formulaStyle.setDataFormat((short)7);
 
         headerStyle = workbook.createCellStyle();
         headerStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -98,8 +104,17 @@ public class WorkbookBuilder {
 
         wrappedStyle = workbook.createCellStyle();
         wrappedStyle.setWrapText(true);
+        wrappedStyle.setFont(normalFont);
 
         helper = workbook.getCreationHelper();
+
+        currencyCellStyle = workbook.createCellStyle();
+        currencyCellStyle.setDataFormat((short)7);
+        currencyCellStyle.setAlignment(HorizontalAlignment.RIGHT);
+        currencyCellStyle.setFont(normalFont);
+
+        normalStyle = workbook.createCellStyle();
+        normalStyle.setFont(normalFont);
     }
 
 
