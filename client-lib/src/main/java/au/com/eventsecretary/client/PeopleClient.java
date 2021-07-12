@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestClientException;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -336,6 +337,22 @@ public class PeopleClient extends AbstractClient {
     }
 
     public List<Person> findPeopleById(List<String> idList) {
+        List<Person> list = new ArrayList<>();
+        boolean remaining = !idList.isEmpty();
+        int index = 0;
+        while (remaining) {
+            int size = Math.min(idList.size() - index, 100);
+            if (size == 0) {
+                remaining = false;
+            } else {
+                list.addAll(findPeopleByBlock(idList.subList(index, index + size)));
+                index += size;
+            }
+        }
+        return list;
+    }
+
+    public List<Person> findPeopleByBlock(List<String> idList) {
         try {
             HttpEntity<Void> httpEntity = createSystemEntity();
 
