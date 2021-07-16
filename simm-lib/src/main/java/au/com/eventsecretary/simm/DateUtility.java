@@ -306,7 +306,7 @@ public interface DateUtility {
 
     static int subtract(int time1, int time) {
         Seconds seconds = Seconds.secondsBetween(timeToLocal(time), timeToLocal(time1));
-        return seconds.getSeconds() / 60;
+        return seconds.getSeconds();
     }
 
     static Timestamp toTimestamp(String intervalName) {
