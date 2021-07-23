@@ -232,6 +232,14 @@ public interface DateUtility {
         return hour + ":" + sminute;
     }
 
+    static String longerTime(int time) {
+        if (time == 0) {
+            return "";
+        }
+        int[] split = timeToSplit(time);
+        return String.format("%02d:%02d:%02d", split[0], split[1], split[2]);
+    }
+
     static int minutes(int time) {
         int[] intervals = DateUtility.timeToSplit(time);
         return intervals[0] * 60 + intervals[1];
