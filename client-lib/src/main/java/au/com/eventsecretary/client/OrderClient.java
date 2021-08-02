@@ -110,6 +110,27 @@ public class OrderClient extends AbstractClient {
         }
     }
 
+    public List<Order> fetchOrdersByCurrentPerson(String accountCode) {
+        try {
+            HttpEntity<Void> httpEntity = createEntity();
+
+            ResponseEntity<List<Order>> exchange = restTemplate.exchange(baseUrl + URI
+                    , HttpMethod.GET, httpEntity, new ParameterizedTypeReference<List<Order>>(){}, params("accountCode", accountCode));
+            switch (exchange.getStatusCode()) {
+                case OK:
+                    return exchange.getBody();
+                case NOT_FOUND:
+                    throw new ResourceNotFoundException("order");
+                default:
+                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+            }
+        }
+        catch (RestClientException e) {
+            logger.error("could not connect to service" + e.getMessage());
+            throw new UnexpectedSystemException(e);
+        }
+    }
+
     public void deleteOrder(String accountCode, String orderId) {
         try {
             logger.info("delete:{}", orderId);
