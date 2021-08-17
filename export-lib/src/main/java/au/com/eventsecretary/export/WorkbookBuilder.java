@@ -36,9 +36,10 @@ public class WorkbookBuilder {
     public final CellStyle dateTimeStyle;
     public final CellStyle titleStyle;
     public final CellStyle headerStyle;
-    public final CellStyle header2Style;
+    public final CellStyle importantStyle;
     public final CellStyle wrappedStyle;
     public final CellStyle formulaStyle;
+    public final CellStyle centeredStyle;
     public final SimpleDateFormat sdf;
     public final SimpleDateFormat sdtf;
     public final Font normalFont;
@@ -65,6 +66,11 @@ public class WorkbookBuilder {
         numericCellStyle.setAlignment(HorizontalAlignment.RIGHT);
         numericCellStyle.setFont(normalFont);
 
+        centeredStyle = workbook.createCellStyle();
+        centeredStyle.setDataFormat((short)1);
+        centeredStyle.setAlignment(HorizontalAlignment.CENTER);
+        centeredStyle.setFont(normalFont);
+
         dateStyle = workbook.createCellStyle();
         dateStyle.setAlignment(HorizontalAlignment.LEFT);
         dateFormat = workbook.createDataFormat().getFormat("dd-mm-yyyy");
@@ -88,9 +94,9 @@ public class WorkbookBuilder {
         headerStyle.setAlignment(HorizontalAlignment.CENTER);
         headerStyle.setFont(boldFont);
 
-        header2Style = workbook.createCellStyle();
-        header2Style.setAlignment(HorizontalAlignment.LEFT);
-        header2Style.setFont(boldFont);
+        importantStyle = workbook.createCellStyle();
+        importantStyle.setAlignment(HorizontalAlignment.LEFT);
+        importantStyle.setFont(boldFont);
 
         titleFont = workbook.createFont();
         titleFont.setFontHeightInPoints((short) 26);

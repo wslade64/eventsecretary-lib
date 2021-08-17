@@ -33,8 +33,7 @@ public class MatrixBuilder {
 
         private CellBuilder(Cell cell) {
             this.cell = cell;
-            this.cell.setCellStyle(sheetBuilder.workbookBuilder.workbook.createCellStyle());
-            this.cell.getCellStyle().setFont(sheetBuilder.workbookBuilder.normalFont);
+            this.cell.setCellStyle(sheetBuilder.workbookBuilder.normalStyle);
         }
 
         public CellBuilder stringFormat() {
@@ -63,18 +62,18 @@ public class MatrixBuilder {
             return this;
         }
 
-        public CellBuilder header2() {
-            cell.setCellStyle(sheetBuilder.workbookBuilder.header2Style);
+        public CellBuilder centered() {
+            cell.setCellStyle(sheetBuilder.workbookBuilder.centeredStyle);
+            return this;
+        }
+
+        public CellBuilder important() {
+            cell.setCellStyle(sheetBuilder.workbookBuilder.importantStyle);
             return this;
         }
 
         public CellBuilder value(Object value) {
             cellRenderer.render(cell, value, sheetBuilder.workbookBuilder);
-            return this;
-        }
-
-        public CellBuilder bold() {
-            cell.getCellStyle().setFont(sheetBuilder.workbookBuilder.boldFont);
             return this;
         }
 
@@ -140,6 +139,11 @@ public class MatrixBuilder {
     public MatrixBuilder nextRow(Consumer<Integer> notify) {
         rowIndex++;
         notify.accept(rowIndex);
+        return this;
+    }
+
+    public MatrixBuilder autoSize(int column) {
+        sheet.autoSizeColumn(column);
         return this;
     }
 
