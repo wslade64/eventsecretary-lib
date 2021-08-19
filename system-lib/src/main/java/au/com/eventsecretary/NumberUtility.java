@@ -14,4 +14,17 @@ public interface NumberUtility {
     static boolean isZero(BigDecimal value) {
         return value.compareTo(BigDecimal.ZERO) == 0;
     }
+
+    static BigDecimal add(BigDecimal left, BigDecimal right) {
+        if (left == null && right == null) {
+            return null;
+        }
+        if (left == null) {
+            return right;
+        }
+        if (right == null) {
+            return left;
+        }
+        return left.add(right);
+    }
 }
