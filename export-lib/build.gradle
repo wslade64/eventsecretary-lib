@@ -12,6 +12,8 @@ dependencies {
     compile("org.apache.poi:poi-ooxml:4.1.2")
     compile("org.springframework:spring-context:${springVersion}")
     compile("org.springframework:spring-context-support:${springVersion}")
+    compile("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:${jacksonVersion}")
+
     compile project(":system-lib")
     testCompile("junit:junit:4.12")
 }

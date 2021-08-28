@@ -18,11 +18,10 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 
 /**
- * TODO
  *
  * @author Warwick Slade
  */
-public class WorkbookBuilder {
+public class WorkbookBuilder implements FileBuilder {
     public static double CM_H = 0.197; // units of inches
     public static double CM_1 = 0.394; // units of inches
     public static double CM_2 = 0.787; // units of inches
@@ -144,21 +143,13 @@ public class WorkbookBuilder {
         }
         return this;
     }
-    public void build(File outputFile) {
-        FileOutputStream fos = null;
-        try {
-            fos = new FileOutputStream(outputFile);
+
+    public String build(File outputFile) {
+        try (FileOutputStream fos = new FileOutputStream(outputFile)){
             workbook.write(fos);
-            fos.close();
+            return "xlsx";
         } catch (IOException e) {
             throw new UnexpectedSystemException(e);
-        } finally {
-            if (fos != null) {
-                try {
-                    fos.close();
-                } catch (IOException e) {
-                }
-            }
         }
     }
 }

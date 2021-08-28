@@ -7,6 +7,7 @@ import au.com.eventsecretary.common.TimestampImpl;
 import org.joda.time.*;
 import org.joda.time.format.DateTimeFormat;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -411,6 +412,13 @@ public interface DateUtility {
             years--;
         }
         return years;
+    }
+
+    static String formatMilliSeconds(BigDecimal milliseconds) {
+        if (milliseconds == null) {
+            return "";
+        }
+        return formatMilliSeconds(milliseconds.intValue());
     }
 
     static String formatMilliSeconds(int milliseconds) {

@@ -1,6 +1,7 @@
 package au.com.eventsecretary.export;
 
 import au.com.eventsecretary.UnexpectedSystemException;
+import au.com.eventsecretary.export.renderers.BigDoubleCellRender;
 import au.com.eventsecretary.export.renderers.BooleanCellRender;
 import au.com.eventsecretary.export.renderers.CurrencyCellRender;
 import au.com.eventsecretary.export.renderers.DateCellRender;
@@ -34,6 +35,11 @@ public class ColumnBuilder {
 
     public ColumnBuilder stringFormat() {
         column.cellRenderer = new StringCellRender();
+        return this;
+    }
+
+    public ColumnBuilder bigDecimalFormat() {
+        column.cellRenderer = new BigDoubleCellRender();
         return this;
     }
 
