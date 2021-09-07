@@ -3,7 +3,9 @@ package au.com.eventsecretary.client;
 import au.com.eventsecretary.ResourceNotFoundException;
 import au.com.eventsecretary.UnexpectedSystemException;
 import au.com.eventsecretary.accounting.account.Order;
+import au.com.eventsecretary.accounting.pricing.Cost;
 import au.com.eventsecretary.accounting.registration.Registration;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -21,6 +23,19 @@ public class OrderClient extends AbstractClient {
 
     public OrderClient(String baseUrl, RestTemplateBuilder restTemplateBuilder) {
         super(baseUrl, restTemplateBuilder);
+    }
+
+    public static Cost findCostByTarget(Cost cost, String context, String id) {
+        if (StringUtils.equals(cost.getTargetContext(), context) && StringUtils.equals(cost.getTargetId(), id)) {
+            return cost;
+        }
+        for (Cost childCost : cost.getCosts()) {
+            Cost foundCost = findCostByTarget(childCost, context, id);
+            if (foundCost != null) {
+                return foundCost;
+            }
+        }
+        return null;
     }
 
     public Order createOrder(String accountCode, Order order) {
