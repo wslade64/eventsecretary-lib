@@ -5,6 +5,8 @@ import au.com.auspost.simm.model.Intrinsic;
 import au.com.eventsecretary.UnexpectedSystemException;
 import au.com.eventsecretary.simm.ModelExtensions;
 
+import java.util.function.Function;
+
 import static au.com.eventsecretary.export.ValueFormatter.enumFormatterClassifier;
 import static au.com.eventsecretary.simm.ExtensionUtils.alias;
 import static au.com.eventsecretary.simm.ExtensionUtils.findComplexTypeById;
@@ -16,12 +18,20 @@ import static au.com.eventsecretary.simm.ExtensionUtils.findComplexTypeById;
  */
 public interface ModelUtils {
     static SheetBuilderFunction complexTypeBuilder(ModelExtensions modelExtensions, ComplexType complexType) {
+        return complexTypeBuilder(modelExtensions, complexType, null);
+    }
+    static SheetBuilderFunction complexTypeBuilder(ModelExtensions modelExtensions, ComplexType complexType, Function<String, Boolean> include) {
         return sheetBuilder -> {
             if (complexType == null) {
                 return;
             }
 
             complexType.getAttributes().forEach(attribute -> {
+                if (include != null) {
+                    if (!include.apply(attribute.getId())) {
+                        return;
+                    }
+                }
                 ColumnBuilder builder = sheetBuilder.column().label(alias(attribute));
                 switch (attribute.getType()) {
                     case ENUM:
