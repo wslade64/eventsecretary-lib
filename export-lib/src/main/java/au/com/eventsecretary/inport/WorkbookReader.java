@@ -2,9 +2,12 @@ package au.com.eventsecretary.inport;
 
 import au.com.eventsecretary.UnexpectedSystemException;
 import au.com.eventsecretary.common.Timestamp;
+import au.com.eventsecretary.people.Address;
+import au.com.eventsecretary.people.AddressImpl;
 import au.com.eventsecretary.people.ContactDetails;
 import au.com.eventsecretary.people.ContactDetailsImpl;
 import au.com.eventsecretary.people.Person;
+import au.com.eventsecretary.people.States;
 import au.com.eventsecretary.simm.DateUtility;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -504,8 +507,22 @@ public class WorkbookReader {
     public static void applyEmailAddress(Person contact, String value) {
         ContactDetails contactDetails = contact.getContactDetails();
         if (contactDetails == null) {
+            contactDetails = new ContactDetailsImpl();
             contact.setContactDetails(contactDetails);
         }
         contactDetails.setEmailAddress(cleanEmailAddress(value));
     }
+
+    public static void applyState(Person contact, String value) {
+        if (StringUtils.isEmpty(value)) {
+            return;
+        }
+        Address address = contact.getMailingAddress();
+        if (address == null) {
+            address = new AddressImpl();
+            contact.setMailingAddress(address);
+        }
+        address.setState(States.valueOf(value));
+    }
+
 }
