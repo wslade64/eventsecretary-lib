@@ -4,7 +4,11 @@ import au.com.eventsecretary.common.Period;
 import au.com.eventsecretary.common.PeriodImpl;
 import au.com.eventsecretary.common.Timestamp;
 import au.com.eventsecretary.common.TimestampImpl;
-import org.joda.time.*;
+import org.joda.time.Days;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
+import org.joda.time.LocalTime;
+import org.joda.time.Seconds;
 import org.joda.time.format.DateTimeFormat;
 
 import java.math.BigDecimal;
@@ -167,6 +171,17 @@ public interface DateUtility {
         clone.setDate(date);
         clone.setTime(time);
         return clone;
+    }
+
+    static Date dateForTimestamp(Timestamp timestamp) {
+        int[] date = dateToSplit(timestamp.getDate());
+        int[] time = timeToSplit(timestamp.getTime());
+        return new LocalDateTime(date[0], date[1], date[2], time[0], time[1], time[2]).toDate();
+    }
+
+    static Date dateForDate(int date) {
+        int[] dates = dateToSplit(date);
+        return new LocalDate(dates[0], dates[1], dates[2]).toDate();
     }
 
     static Period createPeriod(int dateFrom, int dateTo) {

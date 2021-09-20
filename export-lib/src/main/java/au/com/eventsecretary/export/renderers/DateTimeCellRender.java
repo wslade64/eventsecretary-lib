@@ -1,7 +1,9 @@
 package au.com.eventsecretary.export.renderers;
 
+import au.com.eventsecretary.common.Timestamp;
 import au.com.eventsecretary.export.CellRenderer;
 import au.com.eventsecretary.export.WorkbookBuilder;
+import au.com.eventsecretary.simm.DateUtility;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 
@@ -12,13 +14,19 @@ import java.util.Date;
  *
  * @author Warwick Slade
  */
-public class DateTimeCellRender implements CellRenderer<Date> {
+public class DateTimeCellRender implements CellRenderer<Object> {
     @Override
-    public void render(Cell cell, Date value, WorkbookBuilder workbookBuilder) {
+    public void render(Cell cell, Object value, WorkbookBuilder workbookBuilder) {
+        Date date;
+        if (value instanceof Timestamp) {
+            date = DateUtility.dateForTimestamp((Timestamp) value);
+        } else {
+            date = (Date)value;
+        }
         cell.setCellType(CellType.NUMERIC);
-        if (value != null)
+        if (date != null)
         {
-            cell.setCellValue(value);
+            cell.setCellValue(date);
         }
         else
         {

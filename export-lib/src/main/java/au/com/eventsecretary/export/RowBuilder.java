@@ -38,6 +38,9 @@ public class RowBuilder {
 
     private void lastRow() {
         boolean atleastOne = false;
+        if (sheetBuilder.sheet.getLastRowNum() == 1) {
+            return;
+        }
         for (SheetBuilder.Column column : sheetBuilder.columns) {
             if (sheetBuilder.exclude(column.conditionals)) {
                 continue;
