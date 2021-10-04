@@ -10,13 +10,26 @@ import org.apache.poi.ss.usermodel.CellType;
  *
  * @author Warwick Slade
  */
-public class NumericCellRender implements CellRenderer<Double> {
+public class NumericCellRender implements CellRenderer<Object> {
     @Override
-    public void render(Cell cell, Double value, WorkbookBuilder workbookBuilder) {
+    public void render(Cell cell, Object value, WorkbookBuilder workbookBuilder) {
         cell.setCellType(CellType.NUMERIC);
+        if (value != null) {
+            if (value instanceof String) {
+                try {
+                    value = Double.parseDouble((String)value);
+                } catch (NumberFormatException e) {
+                    value = null;
+                }
+            } else if (value instanceof Integer) {
+                value = new Double(value.toString());
+            } else if (!(value instanceof Double)) {
+                value = null;
+            }
+        }
         if (value != null)
         {
-            cell.setCellValue(value);
+            cell.setCellValue((Double)value);
         }
         cell.setCellStyle(workbookBuilder.numericCellStyle);
 //        CellStyle cellStyle = cell.getCellStyle();

@@ -11,6 +11,7 @@ import au.com.eventsecretary.simm.IdentifiableUtils;
 import freemarker.ext.beans.BeansWrapper;
 import freemarker.template.TemplateHashModel;
 import freemarker.template.TemplateModelException;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +33,19 @@ public class AbstractRenderer {
 
     public static Attribute attribute(Map<String, ComplexType> model, String classifer, String attributeName) {
         ComplexType complexType = model.get(classifer);
-        return complexType.getAttributes().stream().filter(aAttribute -> aAttribute.getName().equals(attributeName)).findFirst().get();
+        return complexType.getAttributes().stream().filter(aAttribute -> aAttribute.getName().equals(attributeName)).findFirst().orElse(null);
+    }
+
+    public static Attribute attributeQualifier(Map<String, ComplexType> model, String classifer, String attributeName, String qualifier) {
+        String[] split = attributeName.split(":");
+        if (split.length != 2) {
+            return null;
+        }
+        if (!StringUtils.equals(split[1], qualifier)) {
+            return null;
+        }
+        ComplexType complexType = model.get(classifer);
+        return complexType.getAttributes().stream().filter(aAttribute -> aAttribute.getName().equals(split[0])).findFirst().orElse(null);
     }
 
     public static String resolveValue(Map<String, ComplexType> model, Attribute attribute, String value) {
