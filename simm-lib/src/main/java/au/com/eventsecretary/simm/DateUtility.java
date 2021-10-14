@@ -450,4 +450,16 @@ public interface DateUtility {
         seconds = seconds % 60;
         return String.format("%d:%02d", minutes, seconds);
     }
+
+    static void periodRange(Period sourcePeriod, Period mergePeriod) {
+        if (mergePeriod == null) {
+            return;
+        }
+        if (sourcePeriod.getStart() == null || DateUtility.compare(mergePeriod.getStart(), sourcePeriod.getStart()) < 0) {
+            sourcePeriod.setStart(mergePeriod.getStart());
+        }
+        if (sourcePeriod.getEnd() == null || DateUtility.compare(mergePeriod.getEnd(), sourcePeriod.getEnd()) > 0) {
+            sourcePeriod.setEnd(mergePeriod.getEnd());
+        }
+    }
 }
