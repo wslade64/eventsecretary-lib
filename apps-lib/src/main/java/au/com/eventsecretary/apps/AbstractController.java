@@ -148,16 +148,16 @@ public abstract class AbstractController
     }
 
     protected void addCookie(HttpServletRequest request, HttpServletResponse httpResponse, String token) {
-        addCookie(request, httpResponse, AUTH_COOKIE, token);
+        addCookie(request, httpResponse, AUTH_COOKIE, token, -1);
     }
 
-    public static void addCookie(HttpServletRequest request, HttpServletResponse httpResponse, String cookieName, String token) {
+    public static void addCookie(HttpServletRequest request, HttpServletResponse httpResponse, String cookieName, String token, int expirySeconds) {
         Cookie cookie = new Cookie(cookieName, token);
         cookie.setPath("/");
         cookie.setDomain(request.getServerName());
         cookie.setSecure(request.isSecure());
         cookie.setHttpOnly(true);
-        cookie.setMaxAge(-1);
+        cookie.setMaxAge(expirySeconds);
         cookie.setVersion(1);
         httpResponse.addCookie(cookie);
     }
