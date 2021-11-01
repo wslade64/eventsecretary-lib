@@ -4,6 +4,8 @@ import au.com.eventsecretary.UnexpectedSystemException;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
@@ -17,6 +19,8 @@ import java.io.IOException;
 @Component
 public class FreemarkerRenderer<T> implements Renderer<T>
 {
+    protected Logger logger = LoggerFactory.getLogger(getClass());
+
     private Configuration freemarkerConfiguration;
 
     public FreemarkerRenderer(Configuration freemarkerConfiguration) {
@@ -37,7 +41,7 @@ public class FreemarkerRenderer<T> implements Renderer<T>
         }
         catch (TemplateException e)
         {
-            e.printStackTrace();
+            logger.error("render", e);
             throw new UnexpectedSystemException(e);
         }
     }
