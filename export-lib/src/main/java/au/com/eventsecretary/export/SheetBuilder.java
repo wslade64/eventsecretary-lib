@@ -43,6 +43,8 @@ public class SheetBuilder {
 
     SheetBuilder(WorkbookBuilder workbookBuilder, String sheetName) {
         this.workbookBuilder = workbookBuilder;
+
+        sheetName = sheetName.replaceAll("\\/", "-");
         sheet = this.workbookBuilder.workbook.createSheet(sheetName);
         sheet.getPrintSetup().setPaperSize(A4_TRANSVERSE_PAPERSIZE);
     }
