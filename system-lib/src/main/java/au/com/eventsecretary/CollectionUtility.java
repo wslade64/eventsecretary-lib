@@ -17,6 +17,13 @@ import java.util.function.Supplier;
  * @author Warwick Slade
  */
 public interface CollectionUtility {
+    static <T> T first(List<T> list) {
+        if (list == null || list.isEmpty()) {
+            return null;
+        }
+        return list.get(0);
+    }
+
     static <T> T last(List<T> list) {
         if (list == null || list.isEmpty()) {
             return null;
