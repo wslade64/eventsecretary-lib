@@ -99,8 +99,8 @@ public class WorkbookBuilder implements FileBuilder {
 
         titleFont = workbook.createFont();
         titleFont.setFontHeightInPoints((short) 26);
-        // 192E5B
-        byte[] rgb = {0x19, 0x2E, 0x5B};
+        // #0E78BE
+        byte[] rgb = {0x0E, 0x78, -66};
         ((XSSFFont)titleFont).setColor(new XSSFColor(rgb, null));
 
         titleStyle = workbook.createCellStyle();

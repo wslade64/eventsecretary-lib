@@ -13,7 +13,7 @@ import static au.com.eventsecretary.simm.ExtensionUtils.alias;
 public interface ValueFormatter<S, T> {
     T format(S value);
 
-    static ValueFormatter<Enum, String> enumFormatter(MetadataModelService metadataModelService, String attributeId) {
+    static ValueFormatter<Object, String> enumFormatter(MetadataModelService metadataModelService, String attributeId) {
         String[] split = attributeId.split(":");
         String complexTypeId = split[0];
         String attributeName = split[1];
@@ -36,17 +36,27 @@ public interface ValueFormatter<S, T> {
         return enumFormatterClassifier(optionalEnumComplexType.get());
     }
 
-    static ValueFormatter<Enum, String> enumFormatterClassifier(ComplexType enumComplexType) {
+    static ValueFormatter<Object, String> enumFormatterClassifier(MetadataModelService metadataModelService, String complexTypeId) {
+        Optional<ComplexType> optionalComplexType = metadataModelService.fetchComplexTypeById(complexTypeId);
+        if (!optionalComplexType.isPresent()) {
+            throw new UnexpectedSystemException(complexTypeId);
+        }
+        return enumFormatterClassifier(optionalComplexType.get());
+    }
+
+    static ValueFormatter<Object, String> enumFormatterClassifier(ComplexType enumComplexType) {
         return value -> {
             if (value == null) {
                 return "";
             }
+            String svalue = value instanceof Enum ? ((Enum)value).name() : value.toString();
+
             for (Attribute attribute : enumComplexType.getAttributes()) {
-                if (attribute.getName().equals(value.name())) {
+                if (attribute.getName().equals(svalue)) {
                     return alias(attribute);
                 }
             }
-            return value.name();
+            return svalue;
         };
     }
 

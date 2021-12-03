@@ -9,7 +9,9 @@ import au.com.eventsecretary.people.ContactDetailsImpl;
 import au.com.eventsecretary.people.Person;
 import au.com.eventsecretary.people.States;
 import au.com.eventsecretary.simm.DateUtility;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -19,7 +21,6 @@ import org.joda.time.LocalDateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.slf4j.Logger;
 import org.slf4j.MDC;
-import org.springframework.util.StringUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -420,7 +421,7 @@ public class WorkbookReader {
                     MDC.put("Sheet", sheet.getSheetName());
                     while (rowNum <= sheet.getLastRowNum()) {
                         Row row = sheet.getRow(rowNum++);
-                        if (row == null || row.getFirstCellNum() == -1) {
+                        if (checkIfRowIsEmpty(row)) {
                             continue;
                         }
                         T rowValue = supplier.get();
@@ -525,4 +526,19 @@ public class WorkbookReader {
         address.setState(States.valueOf(value));
     }
 
+    public static boolean checkIfRowIsEmpty(Row row) {
+        if (row == null) {
+            return true;
+        }
+        if (row.getLastCellNum() <= 0 || row.getFirstCellNum() < 0) {
+            return true;
+        }
+        for (int cellNum = row.getFirstCellNum(); cellNum < row.getLastCellNum(); cellNum++) {
+            Cell cell = row.getCell(cellNum);
+            if (cell != null && cell.getCellType() != CellType.BLANK && StringUtils.isNotBlank(cell.toString())) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
