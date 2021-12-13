@@ -248,8 +248,8 @@ public interface DateUtility {
         return hour + ":" + sminute;
     }
 
-    static String longerTime(int time) {
-        if (time == 0) {
+    static String longerTime(Integer time) {
+        if (time == null || time == 0) {
             return "";
         }
         int[] split = timeToSplit(time);

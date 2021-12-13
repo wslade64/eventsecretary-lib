@@ -42,6 +42,9 @@ public class CellBuilder {
     }
 
     public <T> CellBuilder column(List<T> values) {
+        if (values.isEmpty()) {
+            return this;
+        }
         SheetBuilder.Column<T> column = attributeColumn();
 
         if (column != null) {
