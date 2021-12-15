@@ -101,9 +101,11 @@ public class SheetBuilder {
     }
 
     public SheetBuilder column$(List<String> labels) {
-        ColumnBuilder columnBuilder = new ColumnBuilder(this);
-        columnBuilder.labels(labels);
-        columnBuilder.stringFormat();
+        if (!labels.isEmpty()) {
+            ColumnBuilder columnBuilder = new ColumnBuilder(this);
+            columnBuilder.labels(labels);
+            columnBuilder.stringFormat();
+        }
         return this;
     }
 
