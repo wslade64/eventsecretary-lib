@@ -462,4 +462,17 @@ public interface DateUtility {
             sourcePeriod.setEnd(mergePeriod.getEnd());
         }
     }
+
+    static boolean withinPeriod(Period period, int applicableDate) {
+        if (period == null) {
+            return true;
+        }
+        if (applicableDate < period.getStart().getDate()) {
+            return false;
+        }
+        if (period.getEnd() != null && applicableDate > period.getEnd().getDate()) {
+            return false;
+        }
+        return true;
+    }
 }
