@@ -27,4 +27,20 @@ public interface NumberUtility {
         }
         return left.add(right);
     }
+
+    static BigDecimal add(BigDecimal ...more) {
+        if (more.length == 0) {
+            return null;
+        }
+        BigDecimal sum = BigDecimal.ZERO;
+        boolean atLeastOne = false;
+        for (int i = 0; i < more.length; i++) {
+            if (more[i] != null) {
+                sum = sum.add(more[i]);
+                atLeastOne = true;
+            }
+        }
+        return atLeastOne ? sum : null;
+    }
+
 }
