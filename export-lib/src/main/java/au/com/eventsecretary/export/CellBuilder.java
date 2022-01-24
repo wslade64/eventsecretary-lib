@@ -42,9 +42,10 @@ public class CellBuilder {
     }
 
     public <T> CellBuilder column(List<T> values) {
-        if (values.isEmpty()) {
-            return this;
-        }
+// This short cut was put in around the time the cross country times was added.
+//        if (values.isEmpty()) {
+//            return this;
+//        }
         SheetBuilder.Column<T> column = attributeColumn();
 
         if (column != null) {
