@@ -101,11 +101,11 @@ public class SheetBuilder {
     }
 
     public SheetBuilder column$(List<String> labels) {
-        if (!labels.isEmpty()) {
+//        if (!labels.isEmpty()) {
             ColumnBuilder columnBuilder = new ColumnBuilder(this);
             columnBuilder.labels(labels);
             columnBuilder.stringFormat();
-        }
+//        }
         return this;
     }
 
