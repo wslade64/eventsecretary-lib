@@ -198,6 +198,20 @@ public interface DateUtility {
         return period;
     }
 
+    static Period createPeriodForDayOfYear(int dayOfYear) {
+        int now = DateUtility.nowDate();
+        int[] nowSplit = DateUtility.dateToSplit(now);
+        int[] start = DateUtility.dateToSplit(dayOfYear);
+        start[0] = nowSplit[0];
+        int startDate = DateUtility.splitToDate(start[0], start[1], start[2]);
+        if (startDate > now) {
+            startDate = DateUtility.splitToDate(start[0] - 1, start[1], start[2]);
+        }
+        int[] end = DateUtility.dateToSplit(dayOfYear);
+        end[0] = nowSplit[0] + 1;
+        return DateUtility.createPeriod(startDate, DateUtility.splitToDate(end[0], end[1], end[2]));
+    }
+
     static void addMinutes(Timestamp current, int minutes) {
         current.setTime(addMinutes(current.getTime(), minutes));
     }
