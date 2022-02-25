@@ -1,6 +1,7 @@
 package au.com.eventsecretary;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public interface NumberUtility {
     BigDecimal B100 = BigDecimal.valueOf(100);
@@ -44,4 +45,18 @@ public interface NumberUtility {
         return atLeastOne ? sum : null;
     }
 
+    static BigDecimal extractNumber(BigDecimal value, int index, int size) {
+        BigDecimal bsize = new BigDecimal(size);
+        while (index-- != 0) {
+            value = value.divide(bsize, 0, RoundingMode.FLOOR);
+        }
+        return value.remainder(bsize);
+    }
+
+    static int extractNumber(int value, int index, int size) {
+        while (index-- != 0) {
+            value = value / size;
+        }
+        return value % size;
+    }
 }
