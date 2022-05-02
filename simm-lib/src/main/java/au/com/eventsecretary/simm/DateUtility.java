@@ -212,8 +212,21 @@ public interface DateUtility {
         return DateUtility.createPeriod(startDate, DateUtility.splitToDate(end[0], end[1], end[2]));
     }
 
+    static final int MINUTES_DAY = 24 * 60;
+
     static void addMinutes(Timestamp current, int minutes) {
-        current.setTime(addMinutes(current.getTime(), minutes));
+
+        int time = addMinutes(current.getTime(), minutes);
+        minutes = minutes(time);
+        if (minutes < MINUTES_DAY) {
+            current.setTime(time);
+        } else {
+            int minutesInDay = minutes % MINUTES_DAY;
+            int days = minutes / MINUTES_DAY;
+            current.setTime(timeMinutes(minutesInDay));
+            current.setDate(addDay(current.getDate(), days));
+        }
+
     }
 
     static int splitToTime(int hour, int minute, int second) {
@@ -273,6 +286,12 @@ public interface DateUtility {
     static int minutes(int time) {
         int[] intervals = DateUtility.timeToSplit(time);
         return intervals[0] * 60 + intervals[1];
+    }
+
+    static int timeMinutes(int minutes) {
+        int min = minutes % 60;
+        int hours = minutes / 60;
+        return splitToTime(hours, min, 0);
     }
 
     static int addMinutes(int time, int minutes) {
