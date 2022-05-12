@@ -44,7 +44,11 @@ public class SheetBuilder {
     SheetBuilder(WorkbookBuilder workbookBuilder, String sheetName) {
         this.workbookBuilder = workbookBuilder;
 
-        sheetName = sheetName.replaceAll("\\/", "-");
+        sheetName = sheetName.replaceAll("\\/", "-").replaceAll("\\*", "");
+        if (sheetName.length() > 30) {
+            sheetName = sheetName.substring(sheetName.length() - 30);
+        }
+
         sheet = this.workbookBuilder.workbook.createSheet(sheetName);
         sheet.getPrintSetup().setPaperSize(A4_TRANSVERSE_PAPERSIZE);
     }
