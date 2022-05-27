@@ -42,7 +42,7 @@ public class RowBuilder {
             return;
         }
         for (SheetBuilder.Column column : sheetBuilder.columns) {
-            if (sheetBuilder.exclude(column.conditionals)) {
+            if (sheetBuilder.exclude(column)) {
                 continue;
             }
             if (column.sum) {
@@ -61,7 +61,7 @@ public class RowBuilder {
 
         for (SheetBuilder.Column column : sheetBuilder.columns)
         {
-            if (sheetBuilder.exclude(column.conditionals)) {
+            if (sheetBuilder.exclude(column)) {
                 continue;
             }
             for (Object label : column.labels) {

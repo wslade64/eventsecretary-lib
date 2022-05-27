@@ -32,6 +32,7 @@ public class SheetBuilder {
     final Sheet sheet;
     List<String> exclusions;
     List<Column> columns = new ArrayList<>();
+    Conditional conditional;
 
     static class Column<T> {
         List<String> labels;
@@ -39,6 +40,7 @@ public class SheetBuilder {
         CellRenderer<T> cellRenderer;
         ValueFormatter<T, T> valueFormatter;
         boolean sum;
+        Boolean include;
     }
 
     SheetBuilder(WorkbookBuilder workbookBuilder, String sheetName) {
@@ -80,6 +82,11 @@ public class SheetBuilder {
         Header header = this.sheet.getHeader();
         header.setCenter(text);
         this.sheet.setMargin(Sheet.HeaderMargin, CM_1);
+        return this;
+    }
+
+    public SheetBuilder conditional(Conditional conditional) {
+        this.conditional = conditional;
         return this;
     }
 
@@ -130,7 +137,7 @@ public class SheetBuilder {
 
         for (Column column : columns)
         {
-            if (exclude(column.conditionals)) {
+            if (exclude(column)) {
                 continue;
             }
             for (Object label : column.labels) {
@@ -199,27 +206,19 @@ public class SheetBuilder {
         return this;
     }
 
-    boolean exclude(List<String> conditionals) {
-        if (exclusions == null) {
+    boolean exclude(Column<?> column) {
+        if (column.include != null) {
+            return !column.include;
+        }
+        if (exclusions == null || column.conditionals == null) {
             return false;
         }
-        for (String conditional : conditionals) {
+
+        for (String conditional : column.conditionals) {
             if (exclusions.contains(conditional)) {
                 return true;
             }
         }
         return false;
-    }
-
-    boolean test(String[] conditionals) {
-        if (exclusions == null) {
-            return true;
-        }
-        for (String conditional : conditionals) {
-            if (exclusions.contains(conditional)) {
-                return false;
-            }
-        }
-        return true;
     }
 }

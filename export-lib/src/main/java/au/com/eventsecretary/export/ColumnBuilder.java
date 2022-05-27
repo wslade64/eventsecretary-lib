@@ -99,6 +99,22 @@ public class ColumnBuilder {
         if (!column.labels.isEmpty() && column.cellRenderer == null) {
             throw new UnexpectedSystemException("CellRendererNotSet:" + column.labels.get(0));
         }
+        if (!column.conditionals.isEmpty()) {
+            if (sheetBuilder.conditional != null) {
+                column.include = new Boolean(resolveConditional(sheetBuilder.conditional));
+            } else if (sheetBuilder.workbookBuilder.conditional != null) {
+                column.include = new Boolean(resolveConditional(sheetBuilder.workbookBuilder.conditional));
+            }
+        }
         return sheetBuilder;
+    }
+
+    private boolean resolveConditional(Conditional conditional) {
+        for (String aCondition : ((SheetBuilder.Column<?>)column).conditionals) {
+            if (!conditional.accept(aCondition)) {
+                return false;
+            }
+        }
+        return true;
     }
 }

@@ -47,6 +47,7 @@ public class WorkbookBuilder implements FileBuilder {
     public final short dateFormat;
     public final short dateTimeFormat;
     public final CreationHelper helper;
+    public Conditional conditional;
 
     public WorkbookBuilder() {
         workbook = new XSSFWorkbook();
@@ -122,6 +123,10 @@ public class WorkbookBuilder implements FileBuilder {
         normalStyle.setFont(normalFont);
     }
 
+    public WorkbookBuilder conditional(Conditional conditional) {
+        this.conditional = conditional;
+        return this;
+    }
 
     public WorkbookBuilder title(String title) {
         POIXMLProperties.CoreProperties coreProperties = workbook.getProperties().getCoreProperties();

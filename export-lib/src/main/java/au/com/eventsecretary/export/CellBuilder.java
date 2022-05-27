@@ -81,7 +81,7 @@ public class CellBuilder {
             throw new UnexpectedSystemException("sheet:" + rowBuilder.sheetBuilder.sheet.getSheetName() + ":toManyDataColumns");
         }
         SheetBuilder.Column<T> column = rowBuilder.sheetBuilder.columns.get(attributeColumn++);
-        if (rowBuilder.sheetBuilder.exclude(column.conditionals)) {
+        if (rowBuilder.sheetBuilder.exclude(column)) {
             return null;
         }
         return column;
