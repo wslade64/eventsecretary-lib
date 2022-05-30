@@ -118,6 +118,13 @@ public interface IdentifiableUtils {
         return identifiable;
     }
 
+    static Identifiable createIdentifiable(String id, String name) {
+        Identifiable identifiable = new IdentifiableImpl();
+        identifiable.setId(id);
+        identifiable.setName(name);
+        return identifiable;
+    }
+
     static void ensureId(Identifiable identifiable) {
         if (identifiable == null) {
             return;
