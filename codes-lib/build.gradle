@@ -1,0 +1,9 @@
+archivesBaseName = 'eventsecretary-codes-lib'
+
+dependencies {
+    compile project(":system-lib")
+    compile project(":apps-lib")
+    compile project(":persistence-lib")
+    compile project(":client-lib")
+}
+
