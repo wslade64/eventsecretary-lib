@@ -48,7 +48,7 @@ public class SheetBuilder {
 
         sheetName = sheetName.replaceAll("\\/", "-").replaceAll("\\*", "");
         if (sheetName.length() > 30) {
-            sheetName = sheetName.substring(sheetName.length() - 30);
+            sheetName = sheetName.substring(0, 30);
         }
 
         sheet = this.workbookBuilder.workbook.createSheet(sheetName);
