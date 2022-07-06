@@ -12,6 +12,8 @@ import au.com.eventsecretary.simm.DateUtility;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -26,6 +28,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -62,6 +65,13 @@ public class WorkbookReader {
 
     private Workbook workbook;
     private Logger logger;
+    private ValidationHandler validationHandler;
+    private DataFormatter dataFormatter = new DataFormatter();
+    private FormulaEvaluator formulaEvaluator;
+
+    public static interface ValidationHandler {
+        void validationError(String sheetName, int row, String column, String message);
+    }
 
     public static WorkbookReader reader() {
         return new WorkbookReader();
@@ -75,6 +85,7 @@ public class WorkbookReader {
     public WorkbookReader open(File file) {
         try {
             workbook = new XSSFWorkbook(new FileInputStream(file));
+            formulaEvaluator = workbook.getCreationHelper().createFormulaEvaluator();
         } catch (FileNotFoundException e) {
             if (logger != null) {
                 logger.error("workbook:notFound:{}", file.getAbsolutePath());
@@ -86,6 +97,11 @@ public class WorkbookReader {
             }
             throw new UnexpectedSystemException(e);
         }
+        return this;
+    }
+
+    public WorkbookReader validationHandler(ValidationHandler validationHandler) {
+        this.validationHandler = validationHandler;
         return this;
     }
 
@@ -110,6 +126,14 @@ public class WorkbookReader {
                     logger.error("workbook:sheet:{}:notFound", sheetName);
                 }
                 throw new UnexpectedSystemException("WorkbookReader");
+            }
+        }
+
+        private void validationError(Cell cell, String columnName, String message) {
+            if (validationHandler != null) {
+                String rowIndex = MDC.get("RowIndex");
+                int row = StringUtils.isNotBlank(rowIndex) ? Integer.parseInt(rowIndex) : 0;
+                validationHandler.validationError(sheet.getSheetName(), row, columnName, message);
             }
         }
 
@@ -155,8 +179,18 @@ public class WorkbookReader {
                 return this;
             }
 
+            public RowReader<T> set(String column, String set, BiConsumer<T, String> consumer) {
+                cellReaders.add(new FixedSetCellReader(column, consumer, true, set));
+                return this;
+            }
+
             public RowReader<T> integer(String column, BiConsumer<T, Integer> consumer) {
                 cellReaders.add(new IntegerCellReader(column, consumer, true));
+                return this;
+            }
+
+            public RowReader<T> number(String column, int scale, BiConsumer<T, BigDecimal> consumer) {
+                cellReaders.add(new NumberCellReader(column, consumer, true, scale));
                 return this;
             }
 
@@ -175,52 +209,35 @@ public class WorkbookReader {
                 return this;
             }
 
+            public RowReader<T> rowIndex(BiConsumer<T, Integer> consumer) {
+                cellReaders.add(new RowIndexCellReader(consumer));
+                return this;
+            }
+
             public CellReaderAdapter cell() {
                 return new CellReaderAdapter();
             }
 
-            public class CellReaderAdapter {
-                boolean optional;
-                public CellReaderAdapter optional() {
-                    optional = true;
-                    return this;
-                }
-                public RowReader<T> end() {
-                    return RowReader.this;
-                }
-                public CellReaderAdapter binary(String column, BiConsumer<T, Boolean> consumer) {
-                    cellReaders.add(new BinaryCellReader(column, consumer, optional));
-                    return this;
-                }
-
-                public CellReaderAdapter text(String column, BiConsumer<T, String> consumer) {
-                    cellReaders.add(new TextCellReader(column, consumer, optional));
-                    return this;
-                }
-
-                public CellReaderAdapter timestamp(String column, BiConsumer<T, Timestamp> consumer) {
-                    cellReaders.add(new TimestampCellReader(column, consumer, optional));
-                    return this;
-                }
-
-                public CellReaderAdapter date(String column, BiConsumer<T, Integer> consumer) {
-                    cellReaders.add(new DateCellReader(column, consumer, true));
-                    return this;
-                }
-            }
-
-
             public abstract class CellReader<T> {
                 int index;
+                String columnName;
+                boolean valueRequired;
+
                 CellReader(String column, boolean optional) {
+                    columnName = column;
                     Integer columnIndex = columnMap.get(column);
                     if (columnIndex == null && !optional) {
                         if (logger != null) {
                             logger.error("workbook:sheet:{}:column:notFound:{}", sheet.getSheetName(), column);
                         }
+                        validationError(null, String.format("Column not found:%s", column));
                         throw new UnexpectedSystemException("WorkbookReader");
                     }
                     this.index = columnIndex == null ? -1 : columnIndex;
+                }
+
+                void validationError(Cell cell, String message) {
+                    SheetReader.this.validationError(cell, columnName, message);
                 }
 
                 final void read(Cell cell, T row) {
@@ -228,6 +245,55 @@ public class WorkbookReader {
                 }
 
                 abstract void accept(Cell cell, T row);
+            }
+
+            public class CellReaderAdapter {
+                boolean optional;
+                boolean valueRequired;
+
+                private CellReader init(CellReader reader) {
+                    reader.valueRequired = valueRequired;
+                    return reader;
+                }
+
+                public CellReaderAdapter optional() {
+                    optional = true;
+                    return this;
+                }
+
+                public CellReaderAdapter valueRequired() {
+                    valueRequired = true;
+                    return this;
+                }
+
+                public RowReader<T> end() {
+                    return RowReader.this;
+                }
+
+                public CellReaderAdapter binary(String column, BiConsumer<T, Boolean> consumer) {
+                    cellReaders.add(init(new BinaryCellReader(column, consumer, optional)));
+                    return this;
+                }
+
+                public CellReaderAdapter text(String column, BiConsumer<T, String> consumer) {
+                    cellReaders.add(init(new TextCellReader(column, consumer, optional)));
+                    return this;
+                }
+
+                public CellReaderAdapter timestamp(String column, BiConsumer<T, Timestamp> consumer) {
+                    cellReaders.add(init(new TimestampCellReader(column, consumer, optional)));
+                    return this;
+                }
+
+                public CellReaderAdapter date(String column, BiConsumer<T, Integer> consumer) {
+                    cellReaders.add(init(new DateCellReader(column, consumer, true)));
+                    return this;
+                }
+
+                public CellReaderAdapter set(String column, String set, BiConsumer<T, String> consumer) {
+                    cellReaders.add(init(new FixedSetCellReader<>(column, consumer, true, set)));
+                    return this;
+                }
             }
 
             public class TextCellReader<T> extends CellReader<T> {
@@ -244,7 +310,8 @@ public class WorkbookReader {
                         if (cell == null) {
                             cellValue = null;
                         } else {
-                            cellValue = cell.getStringCellValue();
+                            cellValue = dataFormatter.formatCellValue(cell, formulaEvaluator);
+//                            cellValue = cell.getStringCellValue();
                             if (cellValue != null) {
                                 cellValue = cellValue.trim();
                             }
@@ -252,6 +319,42 @@ public class WorkbookReader {
                     } catch (IllegalStateException e) {
                         double numericCellValue = cell.getNumericCellValue();
                         cellValue = Double.toString(numericCellValue);
+                    }
+                    if (valueRequired && StringUtils.isBlank(cellValue)) {
+                        validationError(cell, "Value required");
+                        return;
+                    }
+                    consumer.accept(row, cellValue);
+                }
+            }
+
+            public class FixedSetCellReader<T> extends CellReader<T> {
+                BiConsumer<T, String> consumer;
+                String set;
+                FixedSetCellReader(String index, BiConsumer<T, String> consumer, boolean optional, String set) {
+                    super(index, optional);
+                    this.consumer = consumer;
+                    this.set = set;
+                }
+
+                @Override
+                void accept(Cell cell, T row) {
+                    String cellValue;
+                    if (cell == null) {
+                        cellValue = null;
+                    } else {
+                        cellValue = cell.getStringCellValue();
+                        if (cellValue != null) {
+                            cellValue = cellValue.trim();
+                            if (set.indexOf(cellValue) == -1) {
+                                validationError(cell, String.format("Invalid value:%s:%s", cellValue, set));
+                                return;
+                            }
+                        }
+                    }
+                    if (valueRequired && StringUtils.isBlank(cellValue)) {
+                        validationError(cell, "Value required");
+                        return;
                     }
                     consumer.accept(row, cellValue);
                 }
@@ -274,14 +377,65 @@ public class WorkbookReader {
                             String cellValue = cell.getStringCellValue();
                             if (cellValue != null) {
                                 cellValue = cellValue.trim();
-                                intValue = Integer.parseInt(cellValue);
+                                try {
+                                    if (StringUtils.isNotBlank(cellValue)) {
+                                        intValue = Integer.parseInt(cellValue);
+                                    }
+                                } catch (NumberFormatException e) {
+                                    validationError(cell, String.format("Invalid number:%s", cellValue));
+                                }
                             }
                         }
                     } catch (IllegalStateException e) {
                         double numericCellValue = cell.getNumericCellValue();
                         intValue = (int)numericCellValue;
                     }
+                    if (valueRequired && intValue == null) {
+                        validationError(cell, "Value required");
+                        return;
+                    }
                     consumer.accept(row, intValue);
+                }
+            }
+
+            public class NumberCellReader<T> extends CellReader<T> {
+                BiConsumer<T, BigDecimal> consumer;
+                int scale;
+                NumberCellReader(String index, BiConsumer<T, BigDecimal> consumer, boolean optional, int scale) {
+                    super(index, optional);
+                    this.consumer = consumer;
+                    this.scale = scale;
+                }
+
+                @Override
+                void accept(Cell cell, T row) {
+                    BigDecimal numberValue = null;
+                    try {
+                        if (cell == null) {
+                            numberValue = null;
+                        } else {
+                            String cellValue = cell.getStringCellValue();
+                            if (cellValue != null) {
+                                cellValue = cellValue.trim();
+                                try {
+                                    if (StringUtils.isNotBlank(cellValue)) {
+                                        numberValue = new BigDecimal(cellValue).setScale(scale);
+                                    }
+                                } catch (NumberFormatException e) {
+                                    validationError(cell, String.format("Invalid number:%s", cellValue));
+                                    return;
+                                }
+                            }
+                        }
+                    } catch (IllegalStateException e) {
+                        double numericCellValue = cell.getNumericCellValue();
+                        numberValue = BigDecimal.valueOf(numericCellValue);
+                    }
+                    if (valueRequired && numberValue == null) {
+                        validationError(cell, "Value required");
+                        return;
+                    }
+                    consumer.accept(row, numberValue);
                 }
             }
 
@@ -331,19 +485,23 @@ public class WorkbookReader {
                 @Override
                 void accept(Cell cell, T row) {
                     String cellValue = cell != null ? cell.getStringCellValue() : null;
+                    Boolean value = null;
                     if (cellValue != null) {
                         cellValue = cellValue.trim();
                         if (cellValue.length() > 0) {
-                            Boolean value = null;
                             if (trueList.contains(cellValue.toLowerCase())) {
                                 value = true;
                             } else if (falseList.contains(cellValue.toLowerCase())) {
                                 value = false;
                             }
-                            if (value != null) {
-                                consumer.accept(row, value);
-                            }
                         }
+                    }
+                    if (valueRequired && value == null) {
+                        validationError(cell, "Value required");
+                        return;
+                    }
+                    if (value != null) {
+                        consumer.accept(row, value);
                     }
                 }
             }
@@ -377,6 +535,10 @@ public class WorkbookReader {
                             timestamp = DateUtility.timestamp(dateTimeLocal(cellValue));
                         }
                     }
+                    if (valueRequired && timestamp == null) {
+                        validationError(cell, "Value required");
+                        return;
+                    }
                     consumer.accept(row, timestamp);
                 }
             }
@@ -407,7 +569,25 @@ public class WorkbookReader {
                             date = DateUtility.date(dateLocal(cellValue));
                         }
                     }
+                    if (valueRequired && date == null) {
+                        validationError(cell, "Value required");
+                        return;
+                    }
                     consumer.accept(row, date);
+                }
+            }
+
+            public class RowIndexCellReader<T> extends CellReader<T> {
+                BiConsumer<T, Integer> consumer;
+                RowIndexCellReader(BiConsumer<T, Integer> consumer) {
+                    super("", true);
+                    this.index = -2;
+                    this.consumer = consumer;
+                }
+
+                @Override
+                void accept(Cell cell, T row) {
+                    consumer.accept(row, Integer.parseInt(MDC.get("RowIndex")));
                 }
             }
 
@@ -430,20 +610,24 @@ public class WorkbookReader {
                             if (cellReader.index == -1) {
                                 return;
                             }
-                            Cell cell = row.getCell(cellReader.index);
-                            if (cell == null) {
-//                                logger().error("missingCell:{}:{}", row.getRowNum() + 1, cellReader.index + 1);
-                                return;
-                            }
+                            Cell cell = null;
                             try {
-                                MDC.put("Cell", cell.getAddress().formatAsString());
+                                MDC.put("RowIndex", Integer.toString(rowNum)); // Already offset from zero
+                                if (cellReader.index >= 0) {
+                                    cell = row.getCell(cellReader.index);
+                                    if (cell != null) {
+                                        MDC.put("Cell", cell.getAddress().formatAsString());
+                                    }
+                                }
                                 cellReader.read(cell, rowValue);
                             } catch (Exception e) {
+                                validationError(cell, "", e.getMessage());
                                 logger().error("badCell:{}", e.getMessage());
                                 logger().error("cell exception", e);
                                 return;
                             } finally {
                                 MDC.remove("Cell");
+                                MDC.remove("RowIndex");
                             }
                         });
                         if (finishRowConsumer != null) {
@@ -463,6 +647,14 @@ public class WorkbookReader {
                 return SheetReader.this;
             }
         }
+    }
+
+    public List<String> sheets() {
+        List<String> names = new ArrayList<>();
+        for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
+            names.add(workbook.getSheetAt(i).getSheetName());
+        }
+        return names;
     }
 
     public SheetReader sheet(String sheetName) {
