@@ -137,6 +137,11 @@ public class WorkbookReader {
             }
         }
 
+        public SheetReader sheetName(Consumer<String> consumer) {
+            consumer.accept(sheet.getSheetName());
+            return this;
+        }
+
         public SheetReader header() {
             Row row = sheet.getRow(rowNum++);
             columnMap = new HashMap<>();
@@ -655,6 +660,11 @@ public class WorkbookReader {
             names.add(workbook.getSheetAt(i).getSheetName());
         }
         return names;
+    }
+
+    public SheetReader sheet(int sheetIndex) {
+        Sheet sheet = workbook.getSheetAt(sheetIndex);
+        return new SheetReader(sheet.getSheetName());
     }
 
     public SheetReader sheet(String sheetName) {
