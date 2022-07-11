@@ -100,10 +100,15 @@ public class ColumnBuilder {
             throw new UnexpectedSystemException("CellRendererNotSet:" + column.labels.get(0));
         }
         if (!column.conditionals.isEmpty()) {
-            if (sheetBuilder.conditional != null) {
-                column.include = new Boolean(resolveConditional(sheetBuilder.conditional));
-            } else if (sheetBuilder.workbookBuilder.conditional != null) {
-                column.include = new Boolean(resolveConditional(sheetBuilder.workbookBuilder.conditional));
+            if (sheetBuilder.exclude(column)) {
+                column.include = Boolean.FALSE;
+            }
+            if (column.include == null) {
+                if (sheetBuilder.conditional != null) {
+                    column.include = new Boolean(resolveConditional(sheetBuilder.conditional));
+                } else if (sheetBuilder.workbookBuilder.conditional != null) {
+                    column.include = new Boolean(resolveConditional(sheetBuilder.workbookBuilder.conditional));
+                }
             }
         }
         return sheetBuilder;
