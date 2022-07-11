@@ -38,6 +38,22 @@ public class CodeService {
         return persistence.findObject(code);
     }
 
+    public List<Code> createCodes(List<Code> codes) {
+        for (Code code : codes) {
+            Code codeByCode = findCodeByCode(code.getSetId(), code.getCode());
+            if (codeByCode != null) {
+                throw new ResourceExistsException(code.getCode());
+            }
+        }
+        for (Code code : codes) {
+            if (code.getId() == null) {
+                code.setId(id());
+            }
+            persistence.storeObject(code);
+        }
+        return codes;
+    }
+
     public Code createCode(Code code) {
         Code codeByCode = findCodeByCode(code.getSetId(), code.getCode());
         if (codeByCode != null) {

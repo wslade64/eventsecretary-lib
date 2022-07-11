@@ -63,6 +63,17 @@ public class RestCodeController extends AbstractController
         return codeService.createCode(code);
     }
 
+    @RequestMapping(method = RequestMethod.POST, params = "multiple")
+    @ResponseBody
+    public List<Code> createCodes(@RequestBody List<Code> codes) {
+        for (Code code : codes) {
+            if (StringUtils.isBlank(code.getCode())) {
+                throw new ValidationException("missingCode", "The code must have a code");
+            }
+        }
+        return codeService.createCodes(codes);
+    }
+
     @RequestMapping(method = RequestMethod.PUT)
     @ResponseBody
     public Code updateCode(@RequestBody Code code) {
