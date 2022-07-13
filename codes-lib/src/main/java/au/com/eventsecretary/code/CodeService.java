@@ -31,6 +31,12 @@ public class CodeService {
         return persistence.findObjects(code);
     }
 
+    public List<Code> findCodesByContextId(String contextId) {
+        Code code = new CodeImpl();
+        code.setContextId(contextId);
+        return persistence.findObjects(code);
+    }
+
     public Code findCodeByCode(String codeSetId, String codeCode) {
         Code code = new CodeImpl();
         code.setSetId(codeSetId);

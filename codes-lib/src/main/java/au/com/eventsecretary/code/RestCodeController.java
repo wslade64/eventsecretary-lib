@@ -48,6 +48,12 @@ public class RestCodeController extends AbstractController
         return codeService.findCodesBySetId(setId);
     }
 
+    @RequestMapping(method = RequestMethod.GET, params = "contextId")
+    @ResponseBody
+    public List<Code> getCodesByContextId(@RequestParam String contextId) {
+        return codeService.findCodesByContextId(contextId);
+    }
+
     @RequestMapping(method = RequestMethod.GET, path = "/{codeId}")
     @ResponseBody
     public Code getCode(@PathVariable String codeId) {
