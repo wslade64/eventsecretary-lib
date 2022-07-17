@@ -337,6 +337,12 @@ public interface DateUtility {
         return splitToDate(localDate.getYear(), localDate.getMonthOfYear(), localDate.getDayOfMonth());
     }
 
+    static int addMonth(int date, int months) {
+        LocalDate localDate = dateToLocal(date);
+        localDate = localDate.plusMonths(months);
+        return splitToDate(localDate.getYear(), localDate.getMonthOfYear(), localDate.getDayOfMonth());
+    }
+
     static int addYear(int date, int years) {
         int[] ints = dateToSplit(date);
         ints[0] += years;
