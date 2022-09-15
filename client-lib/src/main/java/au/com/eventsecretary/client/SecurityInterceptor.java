@@ -3,11 +3,8 @@ package au.com.eventsecretary.client;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController;
 import org.springframework.http.HttpHeaders;
 import org.springframework.util.StringUtils;
-import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -25,58 +22,22 @@ public class SecurityInterceptor extends HandlerInterceptorAdapter {
 
     Logger logger = LoggerFactory.getLogger(SecurityInterceptor.class);
 
-    @Value("${localToken}")
-    private String LOCAL;
-
     @Autowired
     private SessionService sessionService;
 
-    CodeManager codeManager = new CodeManager();
     @Override
     public boolean preHandle(HttpServletRequest request
             , HttpServletResponse response
             , Object handler) throws Exception {
 
-        if (handler instanceof HandlerMethod) {
-            if (((HandlerMethod)handler).getBean() instanceof BasicErrorController) {
-                return true;
-            }
-        }
-        String token;
-
-        String localHeader = request.getHeader(AbstractClient.LOCAL_HEADER);
-        if (localHeader != null) {
-            if (!LOCAL.equals(localHeader)) {
-                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                return false;
-            }
+        String token = extractTokenFromCookie(request);
+        if (StringUtils.isEmpty(token)) {
             token = request.getHeader(HttpHeaders.AUTHORIZATION);
-            if (StringUtils.isEmpty(token)) {
-                response.setStatus(HttpServletResponse.SC_PAYMENT_REQUIRED);
-                return false;
-            }
-        } else {
-            String ipAddress = request.getHeader("X-real-IP");
-            String agent = request.getHeader("user-agent");
-            String code = request.getHeader("xsih");
+        }
 
-            String uri = request.getRequestURI();
-            boolean download = uri != null && uri.indexOf("download") != -1;
-
-            if (StringUtils.isEmpty(ipAddress) || StringUtils.isEmpty(agent) || (!download && StringUtils.isEmpty(code))) {
-                response.setStatus(426);
-                return false;
-            }
-//            if (!codeManager.checkCode(ipAddress+agent, code)) {
-//                response.setStatus(418);
-//                return false;
-//            }
-
-            token = extractTokenFromCookie(request);
-            // This will be deprecated -> Only here for url downloads
-            if (StringUtils.isEmpty(token)) {
-                token = request.getParameter("bearer");
-            }
+        // This will be deprecated -> Only here for url downloads
+        if (StringUtils.isEmpty(token)) {
+            token = request.getParameter("bearer");
         }
 
         if (StringUtils.isEmpty(token)) {
