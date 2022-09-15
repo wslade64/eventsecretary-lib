@@ -14,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClientException;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -40,8 +39,7 @@ public class ValidationClient extends AbstractClient {
 
     public ValidationResponse validate(ValidationRequest request) {
         try {
-            HttpHeaders headers = new HttpHeaders();
-            headers.put(HttpHeaders.AUTHORIZATION, Collections.singletonList(systemToken));
+            HttpHeaders headers = headers(systemToken);
 
             HttpEntity<ValidationRequest> httpEntity = new HttpEntity<>(request, headers);
             ResponseEntity<String> exchange = restTemplate.exchange(baseUrl, HttpMethod.POST, httpEntity, String.class);

@@ -66,7 +66,7 @@ public class FacilityClient extends AbstractClient {
 
     public Site fetchSite(String siteRef) {
         try {
-            HttpEntity<Void> httpEntity = createEntity();
+            HttpEntity<Void> httpEntity = createSystemEntity();
 
             ResponseEntity<Site> exchange = restTemplate.exchange(baseUrl + URI + "/site/" + siteRef
                 , HttpMethod.GET, httpEntity, Site.class);
@@ -87,7 +87,7 @@ public class FacilityClient extends AbstractClient {
 
     public Site findSiteByCode(String code) {
         try {
-            HttpEntity<Void> httpEntity = createEntity();
+            HttpEntity<Void> httpEntity = createSystemEntity();
 
             ResponseEntity<Site> exchange = restTemplate.exchange(baseUrl + URI + "/site/" + code
                     , HttpMethod.GET, httpEntity, Site.class);
@@ -125,7 +125,7 @@ public class FacilityClient extends AbstractClient {
 
     public Facility createFacility(Site site, FacilityType facilityType, Facility facility) {
         try {
-            HttpEntity<Facility> httpEntity = createEntityBody(facility);
+            HttpEntity<Facility> httpEntity = createSystemEntityBody(facility);
 
             ResponseEntity<Facility> exchange = restTemplate.exchange(baseUrl + URI + "/site/" + site.getCode() + "/facility/" + facilityType.getCode()
                     , HttpMethod.POST, httpEntity, Facility.class);
@@ -144,7 +144,7 @@ public class FacilityClient extends AbstractClient {
 
     public Facility findFacilityById(String siteCode, String facilityId) {
         try {
-            HttpEntity<Void> httpEntity = createEntity();
+            HttpEntity<Void> httpEntity = createSystemEntity();
 
             ResponseEntity<Facility> exchange = restTemplate.exchange(baseUrl + URI + "/site/" + siteCode + "/facility?id=" + facilityId
                     , HttpMethod.GET, httpEntity, Facility.class);
@@ -203,7 +203,7 @@ public class FacilityClient extends AbstractClient {
 
     public void createBooking(Site site, BookingRequest bookingRequest) {
         try {
-            HttpEntity<BookingRequest> httpEntity = createEntityBody(bookingRequest);
+            HttpEntity<BookingRequest> httpEntity = createSystemEntityBody(bookingRequest);
 
             ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI + "/site/" + site.getCode() + "/booking"
                     , HttpMethod.POST, httpEntity, Void.class);

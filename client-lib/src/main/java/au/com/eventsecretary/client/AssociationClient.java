@@ -155,7 +155,7 @@ public class AssociationClient extends AbstractClient {
         try {
             logger.info("delete:" + associationId);
 
-            HttpEntity<Void> httpEntity = createEntity();
+            HttpEntity<Void> httpEntity = createSystemEntity();
             ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI + "/" + associationId, HttpMethod.DELETE, httpEntity, Void.class);
             switch (exchange.getStatusCode()) {
                 case OK:

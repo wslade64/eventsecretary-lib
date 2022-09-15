@@ -4,8 +4,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController;
 import org.springframework.http.HttpHeaders;
 import org.springframework.util.StringUtils;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -35,6 +37,11 @@ public class SecurityInterceptor extends HandlerInterceptorAdapter {
             , HttpServletResponse response
             , Object handler) throws Exception {
 
+        if (handler instanceof HandlerMethod) {
+            if (((HandlerMethod)handler).getBean() instanceof BasicErrorController) {
+                return true;
+            }
+        }
         String token;
 
         String localHeader = request.getHeader(AbstractClient.LOCAL_HEADER);
@@ -49,18 +56,21 @@ public class SecurityInterceptor extends HandlerInterceptorAdapter {
                 return false;
             }
         } else {
-            String remoteAddr = request.getRemoteAddr();
             String ipAddress = request.getHeader("X-real-IP");
             String agent = request.getHeader("user-agent");
             String code = request.getHeader("xsih");
-            if (StringUtils.isEmpty(ipAddress) || StringUtils.isEmpty(agent) || StringUtils.isEmpty(code)) {
+
+            String uri = request.getRequestURI();
+            boolean download = uri != null && uri.indexOf("download") != -1;
+
+            if (StringUtils.isEmpty(ipAddress) || StringUtils.isEmpty(agent) || (!download && StringUtils.isEmpty(code))) {
                 response.setStatus(426);
                 return false;
             }
-            if (!codeManager.checkCode(ipAddress+agent, code)) {
-                response.setStatus(418);
-                return false;
-            }
+//            if (!codeManager.checkCode(ipAddress+agent, code)) {
+//                response.setStatus(418);
+//                return false;
+//            }
 
             token = extractTokenFromCookie(request);
             // This will be deprecated -> Only here for url downloads

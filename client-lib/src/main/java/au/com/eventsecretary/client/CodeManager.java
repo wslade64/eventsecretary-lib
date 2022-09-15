@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class CodeManager {
-    private static long TIMEOUT = 1000 * 60 * 60; // one hour
+    private static long TIMEOUT = 1000 * 60 * 5; // 5 min
     private int[] index = { 3,7,11,16,22,27,35,49,43,51,53,58};
 
     private static String[] codes = {
