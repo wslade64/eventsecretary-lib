@@ -27,9 +27,14 @@ import static au.com.eventsecretary.client.SessionService.isSandbox;
  * @author sladew
  */
 public abstract class AbstractClient {
+    static final String LOCAL_HEADER = "x-system";
 
     @Value("${systemToken}")
     private String SYSTEM;
+
+    @Value("${localToken}")
+    private String LOCAL;
+
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
     protected final String baseUrl;
@@ -60,7 +65,7 @@ public abstract class AbstractClient {
         });
     }
 
-    protected static HttpHeaders headers(String bearer) {
+    protected HttpHeaders headers(String bearer) {
         HttpHeaders headers = new HttpHeaders();
         if (bearer != null) {
             headers.put(HttpHeaders.AUTHORIZATION, Collections.singletonList(bearer));
@@ -68,6 +73,7 @@ public abstract class AbstractClient {
         if (isSandbox()) {
             headers.put(SecurityInterceptor.SANDBOX, Collections.singletonList("true"));
         }
+        headers.put(LOCAL_HEADER, Collections.singletonList(LOCAL));
         return headers;
     }
 
