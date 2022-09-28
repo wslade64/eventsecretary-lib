@@ -2,11 +2,14 @@ package au.com.eventsecretary.client;
 
 import au.com.eventsecretary.UnexpectedSystemException;
 import au.com.eventsecretary.people.Person;
+import au.com.eventsecretary.people.PersonImpl;
 import au.com.eventsecretary.user.identity.Authorisation;
 import au.com.eventsecretary.user.identity.Identity;
+import au.com.eventsecretary.user.identity.IdentityImpl;
 import au.com.eventsecretary.user.identity.Permissions;
 import au.com.eventsecretary.user.identity.Role;
 import org.slf4j.MDC;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
@@ -19,6 +22,9 @@ public class SessionService {
     private final AuthenticateClient authenticateClient;
     private final ThreadLocal<Session> cache = new ThreadLocal<>();
 
+    @Value("${systemToken}")
+    String systemToken;
+
     private class Session {
         private Person person;
         private Person effectivePerson;
@@ -28,7 +34,16 @@ public class SessionService {
         private Session(String token) {
             if (StringUtils.hasLength(token)) {
                 MDC.put(BEARER_KEY, token);
-                identity = authenticateClient.findIdentity(token);
+                if (StringUtils.pathEquals(systemToken, token)) {
+                    identity = new IdentityImpl();
+                    identity.setName("System");
+                    identity.setEmail("system");
+                    identity.setRole(Role.SYSTEM);
+                    person = new PersonImpl();
+                    person.setName("System");
+                } else {
+                    identity = authenticateClient.findIdentity(token);
+                }
                 if (identity != null) {
                     MDC.put(IDENTITY_KEY, identity.getEmail());
                 }
