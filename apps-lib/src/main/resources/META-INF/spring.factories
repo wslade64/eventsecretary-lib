@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  au.com.eventsecretary.apps.AppsConfiguration
+  au.com.eventsecretary.apps.AppsConfiguration, au.com.eventsecretary.apps.GlobalExceptionHandler

@@ -1,5 +1,6 @@
 package au.com.eventsecretary.apps;
 
+import au.com.eventsecretary.client.SecurityInterceptor;
 import au.com.eventsecretary.client.SessionService;
 import au.com.eventsecretary.client.UnauthorizedException;
 import au.com.eventsecretary.people.Person;
@@ -7,6 +8,7 @@ import au.com.eventsecretary.user.identity.Authorisation;
 import au.com.eventsecretary.user.identity.Identity;
 import au.com.eventsecretary.user.identity.Permissions;
 import au.com.eventsecretary.user.identity.Role;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +18,13 @@ import org.springframework.http.MediaType;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
+import static au.com.eventsecretary.Audit.security;
 import static au.com.eventsecretary.Request.AUTH_COOKIE;
 
 /**
@@ -30,6 +38,8 @@ public abstract class AbstractController
 
     @Autowired
     protected SessionService sessionService;
+
+    private BadRequestCache badRequestCache = new BadRequestCache();
 
     protected void authorise(String contextName, String targetId, String area, Permissions read) {
         sessionService.authorise(contextName, targetId, area, read);
@@ -68,6 +78,14 @@ public abstract class AbstractController
         Identity identity = sessionService.getIdentity();
         if (identity == null) {
             throw new UnauthorizedException();
+        }
+        return identity;
+    }
+
+    protected Identity isAuthenticated() {
+        Identity identity = sessionService.getIdentity();
+        if (identity == null) {
+            throw new UnauthorizedException(true);
         }
         return identity;
     }
@@ -186,5 +204,70 @@ public abstract class AbstractController
         }
         String format = String.format("attachment; filename=%s", filename);
         headers.set("Content-Disposition", format);
+    }
+
+    public static void validateWebRequest(HttpServletRequest request) {
+        if (StringUtils.isBlank(request.getHeader("Referer"))) {
+            security("missingHeader", "referer", SecurityInterceptor.realIP());
+            throw new UnauthorizedException();
+        }
+        if (StringUtils.isBlank(request.getHeader("User-Agent"))) {
+            security("missingHeader", "User-Agent", SecurityInterceptor.realIP());
+            throw new UnauthorizedException();
+        }
+    }
+
+    protected void checkRequest(String action) {
+        badRequestCache.checkRequest(SecurityInterceptor.realIP(), action);
+    }
+
+    protected void badRequest() {
+        badRequestCache.badRequest(SecurityInterceptor.realIP());
+    }
+
+    public static class BadRequestCache {
+        private static final long FORGET_TIME = 1000 * 60 * 60;
+        private static final long MAX_BAD = 10;
+
+        private class Request {
+            boolean blocked;
+            List<Long> time = new ArrayList<>();
+        }
+
+        private Map<String, Request> requestCache = new HashMap<>();
+
+        void checkRequest(String ipAddress, String action) {
+            sweep();
+            Request request = requestCache.get(ipAddress);
+            if (request != null && request.blocked) {
+                security(action, "blocked");
+                throw new UnauthorizedException();
+            }
+        }
+
+        void badRequest(String ipAddress) {
+            sweep();
+            Request request = requestCache.get(ipAddress);
+            if (request == null) {
+                request = new Request();
+                requestCache.put(ipAddress, request);
+            }
+            request.time.add(System.currentTimeMillis());
+            if (request.time.size() > MAX_BAD) {
+                request.blocked = true;
+            }
+        }
+
+        private synchronized void sweep() {
+            long now = System.currentTimeMillis();
+            Iterator<Request> iterator = requestCache.values().iterator();
+            while (iterator.hasNext()) {
+                Request request = iterator.next();
+                request.time.removeIf(t -> now - t > FORGET_TIME);
+                if (request.time.isEmpty()) {
+                    iterator.remove();
+                }
+            }
+        }
     }
 }
