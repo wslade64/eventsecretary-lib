@@ -69,6 +69,9 @@ public interface IdentifiableUtils {
     static <T extends Entity> T findById(List<T> list, String id) {
 
         for (T item : list) {
+            if (item == null) {
+                continue;
+            }
             if (StringUtils.equals(item.getId(), id)) {
                 return item;
             }
