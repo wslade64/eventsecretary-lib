@@ -28,6 +28,10 @@ import static au.com.eventsecretary.simm.IdentityUtils.cleanPhoneNumber;
 public class PeopleClient extends AbstractClient {
     private static final String URI = "/user/v1/people";
 
+    public static final String OPTION_EXTENSION = "extension";
+    public static final String OPTION_ADDRESS = "address";
+    public static final String OPTION_FINANCIAL = "financial";
+
     public static boolean hasAddress(Person person) {
         Address mailingAddress = person.getMailingAddress();
         return mailingAddress != null && StringUtils.hasLength(mailingAddress.getPostCode());
@@ -87,11 +91,15 @@ public class PeopleClient extends AbstractClient {
         super(baseUrl, restTemplateBuilder);
     }
 
-    public Person getPerson(String personId) {
+    public Person getPerson(String personId, String... options) {
         try {
             HttpEntity<Void> httpEntity = createSystemEntity();
 
-            ResponseEntity<Person> exchange = restTemplate.exchange(baseUrl + URI + "/person/" + personId, HttpMethod.GET, httpEntity, Person.class);
+            String param = "";
+            if (options.length > 0) {
+                param = "?options=" + org.apache.commons.lang3.StringUtils.join(options, ",");
+            }
+            ResponseEntity<Person> exchange = restTemplate.exchange(baseUrl + URI + "/person/" + personId + param, HttpMethod.GET, httpEntity, Person.class);
             switch (exchange.getStatusCode()) {
                 case OK:
                     return exchange.getBody();
@@ -141,7 +149,7 @@ public class PeopleClient extends AbstractClient {
         }
     }
 
-    public PersonIdentity findPersonIdentityByPersonId(String personId) {
+    public PersonIdentity findPersonIdentityByPersonId(String personId, String[] ...options) {
         try {
             HttpEntity<Void> httpEntity = createSystemEntity();
 
@@ -352,11 +360,15 @@ public class PeopleClient extends AbstractClient {
         return list;
     }
 
-    public List<Person> findPeopleByBlock(List<String> idList) {
+    public List<Person> findPeopleByBlock(List<String> idList, String... options) {
         try {
             HttpEntity<Void> httpEntity = createSystemEntity();
 
             String ids = idList.stream().collect(Collectors.joining(","));
+
+            if (options.length > 0) {
+                ids += "&options=" + org.apache.commons.lang3.StringUtils.join(options, ",");
+            }
             ResponseEntity<Person[]> exchange = restTemplate.exchange(baseUrl + URI + "/person?" + "ids=" + ids, HttpMethod.GET, httpEntity, Person[].class);
             switch (exchange.getStatusCode()) {
                 case OK:
