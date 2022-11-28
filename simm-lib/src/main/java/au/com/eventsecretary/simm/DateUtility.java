@@ -4,6 +4,10 @@ import au.com.eventsecretary.common.Period;
 import au.com.eventsecretary.common.PeriodImpl;
 import au.com.eventsecretary.common.Timestamp;
 import au.com.eventsecretary.common.TimestampImpl;
+import au.com.eventsecretary.facility.site.Site;
+import au.com.eventsecretary.people.Address;
+import au.com.eventsecretary.people.States;
+import org.joda.time.DateTimeZone;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
@@ -13,6 +17,9 @@ import org.joda.time.format.DateTimeFormat;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TimeZone;
 
 /**
  * TODO
@@ -309,6 +316,20 @@ public interface DateUtility {
         return DateUtility.splitToTime(intervals[0], intervals[1], intervals[2]);
     }
 
+    static Timestamp now(String timezoneId) {
+        if (timezoneId == null) {
+            return now();
+        }
+        DateTimeZone dateTimeZone = DateTimeZone.forID(timezoneId);
+        LocalDate localDate = LocalDate.now(dateTimeZone);
+        LocalTime localTime = LocalTime.now(dateTimeZone);
+
+        Timestamp timestamp = new TimestampImpl();
+        timestamp.setDate(splitToDate(localDate.getYear(), localDate.getMonthOfYear(), localDate.getDayOfMonth()));
+        timestamp.setTime(splitToTime(localTime.getHourOfDay(), localTime.getMinuteOfHour(), localTime.getSecondOfMinute()));
+        return timestamp;
+    }
+
     static Timestamp now() {
         LocalDate localDate = LocalDate.now();
         LocalTime localTime = LocalTime.now();
@@ -514,4 +535,41 @@ public interface DateUtility {
         }
         return true;
     }
+
+    static Map<States, String> stateTimezoneMap = initMap();
+
+    static Map<States, String> initMap() {
+        Map<States, String> map = new HashMap<>();
+        map.put(States.VIC, "Australia/Victoria");
+        map.put(States.NSW, "Australia/NSW");
+        map.put(States.SA, "Australia/South");
+        map.put(States.WA, "Australia/West");
+        map.put(States.TAS, "Australia/Tasmania");
+        map.put(States.QLD, "Australia/Queensland");
+        map.put(States.ACT, "Australia/ACT");
+        map.put(States.NT, "Australia/North");
+        return map;
+    }
+
+    static String timezoneId(Site site) {
+        if (site == null) {
+            return null;
+        }
+        Address streetAddress = site.getStreetAddress();
+        if (streetAddress == null) {
+            return null;
+        }
+        States state = streetAddress.getState();
+        return stateTimezoneMap.get(state);
+    }
+
+    /**
+     * @return Time in seconds from GMT
+     */
+    static int timezoneOffset(Site site) {
+        String tz = timezoneId(site);
+        TimeZone timeZone = TimeZone.getTimeZone(tz);
+        return timeZone.getOffset(System.currentTimeMillis()) / (60 * 1000);
+    }
+
 }
