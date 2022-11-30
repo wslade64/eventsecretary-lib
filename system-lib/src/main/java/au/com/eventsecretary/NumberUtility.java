@@ -6,6 +6,7 @@ import java.math.RoundingMode;
 public interface NumberUtility {
     BigDecimal B100 = BigDecimal.valueOf(100);
     BigDecimal B1000 = BigDecimal.valueOf(1000);
+    BigDecimal BLARGE = BigDecimal.valueOf(1000000);
 
     static boolean isNegative(BigDecimal value) {
         return value.compareTo(BigDecimal.ZERO) < 0;
