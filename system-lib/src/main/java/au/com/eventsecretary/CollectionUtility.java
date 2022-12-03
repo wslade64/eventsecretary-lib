@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -75,7 +75,7 @@ public interface CollectionUtility {
     }
 
     static Map<String, String> nameValuePairs(String list) {
-        Map<String, String> nvp = new HashMap<>();
+        Map<String, String> nvp = new LinkedHashMap<>();
         for (String s : list.split(",")) {
             String[] split = s.split("=");
             nvp.put(split[0], split[1]);
