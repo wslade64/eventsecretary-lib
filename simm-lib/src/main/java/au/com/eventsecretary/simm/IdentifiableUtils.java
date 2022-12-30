@@ -128,6 +128,12 @@ public interface IdentifiableUtils {
         return identifiable;
     }
 
+    static Identifiable createIdentifiable(String id, String name, String code) {
+        Identifiable identifiable = createIdentifiable(id, name);
+        identifiable.setCode(code);
+        return identifiable;
+    }
+
     static void ensureId(Identifiable identifiable) {
         if (identifiable == null) {
             return;
