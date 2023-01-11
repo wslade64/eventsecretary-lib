@@ -1,5 +1,7 @@
 package au.com.eventsecretary.persistence;
 
+import au.com.eventsecretary.dao.FindBy;
+
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -28,7 +30,11 @@ public interface BusinessObjectPersistence
 
     <T> void storeObject(T object);
 
+    <T> T findObject(FindBy<T> findBy);
+
     <T> T findObject(T search);
+
+    <T> List<T> findObjects(FindBy<T> search);
 
     <T> List<T> findObjects(T search);
 

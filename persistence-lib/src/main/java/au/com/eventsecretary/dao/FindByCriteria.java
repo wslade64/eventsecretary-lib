@@ -9,13 +9,12 @@ public class FindByCriteria<T, C> extends FindBy<T>
 {
     private C c;
 
-    public static <T, C> T findByCriteria(T t, C c)
+    public static <T, C> FindBy<T> findByCriteria(T t, C c)
     {
-        return (T)new FindByCriteria<T, C>(t, c);
+        return new FindByCriteria<T, C>(t, c);
     }
-    public static <T, C> T findByCriteria(T t, C c, Integer limit)
-    {
-        return (T)new FindByCriteria<T, C>(t, c, limit);
+    public static <T, C> FindBy<T> findByCriteria(T t, C c, Integer limit) {
+        return new FindByCriteria<T, C>(t, c, limit);
     }
 
     public FindByCriteria(T t, C c)

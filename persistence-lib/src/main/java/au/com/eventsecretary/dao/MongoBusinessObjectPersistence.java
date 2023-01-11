@@ -37,6 +37,16 @@ public class MongoBusinessObjectPersistence implements BusinessObjectPersistence
     }
 
     @Override
+    public <T> T findObject(FindBy<T> search) {
+        Criteria criteria = makeCriteria(search);
+        Query query = criteria != null ? new Query(criteria) : new Query();
+
+        Class<T> targetClass = (Class<T>) search.getTarget().getClass();
+
+        return mongoOperation.findOne(query, targetClass);
+    }
+
+    @Override
     public <T> T findObject(T search)
     {
         Criteria criteria = makeCriteria(search);
@@ -45,6 +55,26 @@ public class MongoBusinessObjectPersistence implements BusinessObjectPersistence
         Class<T> targetClass = targetClass(search);
 
         return mongoOperation.findOne(query, targetClass);
+    }
+
+    public <T> List<T> findObjects(FindBy<T> search)
+    {
+        Criteria criteria = makeCriteria(search);
+        Query query = new Query();
+        if (criteria != null)
+        {
+            query.addCriteria(criteria);
+        }
+        if (search instanceof FindBy) {
+            Integer limit = ((FindBy)search).getLimit();
+            if (limit != null) {
+                query.limit(limit);
+            }
+        }
+
+        Class<T> targetClass = (Class<T>) search.getTarget().getClass();
+
+        return mongoOperation.find(query, targetClass);
     }
 
     @Override
