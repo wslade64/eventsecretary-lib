@@ -5,6 +5,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.util.CellReference;
 
 import java.util.List;
 
@@ -94,16 +95,17 @@ public class RowBuilder {
     }
 
     public static String formatColumn(int column) {
-        char[] chars;
-        if (column <= 25) {
-            chars = new char[1];
-            chars[0] = (char)('A' + column);
-        } else {
-            chars = new char[2];
-            chars[0] = (char)('A' + (column / 26 - 1));
-            chars[1] = (char)('A' + column % 26);
-        }
-        return new String(chars);
+        return CellReference.convertNumToColString(column);
+//        char[] chars;
+//        if (column <= 25) {
+//            chars = new char[1];
+//            chars[0] = (char)('A' + column);
+//        } else {
+//            chars = new char[2];
+//            chars[0] = (char)('A' + (column / 26 - 1));
+//            chars[1] = (char)('A' + column % 26);
+//        }
+//        return new String(chars);
     }
 
     public SheetBuilder end() {
