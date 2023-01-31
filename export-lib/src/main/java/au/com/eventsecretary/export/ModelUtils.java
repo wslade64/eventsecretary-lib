@@ -4,7 +4,9 @@ import au.com.auspost.simm.model.ComplexType;
 import au.com.auspost.simm.model.Intrinsic;
 import au.com.eventsecretary.UnexpectedSystemException;
 import au.com.eventsecretary.simm.ModelExtensions;
+import org.apache.commons.beanutils.PropertyUtils;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.function.Function;
 
 import static au.com.eventsecretary.export.ValueFormatter.enumFormatterClassifier;
@@ -57,5 +59,17 @@ public interface ModelUtils {
                 builder.end();
             });
         };
+    }
+
+    static Object objectAttributeValue(Object object, String attributeName) {
+        try {
+            return PropertyUtils.getProperty(object, attributeName);
+        } catch (IllegalAccessException e) {
+            throw new UnexpectedSystemException(e);
+        } catch (InvocationTargetException e) {
+            throw new UnexpectedSystemException(e);
+        } catch (NoSuchMethodException e) {
+            throw new UnexpectedSystemException(e);
+        }
     }
 }
