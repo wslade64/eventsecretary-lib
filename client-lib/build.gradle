@@ -3,7 +3,7 @@ archivesBaseName = 'eventsecretary-client-lib'
 dependencies {
     compile("org.apache.commons:commons-lang3:${commonsLang3Version}")
     compile("commons-beanutils:commons-beanutils:${commonsBeanutilsVersion}")
-    compile("org.springframework.boot:spring-boot-starter-web:${springBootStarterWebVersion}")
+    compile("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
     compile("au.com.eventsecretary.simm:eventsecretary-simm-impl:x.x.x-SNAPSHOT")
     compile("au.com.auspost.lodgement:lodgement-constraint-impl:x.x.x-SNAPSHOT")
     compile("au.com.auspost.lodgement:lodgement-constraint-api:x.x.x-SNAPSHOT")

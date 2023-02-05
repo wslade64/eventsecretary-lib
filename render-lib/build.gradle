@@ -1,11 +1,11 @@
 archivesBaseName = 'eventsecretary-render-lib'
 
 dependencies {
-    compile group: 'org.freemarker', name: 'freemarker', version:'2.3.28'
+    compile("org.freemarker:freemarker:${freemarkerVersion}")
     compile("org.springframework:spring-context:${springVersion}")
     compile("org.springframework:spring-context-support:${springVersion}")
     compile project(":system-lib")
     compile project(":simm-lib")
-    testCompile("junit:junit:4.12")
+//    testCompile("junit:junit:4.12")
 }
 

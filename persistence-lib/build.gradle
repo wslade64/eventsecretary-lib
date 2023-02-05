@@ -3,8 +3,9 @@ archivesBaseName = 'eventsecretary-persistence-lib'
 dependencies {
     compile("org.apache.commons:commons-lang3:${commonsLang3Version}")
     compile("commons-beanutils:commons-beanutils:${commonsBeanutilsVersion}")
-    compile("org.springframework.boot:spring-boot-starter-web:${springBootStarterWebVersion}")
-    compile("org.springframework.data:spring-data-mongodb:2.0.14.RELEASE")
+    compile("org.springframework.boot:spring-boot:${springBootVersion}")
+    compile("org.springframework.data:spring-data-mongodb:${springDataMongo}")
+    compile("org.mongodb:mongodb-driver-sync:${mongoVersion}")
     compile project(":system-lib")
 }
 

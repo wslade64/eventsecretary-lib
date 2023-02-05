@@ -1,17 +1,18 @@
 package au.com.eventsecretary.dao;
 
 import au.com.eventsecretary.persistence.BusinessObjectPersistence;
-import com.mongodb.MongoClient;
+import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.mongodb.MongoDbFactory;
+import org.springframework.data.mongodb.MongoDatabaseFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
+import org.springframework.data.mongodb.core.SimpleMongoClientDatabaseFactory;
 
-import java.net.UnknownHostException;
 import java.util.Arrays;
 
 /**
@@ -21,13 +22,15 @@ import java.util.Arrays;
 public class DbConfiguration {
 
     @Bean
-    public MongoDbFactory mongoDbFactory(MongoProperties properties) throws UnknownHostException {
+    public MongoDatabaseFactory mongoDatabaseFactory(MongoProperties properties) {
         ServerAddress serverAddress = new ServerAddress(properties.getHost(), properties.getPort());
 
         MongoClient mongoClient;
 
         if (StringUtils.isBlank(properties.getUsername())) {
-            mongoClient = new MongoClient(serverAddress);
+            mongoClient = MongoClients.create(MongoClientSettings.builder()
+                    .applyToClusterSettings(builder -> builder.hosts(Arrays.asList(serverAddress)))
+                    .build());
         } else {
 
             // Set credentials
@@ -37,25 +40,23 @@ public class DbConfiguration {
                     properties.getPassword().toCharArray());
 
             // Mongo Client
-            mongoClient = new MongoClient(serverAddress, Arrays.asList(credential));
+            mongoClient = MongoClients.create(MongoClientSettings.builder()
+                    .applyToClusterSettings(builder -> builder.hosts(Arrays.asList(serverAddress)))
+                            .credential(credential)
+                    .build());
         }
 
         // Mongo DB Factory
-        SimpleMongoDbFactory simpleMongoDbFactory = new SimpleMongoDbFactory(
+        SimpleMongoClientDatabaseFactory simpleMongoDatabaseFactory = new SimpleMongoClientDatabaseFactory(
                 mongoClient, properties.getName());
 
-        return simpleMongoDbFactory;
+        return simpleMongoDatabaseFactory;
     }
 
     @Bean
     public SequenceService sequenceService(BusinessObjectPersistence persistence) {
         return new SequenceService(persistence);
     }
-
-//    @Bean
-//    public MongoTemplate mongoTemplate(MongoDbFactory mongoDbFactory) {
-//        return new MongoTemplate(mongoDbFactory);
-//    }
 
     @Bean
     public BusinessObjectPersistence mongoBusinessObjectPersistence(MongoTemplate mongoTemplate) {
