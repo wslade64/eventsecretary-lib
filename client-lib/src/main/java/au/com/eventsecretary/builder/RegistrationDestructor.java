@@ -99,7 +99,11 @@ public class RegistrationDestructor {
     }
 
     public static Pair<RegistrationMetadata, RegistrationValueMetadata> hasClubs(List<RegistrationMetadata> registrationMetadataList) {
-        return hasRegistration(registrationMetadataList, "riderRegistration", RegistrationType.organisation, RegistrationValueType.reference);
+        Pair<RegistrationMetadata, RegistrationValueMetadata> riderRegistration = hasRegistration(registrationMetadataList, "riderRegistration", RegistrationType.organisation, RegistrationValueType.reference);
+        if (riderRegistration != null) {
+            return riderRegistration;
+        }
+        return hasRegistration(registrationMetadataList, "riderRegistration", RegistrationType.organisation, RegistrationValueType.list);
     }
 
     public static Pair<RegistrationMetadata, RegistrationValueMetadata> hasRiderMembershipNumber(List<RegistrationMetadata> registrationMetadataList) {
