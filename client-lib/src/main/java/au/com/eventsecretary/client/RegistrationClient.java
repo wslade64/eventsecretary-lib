@@ -41,6 +41,25 @@ public class RegistrationClient extends AbstractClient {
         }
     }
 
+    public List<Registration> getRegistrationsByOwnersId(List<String> ownersId) {
+        try {
+            HttpEntity<Void> httpEntity = createSystemEntity();
+
+            Map<String, String> uriVariables = new HashMap<>();
+            uriVariables.put("ownersId", String.join(",", ownersId));
+            ResponseEntity<List<Registration>> exchange = restTemplate.exchange(baseUrl + URI + "?ownersId={ownersId}"
+                    , HttpMethod.GET, httpEntity, new ParameterizedTypeReference<List<Registration>>(){}, uriVariables);
+            if (exchange.getStatusCode() == HttpStatus.OK) {
+                return exchange.getBody();
+            }
+            return null;
+        }
+        catch (RestClientException e) {
+            logger.error("getRegistration:" + e.getMessage());
+            throw new UnexpectedSystemException("getRegistration");
+        }
+    }
+
     public Registration getRegistration(String registrationRef) {
         try {
             HttpEntity<Void> httpEntity = createSystemEntity();
