@@ -195,4 +195,8 @@ public interface IdentityUtils {
     static String name(String name) {
         return name != null ? name : "?";
     }
+
+    static String name(Identifiable identifiable) {
+        return identifiable != null ? name(identifiable.getName()) : "?";
+    }
 }

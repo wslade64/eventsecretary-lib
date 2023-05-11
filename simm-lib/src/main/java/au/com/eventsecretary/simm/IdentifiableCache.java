@@ -24,6 +24,9 @@ public class IdentifiableCache<T extends Identifiable> {
     }
 
     public T findById(String id) {
+        if (id == null) {
+            return null;
+        }
         T target = IdentifiableUtils.findById(cache, id);
         if (target != null) {
             return target;
@@ -36,6 +39,9 @@ public class IdentifiableCache<T extends Identifiable> {
     }
 
     public T findByCode(String code) {
+        if (code == null) {
+            return null;
+        }
         T target = IdentifiableUtils.findByCode(cache, code);
         if (target != null) {
             return target;
