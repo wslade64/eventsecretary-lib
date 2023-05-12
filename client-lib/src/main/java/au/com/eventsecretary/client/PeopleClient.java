@@ -75,6 +75,19 @@ public class PeopleClient extends AbstractClient {
         return String.format("%s %s", person.getFirstName(), person.getLastName());
     }
 
+    public static String personLastFirst(Person person) {
+        if (person == null) {
+            return "";
+        }
+        if (person.getFirstName() == null) {
+            return person.getLastName();
+        }
+        if (person.getLastName() == null) {
+            return person.getFirstName();
+        }
+        return String.format("%s, %s", person.getLastName(), person.getFirstName());
+    }
+
     public static void cleanPerson(Person person) {
         ContactDetails contactDetails = person.getContactDetails();
         if (contactDetails != null) {
