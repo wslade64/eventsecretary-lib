@@ -26,7 +26,7 @@ public class AuthorisationClient extends ResourceClient {
 
     public Authorisation getAuthorisationByContext(String identityId, String contentName, String targetId) {
         try {
-            HttpEntity<Void> httpEntity = createEntity();
+            HttpEntity<Void> httpEntity = createSystemEntity();
 
             Map<String, String> uriVariables = new HashMap<>();
             uriVariables.put("identityId", identityId);
@@ -47,7 +47,7 @@ public class AuthorisationClient extends ResourceClient {
 
     public List<Authorisation> getAuthorisationsByContext(String contextName, String targetId) {
         try {
-            HttpEntity<Void> httpEntity = createEntity();
+            HttpEntity<Void> httpEntity = createSystemEntity();
 
             Map<String, String> uriVariables = new HashMap<>();
             uriVariables.put("contextName", contextName);
@@ -84,7 +84,7 @@ public class AuthorisationClient extends ResourceClient {
 
     public List<Authorisation> getAuthorisationsByIdentityId(String identityId) {
         try {
-            HttpEntity<Void> httpEntity = createEntity();
+            HttpEntity<Void> httpEntity = createSystemEntity();
 
             Map<String, String> uriVariables = new HashMap<>();
             uriVariables.put("identityId", identityId);
