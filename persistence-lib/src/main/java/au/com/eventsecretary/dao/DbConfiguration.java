@@ -59,6 +59,11 @@ public class DbConfiguration {
     }
 
     @Bean
+    public LockedProcess lockedProcess() {
+        return new LockedProcess();
+    }
+
+    @Bean
     public BusinessObjectPersistence mongoBusinessObjectPersistence(MongoTemplate mongoTemplate) {
         return new MongoBusinessObjectPersistence(mongoTemplate);
     }
