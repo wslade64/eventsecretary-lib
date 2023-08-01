@@ -11,16 +11,23 @@ import java.io.IOException;
 
 public class XmlBuilder implements FileBuilder {
     private final Object object;
+    private boolean nonEmpty = false;
 
     public XmlBuilder(Object object) {
         this.object = object;
     }
 
+    public XmlBuilder nonEmpty() {
+        nonEmpty = true;
+        return this;
+    }
     @Override
     public String build(File file) {
         XmlMapper xmlMapper = new XmlMapper();
         xmlMapper.enable(SerializationFeature.INDENT_OUTPUT);
-        xmlMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+        if (nonEmpty) {
+            xmlMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+        }
 
         try (FileOutputStream fos = new FileOutputStream(file)){
             xmlMapper.writeValue(fos, object);
