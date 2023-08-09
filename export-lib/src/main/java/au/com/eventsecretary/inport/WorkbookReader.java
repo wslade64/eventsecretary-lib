@@ -477,8 +477,8 @@ public class WorkbookReader {
             }
 
             public class BinaryCellReader<T> extends CellReader<T> {
-                private String trueList = "true,yes";
-                private String falseList = "false,no";
+                private String trueList = "true,yes,1";
+                private String falseList = "false,no,0";
 
                 BiConsumer<T, Boolean> consumer;
 
@@ -489,16 +489,30 @@ public class WorkbookReader {
 
                 @Override
                 void accept(Cell cell, T row) {
-                    String cellValue = cell != null ? cell.getStringCellValue() : null;
+                    String cellValue;
                     Boolean value = null;
-                    if (cellValue != null) {
-                        cellValue = cellValue.trim();
-                        if (cellValue.length() > 0) {
-                            if (trueList.contains(cellValue.toLowerCase())) {
-                                value = true;
-                            } else if (falseList.contains(cellValue.toLowerCase())) {
-                                value = false;
-                            }
+                    if (cell != null) {
+                        switch (cell.getCellType()) {
+                            case STRING:
+                                String svalue = cell.getStringCellValue();
+                                if (svalue != null) {
+                                    cellValue = svalue.trim();
+                                    if (cellValue.length() > 0) {
+                                        if (trueList.contains(cellValue.toLowerCase())) {
+                                            value = true;
+                                        } else if (falseList.contains(cellValue.toLowerCase())) {
+                                            value = false;
+                                        }
+                                    }
+                                }
+                                break;
+                            case BOOLEAN:
+                                value = cell.getBooleanCellValue();
+                                break;
+                            case NUMERIC:
+                                double numericCellValue = cell.getNumericCellValue();
+                                value = numericCellValue != 0;
+                                break;
                         }
                     }
                     if (valueRequired && value == null) {
