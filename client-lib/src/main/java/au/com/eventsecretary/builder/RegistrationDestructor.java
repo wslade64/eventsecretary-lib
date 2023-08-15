@@ -1,17 +1,15 @@
 package au.com.eventsecretary.builder;
 
-import au.com.eventsecretary.accounting.registration.Registration;
-import au.com.eventsecretary.accounting.registration.RegistrationMetadata;
-import au.com.eventsecretary.accounting.registration.RegistrationType;
-import au.com.eventsecretary.accounting.registration.RegistrationValue;
-import au.com.eventsecretary.accounting.registration.RegistrationValueMetadata;
-import au.com.eventsecretary.accounting.registration.RegistrationValueType;
+import au.com.eventsecretary.accounting.organisation.Organisation;
+import au.com.eventsecretary.accounting.registration.*;
+import au.com.eventsecretary.simm.IdentifiableCache;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
 
 import static au.com.eventsecretary.simm.IdentifiableUtils.findByCode;
+import static au.com.eventsecretary.simm.IdentityUtils.stringsToMap;
 
 /**
  * TODO
@@ -32,6 +30,18 @@ public class RegistrationDestructor {
     public String club(List<Registration> registrations) {
         return value(hasClubs(registrationMetadataList), registrations);
     }
+
+    public String clubName(List<Registration> registrations, IdentifiableCache<Organisation> organisationCache) {
+        Pair<RegistrationMetadata, RegistrationValueMetadata> pair = hasClubs(registrationMetadataList);
+        String registrationValue = value(pair, registrations);
+        if (pair.getRight().getRegistrationValueType() != RegistrationValueType.list) {
+            Organisation organisation = organisationCache.findById(registrationValue);
+            return organisation != null ? organisation.getName() : null;
+        }
+        String value = stringsToMap(pair.getRight().getRegistrationConstraint()).get(registrationValue);
+        return value != null ? value : registrationValue;
+    }
+
 
     public String riderMembershipNumber(List<Registration> registrations) {
         return value(hasRiderMembershipNumber(registrationMetadataList), registrations);
