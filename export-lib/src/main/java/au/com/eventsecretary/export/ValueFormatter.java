@@ -4,6 +4,7 @@ import au.com.auspost.simm.acv.service.MetadataModelService;
 import au.com.auspost.simm.model.Attribute;
 import au.com.auspost.simm.model.ComplexType;
 import au.com.eventsecretary.UnexpectedSystemException;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Optional;
 
@@ -13,7 +14,20 @@ import static au.com.eventsecretary.simm.ExtensionUtils.alias;
 public interface ValueFormatter<S, T> {
     T format(S value);
 
-    static ValueFormatter<Object, String> enumFormatter(MetadataModelService metadataModelService, String attributeId) {
+    static String enumParser(MetadataModelService metadataModelService, String attributeId, String enumAlias) {
+        if (enumAlias == null) {
+            return null;
+        }
+        ComplexType complexType = enumComplexType(metadataModelService, attributeId);
+        for (Attribute attribute : complexType.getAttributes()) {
+            if (StringUtils.equals(enumAlias, alias(attribute))) {
+                return attribute.getName();
+            }
+        }
+        throw new UnexpectedSystemException("InvalidEnum:"+enumAlias);
+    }
+
+    static ComplexType enumComplexType(MetadataModelService metadataModelService, String attributeId) {
         String[] split = attributeId.split(":");
         String complexTypeId = split[0];
         String attributeName = split[1];
@@ -32,8 +46,11 @@ public interface ValueFormatter<S, T> {
         if (!optionalEnumComplexType.isPresent()) {
             throw new UnexpectedSystemException(classifier);
         }
+        return optionalEnumComplexType.get();
+    }
 
-        return enumFormatterClassifier(optionalEnumComplexType.get());
+    static ValueFormatter<Object, String> enumFormatter(MetadataModelService metadataModelService, String attributeId) {
+        return enumFormatterClassifier(enumComplexType(metadataModelService, attributeId));
     }
 
     static ValueFormatter<Object, String> enumFormatterClassifier(MetadataModelService metadataModelService, String complexTypeId) {

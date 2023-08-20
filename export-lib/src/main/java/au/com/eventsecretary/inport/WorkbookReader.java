@@ -640,7 +640,7 @@ public class WorkbookReader {
                                 }
                                 cellReader.read(cell, rowValue);
                             } catch (Exception e) {
-                                validationError(cell, "", e.getMessage());
+                                validationError(cell, cellReader.columnName, e.getMessage());
                                 logger().error("badCell:{}", e.getMessage());
                                 logger().error("cell exception", e);
                                 return;
