@@ -13,6 +13,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClientException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -36,6 +37,28 @@ public class OrderClient extends AbstractClient {
             }
         }
         return null;
+    }
+
+    public static List<Cost> findCostsByTarget(Cost cost, String context, String id) {
+        List<Cost> targets = new ArrayList<>();
+        for (Cost childCost : cost.getCosts()) {
+            Cost foundCost = findCostByTarget(childCost, context, id);
+            if (foundCost != null) {
+                targets.add(foundCost);
+            }
+        }
+        return targets;
+    }
+
+    public static List<Cost> findCostsByTarget(Cost cost, String context) {
+        // Not recursive
+        List<Cost> targets = new ArrayList<>();
+        for (Cost childCost : cost.getCosts()) {
+            if (StringUtils.equals(childCost.getTargetContext(), context)) {
+                targets.add(childCost);
+            }
+        }
+        return targets;
     }
 
     public Order createOrder(String accountCode, Order order) {
