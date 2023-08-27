@@ -4,6 +4,7 @@ import au.com.eventsecretary.ResourceNotFoundException;
 import au.com.eventsecretary.UnexpectedSystemException;
 import au.com.eventsecretary.accounting.account.Order;
 import au.com.eventsecretary.accounting.pricing.Cost;
+import au.com.eventsecretary.accounting.pricing.CostAmount;
 import au.com.eventsecretary.accounting.registration.Registration;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -13,8 +14,12 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClientException;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+
+import static au.com.eventsecretary.NumberUtility.add;
+import static au.com.eventsecretary.simm.NumberUtils.formatCurrency;
 
 /**
  * @author sladew
@@ -186,6 +191,56 @@ public class OrderClient extends AbstractClient {
         catch (RestClientException e) {
             logger.error("delete:" + e.getMessage());
             throw new UnexpectedSystemException(e);
+        }
+    }
+
+    public static BigDecimal sumAmount(Cost cost) {
+        BigDecimal total = null;
+        for (CostAmount costAmount : cost.getAmount()) {
+            total = add(total, costAmount.getAmount());
+        }
+        if (total == null || BigDecimal.ZERO.compareTo(total) == 0) {
+            return null;
+        }
+        return total;
+    }
+
+    public static List<String[]> flattenOrder(Order order) {
+        List<String[]> list = flattenCost(order.getCost());
+        if (order.getLedger() != null) {
+            String[] total;
+            list.add(total = new String[2]);
+            total[0] = "Total";
+            total[1] = formatCurrency(order.getLedger().getTotal());
+        }
+        return list;
+    }
+
+    public static List<String[]> flattenCost(Cost cost) {
+        List<String[]> list = new ArrayList<>();
+        if (cost == null) {
+            return list;
+        }
+        flattenCost(cost, list);
+        return list;
+    }
+
+    private static void flattenCost(Cost cost, List<String[]> list) {
+        for (Cost childCost : cost.getCosts()) {
+            if (!childCost.getAmount().isEmpty()) {
+                BigDecimal total = sumAmount(childCost);
+                if (total != null) {
+                    String[] pair;
+                    list.add(pair = new String[2]);
+                    pair[0] = StringUtils.isNotBlank(cost.getName()) ? String.format("%s - %s", cost.getName(), childCost.getName()) : childCost.getName();
+                    pair[1] = formatCurrency(total);
+                }
+            }
+        }
+        for (Cost childCost : cost.getCosts()) {
+            if (childCost.getAmount().isEmpty()) {
+                flattenCost(childCost, list);
+            }
         }
     }
 }

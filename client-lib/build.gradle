@@ -10,5 +10,6 @@ dependencies {
     compile("net.sf.javaprinciples.notification:notification-api:x.x.x-SNAPSHOT")
     compile project(":system-lib")
     compile project(":simm-lib")
+    testCompile("junit:junit:${junitVersion}")
 }
 
