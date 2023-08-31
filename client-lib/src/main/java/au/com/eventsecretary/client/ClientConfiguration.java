@@ -103,6 +103,11 @@ public class ClientConfiguration {
     }
 
     @Bean
+    public WwcClient wwcClient(@Value("${userUrl}") String baseUrl, RestTemplateBuilder restTemplateBuilder) {
+        return new WwcClient(baseUrl + "/user/v1/wwc", restTemplateBuilder);
+    }
+
+    @Bean
     public ResourceClient activationClient(@Value("${userUrl}") String baseUrl, RestTemplateBuilder restTemplateBuilder) {
         return new ResourceClient(baseUrl + "/user/v2/activate", restTemplateBuilder, ActivationImpl.class);
     }
