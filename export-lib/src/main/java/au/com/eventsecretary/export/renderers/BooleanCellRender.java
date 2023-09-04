@@ -16,7 +16,7 @@ public class BooleanCellRender implements CellRenderer<Object> {
     @Override
     public void render(Cell cell, Object value, WorkbookBuilder workbookBuilder) {
         if (value == null) {
-            value = FALSE;
+            value = "";
         } else if (value instanceof Boolean) {
             value = ((Boolean)value) ? TRUE : FALSE;
         } else if (value instanceof String) {
