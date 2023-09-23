@@ -3,11 +3,13 @@ package au.com.eventsecretary.client;
 import au.com.eventsecretary.ResourceExistsException;
 import au.com.eventsecretary.UnexpectedSystemException;
 import au.com.eventsecretary.accounting.registration.Registration;
+import au.com.eventsecretary.people.Person;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.web.client.RestClientException;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +44,23 @@ public class RegistrationClient extends AbstractClient {
     }
 
     public List<Registration> getRegistrationsByOwnersId(List<String> ownersId) {
+        List<Registration> list = new ArrayList<>();
+        boolean remaining = !ownersId.isEmpty();
+        int index = 0;
+        while (remaining) {
+            int size = Math.min(ownersId.size() - index, 100);
+            if (size == 0) {
+                remaining = false;
+            } else {
+                list.addAll(getRegistrationsByOwnersIdBulk(ownersId.subList(index, index + size)));
+                index += size;
+            }
+        }
+        return list;
+
+    }
+
+    public List<Registration> getRegistrationsByOwnersIdBulk(List<String> ownersId) {
         try {
             HttpEntity<Void> httpEntity = createSystemEntity();
 
