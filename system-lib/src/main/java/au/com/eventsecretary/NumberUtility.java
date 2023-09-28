@@ -18,6 +18,34 @@ public interface NumberUtility {
         return value.compareTo(BigDecimal.ZERO) == 0;
     }
 
+    static BigDecimal addPositive(BigDecimal left, BigDecimal right) {
+        if (left == null && right == null) {
+            return null;
+        }
+        if (left == null) {
+            if (isNegative(right)) {
+                return BigDecimal.ZERO;
+            }
+            return right;
+        }
+        if (right == null) {
+            if (isNegative(left)) {
+                return BigDecimal.ZERO;
+            }
+            return left;
+        }
+        if (isNegative(left) && isNegative(right)) {
+            return BigDecimal.ZERO;
+        }
+        if (isNegative(left)) {
+            return right;
+        }
+        if (isNegative(right)) {
+            return left;
+        }
+        return left.add(right);
+    }
+
     static BigDecimal add(BigDecimal left, BigDecimal right) {
         if (left == null && right == null) {
             return null;
