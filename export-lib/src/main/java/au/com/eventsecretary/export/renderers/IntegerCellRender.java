@@ -14,7 +14,9 @@ public class IntegerCellRender implements CellRenderer<Object> {
                 try {
                     value = Integer.parseInt((String)value);
                 } catch (NumberFormatException e) {
-                    value = null;
+                    cell.setCellType(CellType.STRING);
+                    cell.setCellValue((String)value);
+                    return;
                 }
             } else if (!(value instanceof Integer)) {
                 value = null;
