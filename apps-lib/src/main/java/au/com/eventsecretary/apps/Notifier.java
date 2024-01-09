@@ -1,6 +1,7 @@
 package au.com.eventsecretary.apps;
 
 import au.com.eventsecretary.client.NotificationClient;
+import au.com.eventsecretary.simm.DateUtility;
 import net.sf.javaprinciples.notification.Message;
 import net.sf.javaprinciples.notification.Notification;
 import org.apache.commons.lang3.StringUtils;
@@ -41,7 +42,7 @@ public class Notifier {
         List<Message> messageList = new ArrayList<>();
         notification.setMessage(messageList);
         notification.setFrom("support@eventsecretary.com.au");
-        notification.setSubject("EventSecretary ALERT");
+        notification.setSubject("EventSecretary ALERT : " + DateUtility.machineTimestamp(DateUtility.now()));
 
         Message message = new Message();
         message.setTo(supportEmailAddress);

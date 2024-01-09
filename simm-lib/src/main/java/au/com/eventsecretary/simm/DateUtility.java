@@ -43,6 +43,13 @@ public interface DateUtility {
         return DateUtility.longDate(timestamp.getDate()) + " " + DateUtility.shortTime(timestamp.getTime());
     }
 
+    static String machineTimestamp(Timestamp timestamp) {
+        if (timestamp == null) {
+            return "";
+        }
+        return String.format("%d-%06d", timestamp.getDate(), timestamp.getTime());
+    }
+
     static int time(LocalTime localDate) {
         int hour = localDate.getHourOfDay();
         int minute = localDate.getMinuteOfHour();

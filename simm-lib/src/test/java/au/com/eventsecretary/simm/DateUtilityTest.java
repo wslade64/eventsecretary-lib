@@ -7,8 +7,7 @@ import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 import org.junit.Test;
 
-import static au.com.eventsecretary.simm.DateUtility.splitToDate;
-import static au.com.eventsecretary.simm.DateUtility.splitToTime;
+import static au.com.eventsecretary.simm.DateUtility.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -130,5 +129,11 @@ public class DateUtilityTest {
     public void shouldFormatMilliSeconds() {
         assertThat(DateUtility.formatMilliSeconds(8000), is("0:08.00"));
         assertThat(DateUtility.formatMilliSeconds(88000), is("1:28.00"));
+    }
+
+    @Test
+    public void shouldMachineFormat() {
+        assertThat(DateUtility.machineTimestamp(null), is(""));
+        assertThat(DateUtility.machineTimestamp(DateUtility.createTimestamp(20240130, 159)), is("20240130-000159"));
     }
 }
