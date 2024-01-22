@@ -121,6 +121,13 @@ public interface DateUtility {
         return date(date(from).plusDays(days));
     }
 
+    static boolean betweenOpen(int point, int from, Integer to) {
+        if (to != null) {
+            return between(point, from, to);
+        } else {
+            return point >= from;
+        }
+    }
     static boolean between(int point, int from, int to) {
         return point >= from && point < to;
     }
