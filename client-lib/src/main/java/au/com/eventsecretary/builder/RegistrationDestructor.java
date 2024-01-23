@@ -33,12 +33,19 @@ public class RegistrationDestructor {
 
     public String clubName(List<Registration> registrations, IdentifiableCache<Organisation> organisationCache) {
         Pair<RegistrationMetadata, RegistrationValueMetadata> pair = hasClubs(registrationMetadataList);
+        if (pair == null) {
+            return null;
+        }
         String registrationValue = value(pair, registrations);
-        if (pair.getRight().getRegistrationValueType() != RegistrationValueType.list) {
+        RegistrationValueMetadata right = pair.getRight();
+        if (right == null) {
+            return null;
+        }
+        if (right.getRegistrationValueType() != RegistrationValueType.list) {
             Organisation organisation = organisationCache.findById(registrationValue);
             return organisation != null ? organisation.getName() : null;
         }
-        String value = stringsToMap(pair.getRight().getRegistrationConstraint()).get(registrationValue);
+        String value = stringsToMap(right.getRegistrationConstraint()).get(registrationValue);
         return value != null ? value : registrationValue;
     }
 
