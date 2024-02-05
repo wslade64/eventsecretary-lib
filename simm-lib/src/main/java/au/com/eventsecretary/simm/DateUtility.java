@@ -7,19 +7,11 @@ import au.com.eventsecretary.common.TimestampImpl;
 import au.com.eventsecretary.facility.site.Site;
 import au.com.eventsecretary.people.Address;
 import au.com.eventsecretary.people.States;
-import org.joda.time.DateTimeZone;
-import org.joda.time.Days;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
-import org.joda.time.LocalTime;
-import org.joda.time.Seconds;
+import org.joda.time.*;
 import org.joda.time.format.DateTimeFormat;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TimeZone;
+import java.util.*;
 
 /**
  * TODO
@@ -233,6 +225,40 @@ public interface DateUtility {
         return DateUtility.createPeriod(startDate, DateUtility.splitToDate(end[0], end[1], end[2]));
     }
 
+    static boolean contains(List<Period> periodList, Period source) {
+        for (Period period : periodList) {
+            if (comparePeriods(period, source) == 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    static boolean containsEnd(List<Period> periodList, Period source) {
+        for (Period period : periodList) {
+            if (compare(period.getEnd(), source.getEnd()) == 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    static int comparePeriods(Period left, Period right) {
+        if (left == null || right == null) {
+            return 0;
+        }
+        if (left == null) {
+            return -1;
+        }
+        if (right == null) {
+            return 1;
+        }
+        int c = compare(left.getStart(), right.getStart());
+        if (c != 0) {
+            return c;
+        }
+        return compare(left.getEnd(), right.getEnd());
+    }
     static final int MINUTES_DAY = 24 * 60;
 
     static void addMinutes(Timestamp current, int minutes) {
