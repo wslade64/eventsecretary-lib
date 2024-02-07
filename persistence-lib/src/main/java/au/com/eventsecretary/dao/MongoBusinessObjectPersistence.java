@@ -98,6 +98,26 @@ public class MongoBusinessObjectPersistence implements BusinessObjectPersistence
         return mongoOperation.find(query, targetClass);
     }
 
+    public <T> long countObjects(T search)
+    {
+        Criteria criteria = makeCriteria(search);
+        Query query = new Query();
+        if (criteria != null)
+        {
+            query.addCriteria(criteria);
+        }
+        if (search instanceof FindBy) {
+            Integer limit = ((FindBy)search).getLimit();
+            if (limit != null) {
+                query.limit(limit);
+            }
+        }
+
+        Class<T> targetClass = targetClass(search);
+
+        return mongoOperation.count(query, targetClass);
+    }
+
     @Override
     public <T> void deleteObject(T object)
     {

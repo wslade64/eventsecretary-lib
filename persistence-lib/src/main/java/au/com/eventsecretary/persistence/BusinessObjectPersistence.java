@@ -39,4 +39,6 @@ public interface BusinessObjectPersistence
     <T> List<T> findObjects(T search);
 
     <T> void deleteObject(T object);
+
+    <T> long countObjects(T search);
 }
