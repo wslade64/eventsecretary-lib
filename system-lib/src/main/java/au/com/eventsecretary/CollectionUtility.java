@@ -1,12 +1,7 @@
 package au.com.eventsecretary;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -86,4 +81,18 @@ public interface CollectionUtility {
     static String toString(Boolean value) {
         return value == null ? "" : (value.booleanValue() ? "Yes" : "No");
     }
+
+    static <T> Map<String, List<T>> group(List<T> bigList, Function<T, String> keyProvider) {
+        Map<String, List<T>> sections = new HashMap<>();
+        for (T target : bigList) {
+            String key = keyProvider.apply(target);
+            List<T> list = sections.get(key);
+            if (list == null) {
+                sections.put(key, list = new ArrayList<>());
+            }
+            list.add(target);
+        }
+        return sections;
+    }
+
 }
