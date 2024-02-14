@@ -3,7 +3,6 @@ package au.com.eventsecretary.client;
 import au.com.eventsecretary.ResourceExistsException;
 import au.com.eventsecretary.UnexpectedSystemException;
 import au.com.eventsecretary.accounting.registration.Registration;
-import au.com.eventsecretary.people.Person;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
@@ -60,7 +59,7 @@ public class RegistrationClient extends AbstractClient {
 
     }
 
-    public List<Registration> getRegistrationsByOwnersIdBulk(List<String> ownersId) {
+    private List<Registration> getRegistrationsByOwnersIdBulk(List<String> ownersId) {
         try {
             HttpEntity<Void> httpEntity = createSystemEntity();
 
