@@ -95,4 +95,30 @@ public interface CollectionUtility {
         return sections;
     }
 
+    static String join(String sep, Object... objects) {
+        if (objects == null) {
+            throw new IllegalArgumentException("Object varargs must not be null");
+        } else {
+            StringBuilder result = new StringBuilder();
+
+            boolean first = true;
+            for (Object object : objects) {
+                if (object == null) {
+                    continue;
+                }
+                String s = object.toString();
+                if (s.isEmpty()) {
+                    continue;
+                }
+
+                if (!first) {
+                    result.append(sep);
+                } else {
+                    first = false;
+                }
+                result.append(s);
+            }
+            return result.toString();
+        }
+    }
 }
