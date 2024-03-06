@@ -167,4 +167,17 @@ public interface IdentifiableUtils {
         return null;
     }
 
+    static boolean isValidString(String left, String right) {
+        if (left == null) {
+            return true;
+        }
+        return StringUtils.equals(left, right);
+    }
+
+    static boolean isValidInt(int left, int right) {
+        if (left == 0) {
+            return true;
+        }
+        return left == right;
+    }
 }
