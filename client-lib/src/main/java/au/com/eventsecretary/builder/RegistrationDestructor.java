@@ -94,6 +94,7 @@ public class RegistrationDestructor {
         Registration registration = registrations
                 .stream()
                 .filter(registration1 -> StringUtils.equals(registration1.getRegistrationMetadataId(), pair.getLeft().getId()))
+                .filter(r -> r.getStatus() != RegistrationStatus.archived)
                 .findFirst()
                 .orElse(null);
         if (registration == null) {
