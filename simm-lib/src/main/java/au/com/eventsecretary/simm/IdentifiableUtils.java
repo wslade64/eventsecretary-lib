@@ -34,6 +34,7 @@ public interface IdentifiableUtils {
     static Identifiable reference(Identifiable identifiable) {
         Identifiable simple = new IdentifiableImpl();
         simple.setId(identifiable.getId());
+        simple.setCode(identifiable.getCode());
         simple.setName(identifiable.getName());
         return simple;
     }
