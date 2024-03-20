@@ -88,4 +88,17 @@ public interface NumberUtility {
         }
         return value % size;
     }
+
+    static int compareTo(BigDecimal left, BigDecimal right) {
+        if (left == null && right == null) {
+            return 0;
+        }
+        if (left == null) {
+            return -1;
+        }
+        if (right == null) {
+            return 1;
+        }
+        return left.compareTo(right);
+    }
 }
