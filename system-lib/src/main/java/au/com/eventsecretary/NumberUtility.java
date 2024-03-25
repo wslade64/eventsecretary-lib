@@ -101,4 +101,31 @@ public interface NumberUtility {
         }
         return left.compareTo(right);
     }
+
+    static String trimDecimal(String decimal) {
+        if (decimal == null || decimal.length() == 0) {
+            return decimal;
+        }
+        int index = decimal.indexOf(".");
+        if (index == -1) {
+            return decimal;
+        }
+        String left = decimal.substring(0, index);
+        String right = decimal.substring(index + 1);
+
+        StringBuffer buffer = new StringBuffer();
+        boolean done = false;
+        for (int i = right.length() - 1; i >= 0; i--) {
+            char c = right.charAt(i);
+            if (c != '0' || done) {
+                done = true;
+                buffer.insert(0, c);
+            }
+        }
+        if (buffer.length() == 0) {
+            return left;
+        }
+        return left + "." + buffer.toString();
+    }
+
 }
