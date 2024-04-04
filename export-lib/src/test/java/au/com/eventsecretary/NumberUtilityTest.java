@@ -26,6 +26,10 @@ public class NumberUtilityTest {
         assertThat(trimDecimal("1.010"), is("1.01"));
         assertThat(trimDecimal("1.100"), is("1.1"));
         assertThat(trimDecimal("1.000"), is("1"));
+
+        assertThat(rate(300, 300), is(60));
+        assertThat(rate(301, 300), is(61));
+        assertThat(rate(349, 300), is(70));
     }
 
 }

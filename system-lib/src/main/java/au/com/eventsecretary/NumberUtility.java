@@ -128,4 +128,8 @@ public interface NumberUtility {
         return left + "." + buffer.toString();
     }
 
+    public static int rate(int distance, int factor) {
+        return (int)Math.ceil((float)(distance) * 60 / factor);
+    }
+
 }
