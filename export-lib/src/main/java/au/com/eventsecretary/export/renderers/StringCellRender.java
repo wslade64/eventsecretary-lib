@@ -12,5 +12,6 @@ public class StringCellRender implements CellRenderer<String> {
             value = "";
         }
         cell.setCellValue(value);
+        cell.setCellStyle(workbookBuilder.wrappedStyle);
     }
 }
