@@ -19,6 +19,9 @@ public class LineBuilder {
     }
 
     public LineBuilder append(String text) {
+        if (text == null) {
+            return this;
+        }
         if (builder.length() > 0) {
             builder.append(separator);
         }
