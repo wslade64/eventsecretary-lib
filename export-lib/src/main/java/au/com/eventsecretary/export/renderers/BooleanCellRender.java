@@ -10,8 +10,17 @@ import org.apache.poi.ss.usermodel.Cell;
  * @author Warwick Slade
  */
 public class BooleanCellRender implements CellRenderer<Object> {
-    private final static String FALSE = "No";
-    private final static String TRUE = "Yes";
+    private final String FALSE;
+    private final String TRUE;
+
+    public BooleanCellRender() {
+        this("Yes", "No");
+    }
+
+    public BooleanCellRender(String yesLabel, String noLabel) {
+        this.TRUE = yesLabel;
+        this.FALSE = noLabel;
+    }
 
     @Override
     public void render(Cell cell, Object value, WorkbookBuilder workbookBuilder) {

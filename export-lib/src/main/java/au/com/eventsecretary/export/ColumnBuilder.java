@@ -79,6 +79,11 @@ public class ColumnBuilder {
         return this;
     }
 
+    public ColumnBuilder booleanFormat(String yesLabel, String noLabel) {
+        column.cellRenderer = new BooleanCellRender(yesLabel, noLabel);
+        return this;
+    }
+
     public ColumnBuilder label(String label) {
         column.labels = new ArrayList<>();
         column.labels.add(label);
