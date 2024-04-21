@@ -74,6 +74,13 @@ public interface NumberUtility {
         return atLeastOne ? sum : null;
     }
 
+    static BigDecimal multiply(BigDecimal left, BigDecimal right) {
+        if (left == null || right == null) {
+            return null;
+        }
+        return left.multiply(right);
+    }
+
     static BigDecimal extractNumber(BigDecimal value, int index, int size) {
         BigDecimal bsize = new BigDecimal(size);
         while (index-- != 0) {
