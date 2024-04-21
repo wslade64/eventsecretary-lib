@@ -529,14 +529,14 @@ public interface DateUtility {
         return years;
     }
 
-    static String formatMilliSeconds(BigDecimal milliseconds) {
+    static String formatMilliSecondsAsMinutes(BigDecimal milliseconds) {
         if (milliseconds == null) {
             return "";
         }
-        return formatMilliSeconds(milliseconds.intValue());
+        return formatMilliSecondsAsMinutes(milliseconds.intValue());
     }
 
-    static String formatMilliSeconds(int milliseconds) {
+    static String formatMilliSecondsAsMinutes(int milliseconds) {
         int seconds = milliseconds / 1000;
         int minutes = seconds / 60;
         seconds = seconds % 60;
@@ -545,7 +545,14 @@ public interface DateUtility {
         return String.format("%d:%02d.%02d", minutes, seconds, tms);
     }
 
-    static String formatSeconds(int seconds) {
+    static String formatMilliSecondsAsSeconds(int milliseconds) {
+        int seconds = milliseconds / 1000;
+        int hms = milliseconds % 1000;
+        int tms = hms / 10;
+        return String.format("%d.%02d", seconds, tms);
+    }
+
+    static String formatSecondsAsMinutes(int seconds) {
         int minutes = seconds / 60;
         seconds = seconds % 60;
         return String.format("%d:%02d", minutes, seconds);

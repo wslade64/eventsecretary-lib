@@ -127,8 +127,10 @@ public class DateUtilityTest {
 
     @Test
     public void shouldFormatMilliSeconds() {
-        assertThat(DateUtility.formatMilliSeconds(8000), is("0:08.00"));
-        assertThat(DateUtility.formatMilliSeconds(88000), is("1:28.00"));
+        assertThat(DateUtility.formatMilliSecondsAsMinutes(8000), is("0:08.00"));
+        assertThat(DateUtility.formatMilliSecondsAsMinutes(88000), is("1:28.00"));
+        assertThat(DateUtility.formatMilliSecondsAsSeconds(8000), is("8.00"));
+        assertThat(DateUtility.formatMilliSecondsAsSeconds(88000), is("88.00"));
     }
 
     @Test
