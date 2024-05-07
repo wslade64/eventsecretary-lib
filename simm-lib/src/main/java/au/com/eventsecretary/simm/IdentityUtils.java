@@ -21,6 +21,17 @@ import static au.com.eventsecretary.simm.IdentifiableUtils.cloneIdentifiable;
 
 public interface IdentityUtils {
 
+    static String rightPart(String text, String separator) {
+        if (text == null) {
+            return null;
+        }
+        int index = text.indexOf(separator);
+        if (index == -1) {
+            return null;
+        }
+        return text.substring(index + 1);
+    }
+
     static String cleanPhoneNumber(String phoneNumber) {
         if (phoneNumber == null) {
             return phoneNumber;

@@ -67,4 +67,13 @@ public class IdentityUtilsTest {
             assertThat(map.get(keyPair[i++]), is(keyPair[i]));
         }
     }
+
+    @Test
+    public void rightPart() {
+        assertThat(IdentityUtils.rightPart(null, "@"), is(nullValue()));
+        assertThat(IdentityUtils.rightPart("", "@"), is(nullValue()));
+        assertThat(IdentityUtils.rightPart("@wasa", "@"), is("wasa"));
+        assertThat(IdentityUtils.rightPart("wasa@bear", "@"), is("bear"));
+    }
+
 }
