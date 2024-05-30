@@ -1,7 +1,5 @@
 package au.com.eventsecretary;
 
-import javax.sound.sampled.Line;
-
 /**
  * @author wslad
  */
@@ -16,6 +14,10 @@ public class LineBuilder {
 
     public LineBuilder(String separator) {
         this.separator = separator;
+    }
+
+    public int length() {
+        return builder.length();
     }
 
     public LineBuilder append(String text) {
