@@ -71,6 +71,10 @@ public class RegistrationDestructor {
         return value(hasHorseDressageLevel(registrationMetadataList), registrations);
     }
 
+    public String riderShowingLevel(List<Registration> registrations) {
+        return value(hasRiderShowingLevel(registrationMetadataList), registrations);
+    }
+
     public boolean hasClubs() {
         return hasClubs(registrationMetadataList) != null;
     }
@@ -142,6 +146,10 @@ public class RegistrationDestructor {
 
     public static Pair<RegistrationMetadata, RegistrationValueMetadata> hasHorseDressageLevel(List<RegistrationMetadata> registrationMetadataList) {
         return hasRegistration(registrationMetadataList, "drLevel", RegistrationType.name, RegistrationValueType.list);
+    }
+
+    public static Pair<RegistrationMetadata, RegistrationValueMetadata> hasRiderShowingLevel(List<RegistrationMetadata> registrationMetadataList) {
+        return hasRegistration(registrationMetadataList, "shLevel", RegistrationType.name, RegistrationValueType.list);
     }
 
     public static Pair<RegistrationMetadata, RegistrationValueMetadata> hasRegistration(List<RegistrationMetadata> registrationMetadataList
