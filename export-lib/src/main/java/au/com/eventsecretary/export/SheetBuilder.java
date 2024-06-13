@@ -174,6 +174,12 @@ public class SheetBuilder {
         return new RowBuilder(this, 1);
     }
 
+    public RowBuilder rows(int startRow) {
+        // TODO possible optional headers
+        headers();
+        return new RowBuilder(this, startRow);
+    }
+
     public WorkbookBuilder end() {
         return workbookBuilder;
     }
