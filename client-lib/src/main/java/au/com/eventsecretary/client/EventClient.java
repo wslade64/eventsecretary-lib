@@ -19,6 +19,25 @@ public class EventClient extends AbstractClient {
         super(baseUrl, restTemplateBuilder);
     }
 
+    public String organisationEventExport(String organisationId) {
+        try {
+            HttpEntity<Void> httpEntity = createSystemEntity();
+
+            ResponseEntity<Event> exchange = restTemplate.exchange(baseUrl + URI + "/export/organisation/?organisationId=" + organisationId
+                    , HttpMethod.GET, httpEntity, Event.class);
+            switch (exchange.getStatusCode()) {
+                case OK:
+                    return exchange.getHeaders().getLocation().toString();
+                default:
+                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+            }
+        }
+        catch (RestClientException e) {
+            logger.error("could not connect to service" + e.getMessage());
+            throw new UnexpectedSystemException(e);
+        }
+    }
+
     public Event fetchEventByCode(String eventCode) {
         try {
             HttpEntity<Void> httpEntity = createSystemEntity();
