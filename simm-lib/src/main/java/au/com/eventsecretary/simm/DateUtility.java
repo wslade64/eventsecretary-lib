@@ -607,6 +607,9 @@ public interface DateUtility {
             return null;
         }
         States state = streetAddress.getState();
+        if (state == null) {
+            return null;
+        }
         return stateTimezoneMap.get(state);
     }
 
@@ -615,6 +618,9 @@ public interface DateUtility {
      */
     static int timezoneOffset(Site site) {
         String tz = timezoneId(site);
+        if (tz == null) {
+            return 10 * 60 * 1000;
+        }
         TimeZone timeZone = TimeZone.getTimeZone(tz);
         return timeZone.getOffset(System.currentTimeMillis()) / (60 * 1000);
     }
