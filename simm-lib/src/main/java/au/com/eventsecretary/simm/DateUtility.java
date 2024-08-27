@@ -50,6 +50,9 @@ public interface DateUtility {
     }
 
     static LocalTime time(int number) {
+        if (number == 0) {
+            return null;
+        }
         int hour = number / HOUR;
         int minute = number % HOUR / MINUTE;
         int seconds = number % MINUTE;
@@ -73,6 +76,9 @@ public interface DateUtility {
     }
 
     static LocalDate date(int number) {
+        if (number == 0) {
+            return null;
+        }
         int year = number / YEAR;
         int month = number % YEAR / MONTH;
         int day = number % MONTH;
