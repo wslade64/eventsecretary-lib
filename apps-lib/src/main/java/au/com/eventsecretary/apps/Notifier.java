@@ -60,6 +60,10 @@ public class Notifier {
         if (StringUtils.isBlank(this.supportEmailAddress)) {
             return;
         }
+        notifyEmail(this.supportEmailAddress, subject, msg);
+    }
+
+    public void notifyEmail(String emailAddress, String subject, String msg) {
 
         Notification notification = new Notification();
         List<Message> messageList = new ArrayList<>();
@@ -68,7 +72,7 @@ public class Notifier {
         notification.setSubject(subject);
 
         Message message = new Message();
-        message.setTo(officeEmailAddress);
+        message.setTo(emailAddress);
         message.setMessage(msg);
         messageList.add(message);
 
@@ -78,4 +82,5 @@ public class Notifier {
             logger.error("Failed to send error notification", e2);
         }
     }
+
 }
