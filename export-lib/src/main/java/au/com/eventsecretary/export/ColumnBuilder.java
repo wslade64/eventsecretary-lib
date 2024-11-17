@@ -1,14 +1,11 @@
 package au.com.eventsecretary.export;
 
 import au.com.eventsecretary.UnexpectedSystemException;
-import au.com.eventsecretary.export.renderers.BigDoubleCellRender;
-import au.com.eventsecretary.export.renderers.BooleanCellRender;
-import au.com.eventsecretary.export.renderers.CurrencyCellRender;
-import au.com.eventsecretary.export.renderers.DateCellRender;
-import au.com.eventsecretary.export.renderers.DateTimeCellRender;
-import au.com.eventsecretary.export.renderers.IntegerCellRender;
-import au.com.eventsecretary.export.renderers.NumericCellRender;
-import au.com.eventsecretary.export.renderers.StringCellRender;
+import au.com.eventsecretary.export.renderers.*;
+import org.apache.poi.ss.usermodel.DataValidation;
+import org.apache.poi.ss.usermodel.DataValidationConstraint;
+import org.apache.poi.ss.usermodel.DataValidationHelper;
+import org.apache.poi.ss.util.CellRangeAddressList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +23,11 @@ public class ColumnBuilder {
         this.sheetBuilder = sheetBuilder;
         column = new SheetBuilder.Column();
         sheetBuilder.columns.add(column);
+    }
+
+    public ColumnBuilder width(int size) {
+        sheetBuilder.sheet.setColumnWidth(sheetBuilder.columns.indexOf(column), size);
+        return this;
     }
 
     public ColumnBuilder sum() {
@@ -117,6 +119,22 @@ public class ColumnBuilder {
             }
         }
         return sheetBuilder;
+    }
+
+    public ColumnBuilder dataValidation(String[] values, String title, String message) {
+        int colIndex = sheetBuilder.columns.indexOf(column);
+        DataValidationHelper validationHelper = sheetBuilder.sheet.getDataValidationHelper();
+//        XSSFDataValidationHelper validationHelper = new XSSFDataValidationHelper((XSSFSheet) sheetBuilder.sheet);
+        DataValidationConstraint explicitListConstraint = validationHelper.createExplicitListConstraint(values);
+        CellRangeAddressList cellRangeAddressList = new CellRangeAddressList(1, 1000, colIndex, colIndex);
+
+        DataValidation validation = validationHelper.createValidation(explicitListConstraint, cellRangeAddressList);
+        validation.setSuppressDropDownArrow(true);
+        validation.setErrorStyle(DataValidation.ErrorStyle.STOP);
+        validation.createErrorBox(title, message);
+        validation.setShowErrorBox(true);
+        sheetBuilder.sheet.addValidationData(validation);
+        return this;
     }
 
     private boolean resolveConditional(Conditional conditional) {

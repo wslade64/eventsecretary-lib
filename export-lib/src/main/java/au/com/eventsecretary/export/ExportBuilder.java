@@ -29,6 +29,12 @@ public class ExportBuilder {
         return workbookBuilder;
     }
 
+    public WorkbookBuilder workbook(int fontSize) {
+        WorkbookBuilder workbookBuilder = new WorkbookBuilder(fontSize);
+        fileBuilders.add(of("", workbookBuilder));
+        return workbookBuilder;
+    }
+
     public WorkbookBuilder workbook(String name) {
         WorkbookBuilder workbookBuilder = new WorkbookBuilder();
         fileBuilders.add(of(name,workbookBuilder));

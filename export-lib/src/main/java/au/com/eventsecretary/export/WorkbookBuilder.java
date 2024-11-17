@@ -26,7 +26,7 @@ public class WorkbookBuilder implements FileBuilder {
     public static double CM_1 = 0.394; // units of inches
     public static double CM_2 = 0.787; // units of inches
 
-    private final short FONT_SIZE = (short)11;
+    private final static short FONT_SIZE = (short)11;
     protected final XSSFWorkbook workbook;
     public final CellStyle normalStyle;
     public final CellStyle currencyCellStyle;
@@ -50,6 +50,9 @@ public class WorkbookBuilder implements FileBuilder {
     public Conditional conditional;
 
     public WorkbookBuilder() {
+        this(FONT_SIZE);
+    }
+    public WorkbookBuilder(int fontSize) {
         workbook = new XSSFWorkbook();
         POIXMLProperties.CoreProperties coreProperties = workbook.getProperties().getCoreProperties();
         coreProperties.setCreator("Event Secretary Pty Ltd");

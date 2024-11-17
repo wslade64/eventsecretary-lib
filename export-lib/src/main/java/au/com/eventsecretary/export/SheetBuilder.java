@@ -1,14 +1,7 @@
 package au.com.eventsecretary.export;
 
 import au.com.eventsecretary.UnexpectedSystemException;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.ClientAnchor;
-import org.apache.poi.ss.usermodel.Drawing;
-import org.apache.poi.ss.usermodel.Header;
-import org.apache.poi.ss.usermodel.Picture;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.util.IOUtils;
 
@@ -33,6 +26,7 @@ public class SheetBuilder {
     List<String> exclusions;
     List<Column> columns = new ArrayList<>();
     Conditional conditional;
+    int lastIndex;
 
     static class Column<T> {
         List<String> labels;
@@ -129,6 +123,10 @@ public class SheetBuilder {
         return new MatrixBuilder(this);
     }
 
+    public MatrixBuilder matrix(int rowIndex) {
+        return new MatrixBuilder(this, rowIndex);
+    }
+
     private void headers()
     {
         Row row = sheet.createRow(0);
@@ -154,6 +152,9 @@ public class SheetBuilder {
     }
 
     public SheetBuilder autoSize() {
+        if (lastIndex > 0) {
+           return autoSize(lastIndex + 1);
+        }
         int columnCount = 0;
         for (Column column : columns) {
             columnCount += column.labels.size();

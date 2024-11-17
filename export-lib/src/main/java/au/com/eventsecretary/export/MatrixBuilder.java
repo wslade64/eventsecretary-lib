@@ -23,8 +23,28 @@ public class MatrixBuilder {
     private int rowIndex = 0;
 
     public MatrixBuilder(SheetBuilder sheetBuilder) {
+        this(sheetBuilder, 0);
+    }
+
+    public MatrixBuilder(SheetBuilder sheetBuilder, int startRow) {
         this.sheet = sheetBuilder.sheet;
         this.sheetBuilder = sheetBuilder;
+        this.rowIndex = startRow;
+    }
+
+
+    public MatrixBuilder width(int colIndex, int size) {
+        this.sheet.setColumnWidth(colIndex, size);
+        return this;
+    }
+
+    public MatrixBuilder height(int size) {
+        Row row = this.sheet.getRow(rowIndex);
+        if (row == null) {
+            row = this.sheet.createRow(rowIndex);
+        }
+        row.setHeight((short)size);
+        return this;
     }
 
     public class CellBuilder {
@@ -128,6 +148,7 @@ public class MatrixBuilder {
         if (cell == null) {
             cell = row.createCell(colIndex);
         }
+        this.sheetBuilder.lastIndex = colIndex;
         return new CellBuilder(cell);
     }
 

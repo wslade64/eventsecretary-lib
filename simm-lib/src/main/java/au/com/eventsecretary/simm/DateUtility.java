@@ -86,13 +86,25 @@ public interface DateUtility {
         return new LocalDate(year, month, day);
     }
 
+    /**
+     * yyyy-dd-mm
+     */
     static String dateString(int number) {
         LocalDate date = date(number);
         return dateString(date);
     }
 
+    static String dateStringAustralian(int number) {
+        LocalDate date = date(number);
+        return dateStringAustralian(date);
+    }
+
     static String dateString(LocalDate date) {
         return String.format("%d-%02d-%02d", date.getYear(), date.getMonthOfYear(), date.getDayOfMonth());
+    }
+
+    static String dateStringAustralian(LocalDate date) {
+        return String.format("%02d/%02d/%d", date.getDayOfMonth(), date.getMonthOfYear(), date.getYear());
     }
 
     static String timeString(int number) {
