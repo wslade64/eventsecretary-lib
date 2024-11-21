@@ -3,6 +3,7 @@ package au.com.eventsecretary.export.renderers;
 import au.com.eventsecretary.export.CellRenderer;
 import au.com.eventsecretary.export.WorkbookBuilder;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
 
 /**
  * TODO
@@ -10,16 +11,14 @@ import org.apache.poi.ss.usermodel.Cell;
  * @author Warwick Slade
  */
 public class FormulaCellRender implements CellRenderer<String> {
+    CellStyle cellStyle;
 
+    public FormulaCellRender(CellStyle cellStyle) {
+        this.cellStyle = cellStyle;
+    }
     @Override
     public void render(Cell cell, String value, WorkbookBuilder workbookBuilder) {
         cell.setCellFormula(value);
-
-        cell.setCellStyle(workbookBuilder.formulaStyle);
-//        CellStyle cellStyle = cell.getCellStyle();
-//        cellStyle.setAlignment(HorizontalAlignment.LEFT);
-//        cellStyle.setDataFormat(workbookBuilder.dateFormat);
-//        cellStyle.setDataFormat((short)7);
-//        cellStyle.setAlignment(HorizontalAlignment.RIGHT);
+        cell.setCellStyle(cellStyle);
     }
 }

@@ -70,6 +70,11 @@ public class ColumnBuilder {
         return this;
     }
 
+    public ColumnBuilder timeFormat() {
+        column.cellRenderer = new TimeCellRender();
+        return this;
+    }
+
     public ColumnBuilder stringFormat(ValueFormatter valueFormatter) {
         column.cellRenderer = new StringCellRender();
         column.valueFormatter = valueFormatter;

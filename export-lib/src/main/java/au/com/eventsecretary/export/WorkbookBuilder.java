@@ -2,11 +2,7 @@ package au.com.eventsecretary.export;
 
 import au.com.eventsecretary.UnexpectedSystemException;
 import org.apache.poi.ooxml.POIXMLProperties;
-import org.apache.poi.ss.usermodel.BorderStyle;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.CreationHelper;
-import org.apache.poi.ss.usermodel.Font;
-import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFFont;
@@ -33,36 +29,43 @@ public class WorkbookBuilder implements FileBuilder {
     public final CellStyle numericCellStyle;
     public final CellStyle dateStyle;
     public final CellStyle dateTimeStyle;
+    public final CellStyle timeStyle;
     public final CellStyle titleStyle;
     public final CellStyle headerStyle;
+    public final CellStyle headerHighlightStyle;
     public final CellStyle importantStyle;
+    public final CellStyle highlightStyle;
     public final CellStyle wrappedStyle;
     public final CellStyle formulaStyle;
     public final CellStyle centeredStyle;
     public final SimpleDateFormat sdf;
     public final SimpleDateFormat sdtf;
+    public final SimpleDateFormat stf;
     public final Font normalFont;
     public final Font boldFont;
     public final Font titleFont;
     public final short dateFormat;
     public final short dateTimeFormat;
+    public final short timeFormat;
     public final CreationHelper helper;
     public Conditional conditional;
 
     public WorkbookBuilder() {
         this(FONT_SIZE);
     }
-    public WorkbookBuilder(int fontSize) {
+    public WorkbookBuilder(short fontSize) {
         workbook = new XSSFWorkbook();
         POIXMLProperties.CoreProperties coreProperties = workbook.getProperties().getCoreProperties();
         coreProperties.setCreator("Event Secretary Pty Ltd");
 
+        short highlightColor = IndexedColors.GREY_25_PERCENT.getIndex();
+
         normalFont = workbook.createFont();
-        normalFont.setFontHeightInPoints(FONT_SIZE);
+        normalFont.setFontHeightInPoints(fontSize);
 
         boldFont = workbook.createFont();
         boldFont.setBold(true);
-        boldFont.setFontHeightInPoints(FONT_SIZE);
+        boldFont.setFontHeightInPoints(fontSize);
 
         numericCellStyle = workbook.createCellStyle();
         numericCellStyle.setDataFormat((short)1);
@@ -88,18 +91,42 @@ public class WorkbookBuilder implements FileBuilder {
         dateTimeStyle.setDataFormat(dateTimeFormat);
         dateTimeStyle.setFont(normalFont);
 
+        timeStyle = workbook.createCellStyle();
+        timeStyle.setAlignment(HorizontalAlignment.LEFT);
+        stf = new SimpleDateFormat("hh:mma");
+        timeFormat = workbook.createDataFormat().getFormat("hh:mma");
+        timeStyle.setDataFormat(timeFormat);
+        timeStyle.setFont(normalFont);
+
+
         formulaStyle = workbook.createCellStyle();
         formulaStyle.setAlignment(HorizontalAlignment.RIGHT);
-        formulaStyle.setDataFormat(dateFormat);
         formulaStyle.setDataFormat((short)7);
 
         headerStyle = workbook.createCellStyle();
         headerStyle.setAlignment(HorizontalAlignment.CENTER);
+        headerStyle.setVerticalAlignment(VerticalAlignment.CENTER);
         headerStyle.setFont(boldFont);
+
+        headerHighlightStyle = workbook.createCellStyle();
+        headerHighlightStyle.setWrapText(true);
+        headerHighlightStyle.cloneStyleFrom(headerStyle);
+        headerHighlightStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+        headerHighlightStyle.setFillForegroundColor(highlightColor);
+        headerHighlightStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 
         importantStyle = workbook.createCellStyle();
         importantStyle.setAlignment(HorizontalAlignment.LEFT);
+        importantStyle.setWrapText(true);
         importantStyle.setFont(boldFont);
+
+        highlightStyle = workbook.createCellStyle();
+        highlightStyle.setWrapText(true);
+        highlightStyle.setAlignment(HorizontalAlignment.LEFT);
+        highlightStyle.setFont(boldFont);
+        highlightStyle.setFillForegroundColor(highlightColor);
+        highlightStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        highlightStyle.setVerticalAlignment(VerticalAlignment.CENTER);
 
         titleFont = workbook.createFont();
         titleFont.setFontHeightInPoints((short) 26);

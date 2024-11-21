@@ -3,10 +3,7 @@ package au.com.eventsecretary.export;
 import au.com.eventsecretary.export.renderers.CurrencyCellRender;
 import au.com.eventsecretary.export.renderers.FormulaCellRender;
 import au.com.eventsecretary.export.renderers.StringCellRender;
-import org.apache.poi.ss.usermodel.BorderStyle;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.RegionUtil;
 
@@ -56,6 +53,11 @@ public class MatrixBuilder {
             this.cell.setCellStyle(sheetBuilder.workbookBuilder.normalStyle);
         }
 
+        public CellBuilder highlight() {
+            cell.setCellStyle(sheetBuilder.workbookBuilder.highlightStyle);
+            return this;
+        }
+
         public CellBuilder stringFormat() {
             cellRenderer = new StringCellRender();
             return this;
@@ -67,7 +69,12 @@ public class MatrixBuilder {
         }
 
         public CellBuilder formulaFormat() {
-            cellRenderer = new FormulaCellRender();
+            cellRenderer = new FormulaCellRender(sheetBuilder.workbookBuilder.formulaStyle);
+            return this;
+        }
+
+        public CellBuilder formulaFormat(CellStyle cellStyle) {
+            cellRenderer = new FormulaCellRender(cellStyle);
             return this;
         }
 

@@ -27,6 +27,8 @@ public class SheetBuilder {
     List<Column> columns = new ArrayList<>();
     Conditional conditional;
     int lastIndex;
+    int headerHeight;
+    boolean headerHighlight;
 
     static class Column<T> {
         List<String> labels;
@@ -127,10 +129,24 @@ public class SheetBuilder {
         return new MatrixBuilder(this, rowIndex);
     }
 
+    public SheetBuilder headerHeight(int headerHeight) {
+        this.headerHeight = headerHeight;
+        return this;
+    }
+
+    public SheetBuilder headerHighlight() {
+        this.headerHighlight = true;
+        return this;
+    }
+
     private void headers()
     {
         Row row = sheet.createRow(0);
-        row.setRowStyle(workbookBuilder.headerStyle);
+        if (headerHeight > 0) {
+            row.setHeight((short) headerHeight);
+        }
+        CellStyle headerStyle = this.headerHighlight ? workbookBuilder.headerHighlightStyle : workbookBuilder.headerStyle;
+        row.setRowStyle(headerStyle);
         int col = 0;
 
         for (Column column : columns)
@@ -141,7 +157,7 @@ public class SheetBuilder {
             for (Object label : column.labels) {
                 Cell cell = row.createCell(col++);
                 cell.setCellValue((String)label);
-                cell.setCellStyle(workbookBuilder.headerStyle);
+                cell.setCellStyle(headerStyle);
             }
         }
     }

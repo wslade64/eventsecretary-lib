@@ -29,7 +29,7 @@ public class ExportBuilder {
         return workbookBuilder;
     }
 
-    public WorkbookBuilder workbook(int fontSize) {
+    public WorkbookBuilder workbook(short fontSize) {
         WorkbookBuilder workbookBuilder = new WorkbookBuilder(fontSize);
         fileBuilders.add(of("", workbookBuilder));
         return workbookBuilder;
