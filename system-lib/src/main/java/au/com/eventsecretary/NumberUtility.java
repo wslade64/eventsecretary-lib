@@ -8,6 +8,16 @@ public interface NumberUtility {
     BigDecimal B1000 = BigDecimal.valueOf(1000);
     BigDecimal BLARGE = BigDecimal.valueOf(1000000);
 
+    static boolean isPositive(Integer number) {
+        return number != null && number > 0;
+    }
+    static boolean isZero(Integer number) {
+        return number == null || number == 0;
+    }
+    static int value(Integer number) {
+        return number == null ? 0 : number;
+    }
+
     static boolean isNegative(BigDecimal value) {
         return value.compareTo(BigDecimal.ZERO) < 0;
     }
