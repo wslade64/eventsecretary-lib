@@ -121,4 +121,17 @@ public interface CollectionUtility {
             return result.toString();
         }
     }
+
+    static <T> boolean listEquals(List<T> left, List<T> right) {
+        if (left.size() != right.size()) {
+            return false;
+        }
+        for (int i = 0; i < left.size(); i++) {
+            if (!right.contains(left.get(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 }
