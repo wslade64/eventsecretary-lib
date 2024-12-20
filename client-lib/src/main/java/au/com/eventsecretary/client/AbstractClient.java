@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -22,6 +24,7 @@ import java.util.Map;
 
 import static au.com.eventsecretary.client.SessionService.bearer;
 import static au.com.eventsecretary.client.SessionService.isSandbox;
+import static org.springframework.http.HttpStatus.*;
 
 /**
  * @author sladew
@@ -47,20 +50,33 @@ public abstract class AbstractClient {
 
             @Override
             public void handleError(ClientHttpResponse clientHttpResponse) throws IOException {
-                switch (clientHttpResponse.getStatusCode()) {
-                    case PRECONDITION_FAILED:
-                    case CONFLICT:
-                        break;
-                    case BAD_REQUEST:
-                        throw new ResourceNotFoundException("Bad request");
-                    case NOT_FOUND:
-                        throw new ResourceNotFoundException("Not found");
-                    case UNAUTHORIZED:
-                        logger.info("login:" + clientHttpResponse.getStatusCode());
-                        throw new UnauthorizedException();
-                    default:
-                        super.handleError(clientHttpResponse);
+                HttpStatusCode statusCode = clientHttpResponse.getStatusCode();
+                if (statusCode.value() == PRECONDITION_FAILED.value() || statusCode.value() == CONFLICT.value()) {
+                    return;
+                } else if (statusCode.value() == UNAUTHORIZED.value()) {
+                    logger.info("login:" + clientHttpResponse.getStatusCode());
+                    throw new UnauthorizedException();
+                } else if (statusCode.value() == HttpStatus.BAD_REQUEST.value()) {
+                    throw new ResourceNotFoundException("Bad request");
+                } else if (statusCode.value() == NOT_FOUND.value()) {
+                    throw new ResourceNotFoundException("Not found");
+                } else {
+                    super.handleError(clientHttpResponse);
                 }
+//                switch (statusCode.value()) {
+//                    case PRECONDITION_FAILED:
+//                    case CONFLICT:
+//                        break;
+//                    case BAD_REQUEST:
+//                        throw new ResourceNotFoundException("Bad request");
+//                    case NOT_FOUND:
+//                        throw new ResourceNotFoundException("Not found");
+//                    case UNAUTHORIZED:
+//                        logger.info("login:" + clientHttpResponse.getStatusCode());
+//                        throw new UnauthorizedException();
+//                    default:
+//                        super.handleError(clientHttpResponse);
+//                }
             }
         });
     }
@@ -124,5 +140,40 @@ public abstract class AbstractClient {
             }
         }
         throw new UnexpectedSystemException("Could not find object mapper");
+    }
+
+    public static HttpStatus wrap(HttpStatusCode statusCode) {
+        int value = statusCode.value();
+        if (value == OK.value()) {
+            return HttpStatus.OK;
+        }
+        if (value == CREATED.value()) {
+            return HttpStatus.CREATED;
+        }
+        if (value == NOT_FOUND.value()) {
+            return HttpStatus.NOT_FOUND;
+        }
+        if (value == CONFLICT.value()) {
+            return HttpStatus.CONFLICT;
+        }
+        if (value == HttpStatus.UNAUTHORIZED.value()) {
+            return HttpStatus.UNAUTHORIZED;
+        }
+        if (value == HttpStatus.UNAUTHORIZED.value()) {
+            return HttpStatus.UNAUTHORIZED;
+        }
+        if (value == HttpStatus.PRECONDITION_FAILED.value()) {
+            return HttpStatus.PRECONDITION_FAILED;
+        }
+        if (value == NON_AUTHORITATIVE_INFORMATION.value()) {
+            return NON_AUTHORITATIVE_INFORMATION;
+        }
+        if (value == SERVICE_UNAVAILABLE.value()) {
+            return SERVICE_UNAVAILABLE;
+        }
+        if (value == CREATED.value()) {
+            return CREATED;
+        }
+        throw new UnexpectedSystemException("Unexpected system status: " + statusCode);
     }
 }

@@ -45,7 +45,7 @@ public class IdentityClient extends AbstractClient {
             Map<String, String> params = new HashMap<>();
             params.put("emailAddress", "=" + emailAddress);
             ResponseEntity<Identity> exchange = restTemplate.exchange(baseUrl + URI + "?email={emailAddress}", HttpMethod.GET, httpEntity, Identity.class, params);
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case OK:
                     return exchange.getBody();
                 case NOT_FOUND:
@@ -68,7 +68,7 @@ public class IdentityClient extends AbstractClient {
             params.put("emailAddress", emailAddress);
             params.put("match", "exact");
             ResponseEntity<Identity> exchange = restTemplate.exchange(baseUrl + URI + "?email={emailAddress}&match={match}", HttpMethod.GET, httpEntity, Identity.class, params);
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case OK:
                     return exchange.getBody();
                 case NOT_FOUND:
@@ -88,7 +88,7 @@ public class IdentityClient extends AbstractClient {
             HttpEntity<Void> httpEntity = createSystemEntity();
 
             ResponseEntity<Identity> exchange = restTemplate.exchange(baseUrl + URI + "/" + id, HttpMethod.GET, httpEntity, Identity.class);
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case OK:
                     return exchange.getBody();
                 case NOT_FOUND:
@@ -110,7 +110,7 @@ public class IdentityClient extends AbstractClient {
             HttpEntity<Identity> httpEntity = createSystemEntityBody(userIdentity);
 
             ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI, HttpMethod.POST, httpEntity, Void.class);
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case CREATED:
                     List<String> locationHeader = exchange.getHeaders().get(HttpHeaders.LOCATION);
                     return locationHeader.get(0);

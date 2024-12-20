@@ -25,7 +25,7 @@ public class AssociationClient extends AbstractClient {
             HttpEntity<Void> httpEntity = createSystemEntity();
 
             ResponseEntity<Association> exchange = restTemplate.exchange(baseUrl + URI + "?name=" + name, HttpMethod.GET, httpEntity, Association.class);
-            if (exchange.getStatusCode() == HttpStatus.OK) {
+            if (wrap(exchange.getStatusCode()) == HttpStatus.OK) {
                 return exchange.getBody();
             }
             return null;
@@ -41,7 +41,7 @@ public class AssociationClient extends AbstractClient {
             HttpEntity<Void> httpEntity = createSystemEntity();
 
             ResponseEntity<Association> exchange = restTemplate.exchange(baseUrl + URI + "?code=" + code, HttpMethod.GET, httpEntity, Association.class);
-            if (exchange.getStatusCode() == HttpStatus.OK) {
+            if (wrap(exchange.getStatusCode()) == HttpStatus.OK) {
                 return exchange.getBody();
             }
             return null;
@@ -57,7 +57,7 @@ public class AssociationClient extends AbstractClient {
             HttpEntity<Void> httpEntity = createSystemEntity();
 
             ResponseEntity<Association> exchange = restTemplate.exchange(baseUrl + URI + "/" + associationRef, HttpMethod.GET, httpEntity, Association.class);
-            if (exchange.getStatusCode() == HttpStatus.OK) {
+            if (wrap(exchange.getStatusCode()) == HttpStatus.OK) {
                 return exchange.getBody();
             }
             return null;
@@ -73,7 +73,7 @@ public class AssociationClient extends AbstractClient {
             HttpEntity<Void> httpEntity = createSystemEntity();
 
             ResponseEntity<List<Association>> exchange = restTemplate.exchange(baseUrl + URI, HttpMethod.GET, httpEntity, new ParameterizedTypeReference<List<Association>>(){});
-            if (exchange.getStatusCode() == HttpStatus.OK) {
+            if (wrap(exchange.getStatusCode()) == HttpStatus.OK) {
                 return exchange.getBody();
             }
             return null;
@@ -91,7 +91,7 @@ public class AssociationClient extends AbstractClient {
             HttpEntity<Association> httpEntity = createSystemEntityBody(association);
 
             ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI, HttpMethod.POST, httpEntity, Void.class);
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case CREATED:
                     List<String> locationHeader = exchange.getHeaders().get(HttpHeaders.LOCATION);
                     return locationHeader.get(0);
@@ -99,7 +99,7 @@ public class AssociationClient extends AbstractClient {
                 case PRECONDITION_FAILED:
                     throw new ResourceExistsException("Code exists");
                 default:
-                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+                    throw new UnexpectedSystemException("Invalid response code:" + wrap(exchange.getStatusCode()));
             }
         }
         catch (RestClientException e) {
@@ -115,14 +115,14 @@ public class AssociationClient extends AbstractClient {
             HttpEntity<Association> httpEntity = createSystemEntityBody(association);
 
             ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI + "/" + association.getId(), HttpMethod.PUT, httpEntity, Void.class);
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case OK:
                     return;
                 case CONFLICT:
                 case PRECONDITION_FAILED:
                     throw new ResourceExistsException("Code exists");
                 default:
-                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+                    throw new UnexpectedSystemException("Invalid response code:" + wrap(exchange.getStatusCode()));
             }
         }
         catch (RestClientException e) {
@@ -138,11 +138,11 @@ public class AssociationClient extends AbstractClient {
             HttpEntity<Void> httpEntity = createSystemEntity();
 
             ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI + "/reset", HttpMethod.POST, httpEntity, Void.class);
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case OK:
                     return;
                 default:
-                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+                    throw new UnexpectedSystemException("Invalid response code:" + wrap(exchange.getStatusCode()));
             }
         }
         catch (RestClientException e) {
@@ -157,11 +157,11 @@ public class AssociationClient extends AbstractClient {
 
             HttpEntity<Void> httpEntity = createSystemEntity();
             ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI + "/" + associationId, HttpMethod.DELETE, httpEntity, Void.class);
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case OK:
                     return ;
                 default:
-                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+                    throw new UnexpectedSystemException("Invalid response code:" + wrap(exchange.getStatusCode()));
             }
         }
         catch (RestClientException e) {

@@ -57,7 +57,7 @@ public class NotificationClient extends AbstractClient {
         parts.add("document", resource);
         HttpEntity requestEntity = new HttpEntity(parts, requestHeaders);
         ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI + "/v1/document", HttpMethod.POST, requestEntity, Void.class);
-        switch (exchange.getStatusCode()) {
+        switch (wrap(exchange.getStatusCode())) {
             case CREATED:
                 List<String> locationHeader = exchange.getHeaders().get(HttpHeaders.LOCATION);
                 return locationHeader.get(0);

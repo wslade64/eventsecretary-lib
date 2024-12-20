@@ -8,22 +8,28 @@ buildscript {
 subprojects {
 
     apply plugin: 'java'
+    apply plugin: 'java-library'
     apply plugin: 'idea'
-    apply plugin: 'maven'
+    apply plugin: 'maven-publish'
 
     repositories {
         mavenLocal()
         mavenCentral()
     }
 
-    group = 'au.com.eventsecretary'
-    version = 'x.x.x-SNAPSHOT'
+//    group = 'au.com.eventsecretary'
+//    version = 'x.x.x-SNAPSHOT'
+//
+//    sourceCompatibility = 1.8
+//	targetCompatibility = 1.8
 
-    sourceCompatibility = 1.8
-	targetCompatibility = 1.8
-
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(23)
+        }
+    }
     task sourcesJar(type: Jar, dependsOn: classes) {
-        classifier = 'sources'
+        archiveClassifier = 'sources'
         from sourceSets.main.allSource
     }
 

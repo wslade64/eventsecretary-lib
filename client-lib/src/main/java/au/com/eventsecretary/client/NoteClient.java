@@ -32,7 +32,7 @@ public class NoteClient extends AbstractClient {
             HttpEntity<Note> httpEntity = createSystemEntityBody(note);
 
             ResponseEntity<Note> exchange = restTemplate.exchange(baseUrl + URI, HttpMethod.POST, httpEntity, Note.class);
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case CREATED:
                     return exchange.getBody();
                 default:
@@ -50,7 +50,7 @@ public class NoteClient extends AbstractClient {
             HttpEntity<Note> httpEntity = createSystemEntityBody(note);
 
             ResponseEntity<Note> exchange = restTemplate.exchange(baseUrl + URI, HttpMethod.PUT, httpEntity, Note.class);
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case OK:
                     return exchange.getBody();
                 default:
@@ -70,7 +70,7 @@ public class NoteClient extends AbstractClient {
 
             ResponseEntity<Order> exchange = restTemplate.exchange(baseUrl + URI + "/{orderCode}"
                     , HttpMethod.GET, httpEntity, Order.class, params("accountCode", accountCode, "orderCode", orderCode));
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case OK:
                     return exchange.getBody();
                 case NOT_FOUND:
@@ -119,7 +119,7 @@ public class NoteClient extends AbstractClient {
                     , HttpMethod.GET, httpEntity
                     , new ParameterizedTypeReference<List<Note>>(){}
                     );
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case OK:
                     return exchange.getBody();
                 default:
@@ -139,7 +139,7 @@ public class NoteClient extends AbstractClient {
             HttpEntity<Registration> httpEntity = createSystemEntity();
 
             ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI + "/{noteId}", HttpMethod.DELETE, httpEntity, Void.class, params("orderId", noteId));
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case OK:
                     return;
                 default:

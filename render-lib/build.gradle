@@ -1,11 +1,22 @@
-archivesBaseName = 'eventsecretary-render-lib'
-
 dependencies {
-    compile("org.freemarker:freemarker:${freemarkerVersion}")
-    compile("org.springframework:spring-context:${springVersion}")
-    compile("org.springframework:spring-context-support:${springVersion}")
-    compile project(":system-lib")
-    compile project(":simm-lib")
-//    testCompile("junit:junit:4.12")
+    implementation("org.freemarker:freemarker:${freemarkerVersion}")
+    implementation("org.springframework:spring-context:${springVersion}")
+    implementation("org.springframework:spring-context-support:${springVersion}")
+    implementation("org.springframework.boot:spring-boot-autoconfigure:${springBootVersion}")
+    implementation("org.apache.commons:commons-lang3:${commonsLang3Version}")
+    api project(":system-lib")
+    implementation project(":simm-lib")
+//    testImplementation("junit:junit:4.12")
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = 'au.com.eventsecretary'
+            artifactId = 'eventsecretary-render-lib'
+            version = "x.x.x-SNAPSHOT"
+            from components.java
+        }
+    }
 }
 

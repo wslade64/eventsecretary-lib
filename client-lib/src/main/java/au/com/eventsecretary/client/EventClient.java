@@ -25,7 +25,7 @@ public class EventClient extends AbstractClient {
 
             ResponseEntity<Event> exchange = restTemplate.exchange(baseUrl + URI + "/export/organisation/?organisationId=" + organisationId
                     , HttpMethod.GET, httpEntity, Event.class);
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case OK:
                     return exchange.getHeaders().getLocation().toString();
                 default:
@@ -44,7 +44,7 @@ public class EventClient extends AbstractClient {
 
             ResponseEntity<Event> exchange = restTemplate.exchange(baseUrl + URI + "/" + eventCode + "?options=event"
                 , HttpMethod.GET, httpEntity, Event.class);
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case OK:
                     return exchange.getBody();
                 case NOT_FOUND:

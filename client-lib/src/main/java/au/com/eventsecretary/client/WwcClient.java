@@ -24,7 +24,7 @@ public class WwcClient extends AbstractClient {
             HttpEntity<WorkingWithChildren> httpEntity = createSystemEntityBody(wwc);
 
             ResponseEntity<WorkingWithChildren> exchange = restTemplate.exchange(baseUrl + URI, HttpMethod.POST, httpEntity, WorkingWithChildren.class);
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case CREATED:
                     return exchange.getBody();
                 default:
@@ -42,7 +42,7 @@ public class WwcClient extends AbstractClient {
             HttpEntity<WorkingWithChildren> httpEntity = createSystemEntityBody(wwc);
 
             ResponseEntity<WorkingWithChildren> exchange = restTemplate.exchange(baseUrl + URI, HttpMethod.PUT, httpEntity, WorkingWithChildren.class);
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case OK:
                     return;
                 default:
@@ -61,7 +61,7 @@ public class WwcClient extends AbstractClient {
 
             ResponseEntity<WorkingWithChildren> exchange = restTemplate.exchange(baseUrl + URI + "/" + id
                 , HttpMethod.GET, httpEntity, WorkingWithChildren.class);
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case OK:
                     return exchange.getBody();
                 case NOT_FOUND:
@@ -82,7 +82,7 @@ public class WwcClient extends AbstractClient {
 
             ResponseEntity<WorkingWithChildren> exchange = restTemplate.exchange(baseUrl + URI + queryParams(new String[] {"personId", personId})
                     , HttpMethod.GET, httpEntity, WorkingWithChildren.class, params("personId", personId));
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case OK:
                     return exchange.getBody();
                 default:
@@ -101,7 +101,7 @@ public class WwcClient extends AbstractClient {
 
             ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI + "/" + id
                     , HttpMethod.DELETE, httpEntity, Void.class);
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case OK:
                     return;
                 default:

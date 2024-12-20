@@ -32,11 +32,11 @@ public class FacilityClient extends AbstractClient {
             HttpEntity<PersonIdentity> httpEntity = createSystemEntity();
 
             ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI + "/reset", HttpMethod.POST, httpEntity, Void.class);
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case OK:
                     return;
                 default:
-                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+                    throw new UnexpectedSystemException("Invalid response code:" + wrap(exchange.getStatusCode()));
             }
         }
         catch (RestClientException e) {
@@ -50,12 +50,12 @@ public class FacilityClient extends AbstractClient {
             HttpEntity<Site> httpEntity = createSystemEntityBody(site);
 
             ResponseEntity<Site> exchange = restTemplate.exchange(baseUrl + URI + "/site", HttpMethod.POST, httpEntity, Site.class);
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case CREATED:
                     // List<String> locationHeader = exchange.getHeaders().get(HttpHeaders.LOCATION);
                     return exchange.getBody();
                 default:
-                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+                    throw new UnexpectedSystemException("Invalid response code:" + wrap(exchange.getStatusCode()));
             }
         }
         catch (RestClientException e) {
@@ -70,13 +70,13 @@ public class FacilityClient extends AbstractClient {
 
             ResponseEntity<Site> exchange = restTemplate.exchange(baseUrl + URI + "/site/" + siteRef
                 , HttpMethod.GET, httpEntity, Site.class);
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case OK:
                     return exchange.getBody();
                 case NOT_FOUND:
                     throw new ResourceNotFoundException(siteRef);
                 default:
-                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+                    throw new UnexpectedSystemException("Invalid response code:" + wrap(exchange.getStatusCode()));
             }
         }
         catch (RestClientException e) {
@@ -91,11 +91,11 @@ public class FacilityClient extends AbstractClient {
 
             ResponseEntity<Site> exchange = restTemplate.exchange(baseUrl + URI + "/site/" + code
                     , HttpMethod.GET, httpEntity, Site.class);
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case OK:
                     return exchange.getBody();
                 default:
-                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+                    throw new UnexpectedSystemException("Invalid response code:" + wrap(exchange.getStatusCode()));
             }
         }
         catch (RestClientException e) {
@@ -110,11 +110,11 @@ public class FacilityClient extends AbstractClient {
 
             ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI + "/site/" + code
                     , HttpMethod.DELETE, httpEntity, Void.class);
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case OK:
                     return;
                 default:
-                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+                    throw new UnexpectedSystemException("Invalid response code:" + wrap(exchange.getStatusCode()));
             }
         }
         catch (RestClientException e) {
@@ -129,11 +129,11 @@ public class FacilityClient extends AbstractClient {
 
             ResponseEntity<Facility> exchange = restTemplate.exchange(baseUrl + URI + "/site/" + site.getCode() + "/facility/" + facilityType.getCode()
                     , HttpMethod.POST, httpEntity, Facility.class);
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case CREATED:
                     return exchange.getBody();
                 default:
-                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+                    throw new UnexpectedSystemException("Invalid response code:" + wrap(exchange.getStatusCode()));
             }
         }
         catch (RestClientException e) {
@@ -148,11 +148,11 @@ public class FacilityClient extends AbstractClient {
 
             ResponseEntity<Facility> exchange = restTemplate.exchange(baseUrl + URI + "/site/" + siteCode + "/facility?id=" + facilityId
                     , HttpMethod.GET, httpEntity, Facility.class);
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case OK:
                     return exchange.getBody();
                 default:
-                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+                    throw new UnexpectedSystemException("Invalid response code:" + wrap(exchange.getStatusCode()));
             }
         }
         catch (RestClientException e) {
@@ -168,11 +168,11 @@ public class FacilityClient extends AbstractClient {
             ResponseEntity<List<Facility>> exchange = restTemplate.exchange(baseUrl + URI + "/site/" + site.getCode() + "/facility/" + facilityType.getCode()
                     , HttpMethod.GET, httpEntity, new ParameterizedTypeReference<List<Facility>>() {
                     });
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case OK:
                     return exchange.getBody();
                 default:
-                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+                    throw new UnexpectedSystemException("Invalid response code:" + wrap(exchange.getStatusCode()));
             }
         }
         catch (RestClientException e) {
@@ -188,11 +188,11 @@ public class FacilityClient extends AbstractClient {
             ResponseEntity<List<Facility>> exchange = restTemplate.exchange(baseUrl + URI + "/site/" + site.getCode() + "/facility/query?category=" + facilityCategory
                     , HttpMethod.GET, httpEntity, new ParameterizedTypeReference<List<Facility>>() {
                     });
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case OK:
                     return exchange.getBody();
                 default:
-                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+                    throw new UnexpectedSystemException("Invalid response code:" + wrap(exchange.getStatusCode()));
             }
         }
         catch (RestClientException e) {
@@ -207,11 +207,11 @@ public class FacilityClient extends AbstractClient {
 
             ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI + "/site/" + site.getCode() + "/booking"
                     , HttpMethod.POST, httpEntity, Void.class);
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case CREATED:
                     return;
                 default:
-                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+                    throw new UnexpectedSystemException("Invalid response code:" + wrap(exchange.getStatusCode()));
             }
         }
         catch (RestClientException e) {

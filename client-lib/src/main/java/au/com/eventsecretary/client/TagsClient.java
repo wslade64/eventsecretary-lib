@@ -24,11 +24,11 @@ public class TagsClient extends AbstractClient {
             HttpEntity<Structure> httpEntity = createSystemEntityBody(structure);
 
             ResponseEntity<Structure> exchange = restTemplate.exchange(baseUrl + URI, HttpMethod.POST, httpEntity, Structure.class);
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case CREATED:
                     return exchange.getBody();
                 default:
-                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+                    throw new UnexpectedSystemException("Invalid response code:" + wrap(exchange.getStatusCode()));
             }
         }
         catch (RestClientException e) {
@@ -43,13 +43,13 @@ public class TagsClient extends AbstractClient {
 
             ResponseEntity<Structure> exchange = restTemplate.exchange(baseUrl + URI + "/{name}"
                     , HttpMethod.GET, httpEntity, Structure.class, params("name", tagName));
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case OK:
                     return exchange.getBody();
                 case NOT_FOUND:
                     throw new ResourceNotFoundException(tagName);
                 default:
-                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+                    throw new UnexpectedSystemException("Invalid response code:" + wrap(exchange.getStatusCode()));
             }
         }
         catch (RestClientException e) {

@@ -1,9 +1,21 @@
 archivesBaseName = 'eventsecretary-codes-lib'
 
 dependencies {
-    compile project(":system-lib")
-    compile project(":apps-lib")
-    compile project(":persistence-lib")
-    compile project(":client-lib")
+    implementation project(":system-lib")
+    implementation project(":apps-lib")
+    implementation project(":persistence-lib")
+    implementation project(":client-lib")
+
+    implementation("org.springframework.boot:spring-boot-autoconfigure:${springBootVersion}")
 }
 
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = 'au.com.eventsecretary'
+            artifactId = 'eventsecretary-codes-lib'
+            version = "x.x.x-SNAPSHOT"
+            from components.java
+        }
+    }
+}

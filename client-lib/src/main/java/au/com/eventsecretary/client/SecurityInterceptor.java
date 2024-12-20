@@ -7,19 +7,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
+import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import static au.com.eventsecretary.Request.AUTH_COOKIE;
 
 /**
  * @author sladew
  */
-public class SecurityInterceptor extends HandlerInterceptorAdapter {
+public class SecurityInterceptor implements HandlerInterceptor {
     static final String IP_KEY = "RealIp";
     final static String SANDBOX = "sandbox";
 
@@ -32,7 +32,6 @@ public class SecurityInterceptor extends HandlerInterceptorAdapter {
         return MDC.get(IP_KEY);
     }
 
-    @Override
     public boolean preHandle(HttpServletRequest request
             , HttpServletResponse response
             , Object handler) throws Exception {
@@ -79,14 +78,12 @@ public class SecurityInterceptor extends HandlerInterceptorAdapter {
         return null;
     }
 
-    @Override
     public void postHandle(
             HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView)
             throws Exception {
 //        sessionService.end();
     }
 
-    @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler,
                          @Nullable Exception ex) throws Exception {
         MDC.remove(IP_KEY);

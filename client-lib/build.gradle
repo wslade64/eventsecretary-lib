@@ -1,15 +1,24 @@
-archivesBaseName = 'eventsecretary-client-lib'
-
 dependencies {
-    compile("org.apache.commons:commons-lang3:${commonsLang3Version}")
-    compile("commons-beanutils:commons-beanutils:${commonsBeanutilsVersion}")
-    compile("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
-    compile("au.com.eventsecretary.simm:eventsecretary-simm-impl:x.x.x-SNAPSHOT")
-    compile("au.com.auspost.lodgement:lodgement-constraint-impl:x.x.x-SNAPSHOT")
-    compile("au.com.auspost.lodgement:lodgement-constraint-api:x.x.x-SNAPSHOT")
-    compile("net.sf.javaprinciples.notification:notification-api:x.x.x-SNAPSHOT")
-    compile project(":system-lib")
-    compile project(":simm-lib")
-    testCompile("junit:junit:${junitVersion}")
+    compileOnly("jakarta.servlet:jakarta.servlet-api:${servletVersion}")
+    implementation("org.springframework.boot:spring-boot-autoconfigure:${springBootVersion}")
+    api("org.apache.commons:commons-lang3:${commonsLang3Version}")
+    api("commons-beanutils:commons-beanutils:${commonsBeanutilsVersion}")
+    api("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
+    api("au.com.eventsecretary:eventsecretary-simm-impl:x.x.x-SNAPSHOT")
+    api("au.com.auspost.lodgement:lodgement-constraint-impl:x.x.x-SNAPSHOT")
+    api("net.sf.javaprinciples.notification:notification-api:x.x.x-SNAPSHOT")
+    api project(":system-lib")
+    api project(":simm-lib")
+    testImplementation("junit:junit:${junitVersion}")
 }
 
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = 'au.com.eventsecretary'
+            artifactId = 'eventsecretary-client-lib'
+            version = "x.x.x-SNAPSHOT"
+            from components.java
+        }
+    }
+}

@@ -22,7 +22,7 @@ public class NumericCellRender implements CellRenderer<Object> {
                     value = null;
                 }
             } else if (value instanceof Integer) {
-                value = new Double(value.toString());
+                value = Double.valueOf(value.toString());
             } else if (!(value instanceof Double)) {
                 value = null;
             }

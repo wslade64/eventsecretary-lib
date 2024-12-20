@@ -30,7 +30,7 @@ public class OrganisationClient extends AbstractClient {
             uriVariables.put("association", associationRef);
             ResponseEntity<Organisation> exchange = restTemplate.exchange(baseUrl + URI + "?name={name}&associationId={association}"
                     , HttpMethod.GET, httpEntity, Organisation.class, uriVariables);
-            if (exchange.getStatusCode() == HttpStatus.OK) {
+            if (wrap(exchange.getStatusCode()) == HttpStatus.OK) {
                 return exchange.getBody();
             }
             return null;
@@ -46,7 +46,7 @@ public class OrganisationClient extends AbstractClient {
             HttpEntity<Void> httpEntity = createSystemEntity();
 
             ResponseEntity<Organisation> exchange = restTemplate.exchange(baseUrl + URI + "?code=" + code, HttpMethod.GET, httpEntity, Organisation.class);
-            if (exchange.getStatusCode() == HttpStatus.OK) {
+            if (wrap(exchange.getStatusCode()) == HttpStatus.OK) {
                 return exchange.getBody();
             }
             return null;
@@ -62,7 +62,7 @@ public class OrganisationClient extends AbstractClient {
             HttpEntity<Void> httpEntity = createSystemEntity();
 
             ResponseEntity<Organisation> exchange = restTemplate.exchange(baseUrl + URI + "/" + organisationRef, HttpMethod.GET, httpEntity, Organisation.class);
-            if (exchange.getStatusCode() == HttpStatus.OK) {
+            if (wrap(exchange.getStatusCode()) == HttpStatus.OK) {
                 return exchange.getBody();
             }
             return null;
@@ -80,14 +80,14 @@ public class OrganisationClient extends AbstractClient {
             HttpEntity<Organisation> httpEntity = createSystemEntityBody(organisation);
 
             ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI, HttpMethod.POST, httpEntity, Void.class);
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case CREATED:
                     List<String> locationHeader = exchange.getHeaders().get(HttpHeaders.LOCATION);
                     return locationHeader.get(0);
                 case CONFLICT:
                     throw new ResourceExistsException("Organisation already exists.");
                 default:
-                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+                    throw new UnexpectedSystemException("Invalid response code:" + wrap(exchange.getStatusCode()));
             }
         }
         catch (RestClientException e) {
@@ -103,13 +103,13 @@ public class OrganisationClient extends AbstractClient {
             HttpEntity<Organisation> httpEntity = createSystemEntityBody(organisation);
 
             ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI + "/" + organisation.getId(), HttpMethod.PUT, httpEntity, Void.class);
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case OK:
                     return;
                 case CONFLICT:
                     throw new ResourceExistsException("Organisation already exists.");
                 default:
-                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+                    throw new UnexpectedSystemException("Invalid response code:" + wrap(exchange.getStatusCode()));
             }
         }
         catch (RestClientException e) {
@@ -124,11 +124,11 @@ public class OrganisationClient extends AbstractClient {
 
             ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI + "/" + id
                     , HttpMethod.DELETE, httpEntity, Void.class);
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case OK:
                     return;
                 default:
-                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+                    throw new UnexpectedSystemException("Invalid response code:" + wrap(exchange.getStatusCode()));
             }
         }
         catch (RestClientException e) {
@@ -144,11 +144,11 @@ public class OrganisationClient extends AbstractClient {
             HttpEntity<Void> httpEntity = createSystemEntity();
 
             ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI + "/reset", HttpMethod.POST, httpEntity, Void.class);
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case OK:
                     return;
                 default:
-                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+                    throw new UnexpectedSystemException("Invalid response code:" + wrap(exchange.getStatusCode()));
             }
         }
         catch (RestClientException e) {

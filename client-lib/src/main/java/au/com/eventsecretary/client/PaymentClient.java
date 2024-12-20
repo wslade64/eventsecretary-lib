@@ -94,7 +94,7 @@ public class PaymentClient extends AbstractClient
             HttpEntity<Refund> httpEntity = createEntityBody(refund);
 
             ResponseEntity<String> exchange = restTemplate.exchange(url, HttpMethod.PUT, httpEntity, String.class);
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case OK:
                     return exchange.getBody();
                 case PRECONDITION_FAILED:
@@ -121,7 +121,7 @@ public class PaymentClient extends AbstractClient
             HttpEntity<CheckoutRequest> httpEntity = createSystemEntityBody(checkoutRequest);
 
             ResponseEntity<Void> exchange = restTemplate.exchange(url, HttpMethod.POST, httpEntity, Void.class);
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case OK:
                     return;
                 case PRECONDITION_FAILED:

@@ -28,7 +28,10 @@ public class AccountClient extends AbstractClient {
             HttpEntity<PersonIdentity> httpEntity = createSystemEntity();
 
             ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI + "/reset", HttpMethod.POST, httpEntity, Void.class);
-            switch (exchange.getStatusCode()) {
+            if (exchange.getStatusCode().is2xxSuccessful()) {
+                return;
+            }
+            switch (wrap(exchange.getStatusCode())) {
                 case OK:
                     return;
                 default:
@@ -46,7 +49,7 @@ public class AccountClient extends AbstractClient {
             HttpEntity<Account> httpEntity = createSystemEntityBody(account);
 
             ResponseEntity<Account> exchange = restTemplate.exchange(baseUrl + URI, HttpMethod.POST, httpEntity, Account.class);
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case CREATED:
                     // List<String> locationHeader = exchange.getHeaders().get(HttpHeaders.LOCATION);
                     return exchange.getBody();
@@ -69,7 +72,7 @@ public class AccountClient extends AbstractClient {
             HttpEntity<Account> httpEntity = createSystemEntityBody(account);
 
             ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI, HttpMethod.PUT, httpEntity, Void.class);
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case OK:
                     return;
                 default:
@@ -87,7 +90,7 @@ public class AccountClient extends AbstractClient {
             HttpEntity<Account> httpEntity = createSystemEntity();
 
             ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI + "/" + accountCode + "/seal", HttpMethod.PUT, httpEntity, Void.class);
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case OK:
                     return;
                 default:
@@ -105,7 +108,7 @@ public class AccountClient extends AbstractClient {
             HttpEntity<Account> httpEntity = createSystemEntity();
 
             ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI + "/" + accountCode + "/unseal", HttpMethod.PUT, httpEntity, Void.class);
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case OK:
                     return;
                 default:
@@ -124,7 +127,7 @@ public class AccountClient extends AbstractClient {
 
             ResponseEntity<Account> exchange = restTemplate.exchange(baseUrl + URI + "/" + accountCode
                 , HttpMethod.GET, httpEntity, Account.class);
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case OK:
                     return exchange.getBody();
                 case NOT_FOUND:
@@ -146,7 +149,7 @@ public class AccountClient extends AbstractClient {
 
             ResponseEntity<List<String>> exchange = restTemplate.exchange(baseUrl + "/payment/v1/admin?accountCode=" + accountCode
                     , HttpMethod.GET, httpEntity, new ParameterizedTypeReference<List<String>>(){});
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case OK:
                     return exchange.getBody();
                 case NOT_FOUND:

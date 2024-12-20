@@ -71,11 +71,11 @@ public class OrderClient extends AbstractClient {
             HttpEntity<Order> httpEntity = createSystemEntityBody(order);
 
             ResponseEntity<Order> exchange = restTemplate.exchange(baseUrl + URI, HttpMethod.POST, httpEntity, Order.class, params("accountCode",accountCode));
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case CREATED:
                     return exchange.getBody();
                 default:
-                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+                    throw new UnexpectedSystemException("Invalid response code:" + wrap(exchange.getStatusCode()));
             }
         }
         catch (RestClientException e) {
@@ -89,11 +89,11 @@ public class OrderClient extends AbstractClient {
             HttpEntity<Order> httpEntity = createSystemEntityBody(order);
 
             ResponseEntity<Order> exchange = restTemplate.exchange(baseUrl + URI, HttpMethod.PUT, httpEntity, Order.class, params("accountCode",accountCode));
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case OK:
                     return exchange.getBody();
                 default:
-                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+                    throw new UnexpectedSystemException("Invalid response code:" + wrap(exchange.getStatusCode()));
             }
         }
         catch (RestClientException e) {
@@ -117,13 +117,13 @@ public class OrderClient extends AbstractClient {
 
             ResponseEntity<Order> exchange = restTemplate.exchange(baseUrl + URI + "/{orderCode}"
                     , HttpMethod.GET, httpEntity, Order.class, params("accountCode", accountCode, "orderCode", orderCode));
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case OK:
                     return exchange.getBody();
                 case NOT_FOUND:
                     throw new ResourceNotFoundException("order");
                 default:
-                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+                    throw new UnexpectedSystemException("Invalid response code:" + wrap(exchange.getStatusCode()));
             }
         }
         catch (RestClientException e) {
@@ -138,13 +138,13 @@ public class OrderClient extends AbstractClient {
 
             ResponseEntity<List<Order>> exchange = restTemplate.exchange(baseUrl + URI + "?filter=ACCOUNT"
                     , HttpMethod.GET, httpEntity, new ParameterizedTypeReference<List<Order>>(){}, params("accountCode", accountCode));
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case OK:
                     return exchange.getBody();
                 case NOT_FOUND:
                     throw new ResourceNotFoundException("order");
                 default:
-                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+                    throw new UnexpectedSystemException("Invalid response code:" + wrap(exchange.getStatusCode()));
             }
         }
         catch (RestClientException e) {
@@ -159,13 +159,13 @@ public class OrderClient extends AbstractClient {
 
             ResponseEntity<List<Order>> exchange = restTemplate.exchange(baseUrl + URI
                     , HttpMethod.GET, httpEntity, new ParameterizedTypeReference<List<Order>>(){}, params("accountCode", accountCode));
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case OK:
                     return exchange.getBody();
                 case NOT_FOUND:
                     throw new ResourceNotFoundException("order");
                 default:
-                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+                    throw new UnexpectedSystemException("Invalid response code:" + wrap(exchange.getStatusCode()));
             }
         }
         catch (RestClientException e) {
@@ -181,11 +181,11 @@ public class OrderClient extends AbstractClient {
             HttpEntity<Registration> httpEntity = createSystemEntity();
 
             ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI + "/{orderId}", HttpMethod.DELETE, httpEntity, Void.class, params("accountCode", accountCode, "orderId", orderId));
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case OK:
                     return;
                 default:
-                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+                    throw new UnexpectedSystemException("Invalid response code:" + wrap(exchange.getStatusCode()));
             }
         }
         catch (RestClientException e) {

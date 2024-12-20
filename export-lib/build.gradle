@@ -1,20 +1,30 @@
-archivesBaseName = 'eventsecretary-export-lib'
-
 configurations.all {
     exclude group: "au.com.auspost.lodgement.trace", module: "trace-lib"
 }
+
 dependencies {
-    compile project(":simm-lib")
+    implementation project(":system-lib")
+    implementation project(":simm-lib")
 
-    compile("au.com.auspost.lodgement:lodgement-constraint-acv:x.x.x-SNAPSHOT")
+    api("au.com.auspost.lodgement:lodgement-constraint-acv:x.x.x-SNAPSHOT")
+    api("commons-beanutils:commons-beanutils:${commonsBeanutilsVersion}")
+    api("org.apache.commons:commons-lang3:${commonsLang3Version}")
+    api("org.apache.poi:poi:${poiVersion}")
+    api("org.apache.poi:poi-ooxml:${poiVersion}")
+    api("org.springframework:spring-context:${springVersion}")
+    api("org.springframework:spring-context-support:${springVersion}")
+    api("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:${jacksonVersion}")
 
-    compile("org.apache.poi:poi:${poiVersion}")
-    compile("org.apache.poi:poi-ooxml:${poiVersion}")
-    compile("org.springframework:spring-context:${springVersion}")
-    compile("org.springframework:spring-context-support:${springVersion}")
-    compile("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:${jacksonVersion}")
-
-    compile project(":system-lib")
-    testCompile("junit:junit:${junitVersion}")
+    testImplementation("junit:junit:${junitVersion}")
 }
 
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = 'au.com.eventsecretary'
+            artifactId = 'eventsecretary-export-lib'
+            version = "x.x.x-SNAPSHOT"
+            from components.java
+        }
+    }
+}

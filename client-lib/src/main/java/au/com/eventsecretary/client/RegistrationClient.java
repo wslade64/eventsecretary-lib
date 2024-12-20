@@ -31,7 +31,7 @@ public class RegistrationClient extends AbstractClient {
             uriVariables.put("ownerId", ownerId);
             ResponseEntity<List<Registration>> exchange = restTemplate.exchange(baseUrl + URI + "?ownerId={ownerId}"
                     , HttpMethod.GET, httpEntity, new ParameterizedTypeReference<List<Registration>>(){}, uriVariables);
-            if (exchange.getStatusCode() == HttpStatus.OK) {
+            if (wrap(exchange.getStatusCode()) == HttpStatus.OK) {
                 return exchange.getBody();
             }
             return null;
@@ -67,7 +67,7 @@ public class RegistrationClient extends AbstractClient {
             uriVariables.put("ownersId", String.join(",", ownersId));
             ResponseEntity<List<Registration>> exchange = restTemplate.exchange(baseUrl + URI + "?ownersId={ownersId}"
                     , HttpMethod.GET, httpEntity, new ParameterizedTypeReference<List<Registration>>(){}, uriVariables);
-            if (exchange.getStatusCode() == HttpStatus.OK) {
+            if (wrap(exchange.getStatusCode()) == HttpStatus.OK) {
                 return exchange.getBody();
             }
             return null;
@@ -83,7 +83,7 @@ public class RegistrationClient extends AbstractClient {
             HttpEntity<Void> httpEntity = createSystemEntity();
 
             ResponseEntity<Registration> exchange = restTemplate.exchange(baseUrl + URI + "/" + registrationRef, HttpMethod.GET, httpEntity, Registration.class);
-            if (exchange.getStatusCode() == HttpStatus.OK) {
+            if (wrap(exchange.getStatusCode()) == HttpStatus.OK) {
                 return exchange.getBody();
             }
             return null;
@@ -101,14 +101,14 @@ public class RegistrationClient extends AbstractClient {
             HttpEntity<Registration> httpEntity = createSystemEntityBody(registration);
 
             ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI, HttpMethod.POST, httpEntity, Void.class);
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case CREATED:
                     List<String> locationHeader = exchange.getHeaders().get(HttpHeaders.LOCATION);
                     return locationHeader.get(0);
                 case CONFLICT:
                     throw new ResourceExistsException("Registration already exists.");
                 default:
-                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+                    throw new UnexpectedSystemException("Invalid response code:" + wrap(exchange.getStatusCode()));
             }
         }
         catch (RestClientException e) {
@@ -124,13 +124,13 @@ public class RegistrationClient extends AbstractClient {
             HttpEntity<Registration> httpEntity = createSystemEntityBody(registration);
 
             ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI + "/" + registration.getId(), HttpMethod.PUT, httpEntity, Void.class);
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case OK:
                     return;
                 case CONFLICT:
                     throw new ResourceExistsException("Registration already exists.");
                 default:
-                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+                    throw new UnexpectedSystemException("Invalid response code:" + wrap(exchange.getStatusCode()));
             }
         }
         catch (RestClientException e) {
@@ -146,11 +146,11 @@ public class RegistrationClient extends AbstractClient {
             HttpEntity<Registration> httpEntity = createSystemEntity();
 
             ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI + "/owner/" + ownerId, HttpMethod.DELETE, httpEntity, Void.class);
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case OK:
                     return;
                 default:
-                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+                    throw new UnexpectedSystemException("Invalid response code:" + wrap(exchange.getStatusCode()));
             }
         }
         catch (RestClientException e) {
@@ -166,11 +166,11 @@ public class RegistrationClient extends AbstractClient {
             HttpEntity<Registration> httpEntity = createSystemEntity();
 
             ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI + "/" + registrationId, HttpMethod.DELETE, httpEntity, Void.class);
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case OK:
                     return;
                 default:
-                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+                    throw new UnexpectedSystemException("Invalid response code:" + wrap(exchange.getStatusCode()));
             }
         }
         catch (RestClientException e) {
@@ -186,11 +186,11 @@ public class RegistrationClient extends AbstractClient {
             HttpEntity<Void> httpEntity = createSystemEntity();
 
             ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI + "/reset", HttpMethod.POST, httpEntity, Void.class);
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case OK:
                     return;
                 default:
-                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+                    throw new UnexpectedSystemException("Invalid response code:" + wrap(exchange.getStatusCode()));
             }
         }
         catch (RestClientException e) {

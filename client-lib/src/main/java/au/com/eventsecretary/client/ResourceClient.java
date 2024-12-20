@@ -44,7 +44,7 @@ public class ResourceClient<T extends Entity> extends AbstractClient {
             HttpEntity<Void> httpEntity = createSystemEntity();
 
             ResponseEntity<List<T>> exchange = restTemplate.exchange(baseUrl + queryParams(keyValueList), HttpMethod.GET, httpEntity, parameterizedTypeReference, params(keyValueList));
-            if (exchange.getStatusCode() == HttpStatus.OK) {
+            if (wrap(exchange.getStatusCode()) == HttpStatus.OK) {
                 return exchange.getBody();
             }
             return null;
@@ -60,7 +60,7 @@ public class ResourceClient<T extends Entity> extends AbstractClient {
             HttpEntity<Void> httpEntity = createSystemEntity();
 
             ResponseEntity<T> exchange = restTemplate.exchange(baseUrl + "/" + id, HttpMethod.GET, httpEntity, targetClass);
-            if (exchange.getStatusCode() == HttpStatus.OK) {
+            if (wrap(exchange.getStatusCode()) == HttpStatus.OK) {
                 return exchange.getBody();
             }
             return null;
@@ -76,7 +76,7 @@ public class ResourceClient<T extends Entity> extends AbstractClient {
             HttpEntity<Void> httpEntity = createSystemEntity();
 
             ResponseEntity<List<T>> exchange = restTemplate.exchange(baseUrl, HttpMethod.GET, httpEntity, parameterizedTypeReference);
-            if (exchange.getStatusCode() == HttpStatus.OK) {
+            if (wrap(exchange.getStatusCode()) == HttpStatus.OK) {
                 return exchange.getBody();
             }
             return null;
@@ -92,13 +92,13 @@ public class ResourceClient<T extends Entity> extends AbstractClient {
             HttpEntity<T> httpEntity = createSystemEntityBody(resource);
 
             ResponseEntity<T> exchange = restTemplate.exchange(baseUrl, HttpMethod.POST, httpEntity, targetClass);
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case CREATED:
                     return exchange.getBody();
                 case CONFLICT:
                     throw new ResourceExistsException("Resource exists.");
                 default:
-                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+                    throw new UnexpectedSystemException("Invalid response code:" + wrap(exchange.getStatusCode()));
             }
         }
         catch (RestClientException e) {
@@ -112,11 +112,11 @@ public class ResourceClient<T extends Entity> extends AbstractClient {
             HttpEntity<T> httpEntity = createSystemEntityBody(resource);
 
             ResponseEntity<T> exchange = restTemplate.exchange(baseUrl, HttpMethod.PUT, httpEntity, targetClass);
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case OK:
                     return exchange.getBody();
                 default:
-                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+                    throw new UnexpectedSystemException("Invalid response code:" + wrap(exchange.getStatusCode()));
             }
         }
         catch (RestClientException e) {
@@ -131,11 +131,11 @@ public class ResourceClient<T extends Entity> extends AbstractClient {
 
             HttpEntity<T> httpEntity = createSystemEntity();
             ResponseEntity<T> exchange = restTemplate.exchange(baseUrl + "/" + resourceId, HttpMethod.DELETE, httpEntity, targetClass);
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case OK:
                     return exchange.getBody();
                 default:
-                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+                    throw new UnexpectedSystemException("Invalid response code:" + wrap(exchange.getStatusCode()));
             }
         }
         catch (RestClientException e) {

@@ -1,6 +1,14 @@
-archivesBaseName = 'eventsecretary-system-lib'
-
 dependencies {
-    compile("org.slf4j:slf4j-api:${slf4jVersion}")
+    api("org.slf4j:slf4j-api:${slf4jVersion}")
 }
 
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = 'au.com.eventsecretary'
+            artifactId = 'eventsecretary-system-lib'
+            version = "x.x.x-SNAPSHOT"
+            from components.java
+        }
+    }
+}

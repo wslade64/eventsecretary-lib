@@ -113,11 +113,11 @@ public class PeopleClient extends AbstractClient {
                 param = "?options=" + org.apache.commons.lang3.StringUtils.join(options, ",");
             }
             ResponseEntity<Person> exchange = restTemplate.exchange(baseUrl + URI + "/person/" + personId + param, HttpMethod.GET, httpEntity, Person.class);
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case OK:
                     return exchange.getBody();
                 default:
-                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+                    throw new UnexpectedSystemException("Invalid response code:" + wrap(exchange.getStatusCode()));
             }
         }
         catch (RestClientException e) {
@@ -131,11 +131,11 @@ public class PeopleClient extends AbstractClient {
             HttpEntity<Void> httpEntity = createEntity();
 
             ResponseEntity<Person[]> exchange = restTemplate.exchange(baseUrl + URI + "/person", HttpMethod.GET, httpEntity, Person[].class);
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case OK:
                     return exchange.getBody()[0];
                 default:
-                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+                    throw new UnexpectedSystemException("Invalid response code:" + wrap(exchange.getStatusCode()));
             }
         }
         catch (RestClientException e) {
@@ -149,11 +149,11 @@ public class PeopleClient extends AbstractClient {
             HttpEntity<Void> httpEntity = createSystemEntity();
 
             ResponseEntity<Person> exchange = restTemplate.exchange(baseUrl + URI + "/identity/" + identityId, HttpMethod.GET, httpEntity, Person.class);
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case OK:
                     return exchange.getBody();
                 default:
-                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+                    throw new UnexpectedSystemException("Invalid response code:" + wrap(exchange.getStatusCode()));
             }
         }
         catch (RestClientException e) {
@@ -167,11 +167,11 @@ public class PeopleClient extends AbstractClient {
             HttpEntity<Void> httpEntity = createSystemEntity();
 
             ResponseEntity<PersonIdentity> exchange = restTemplate.exchange(baseUrl + URI + "/personIdentity/" + personId, HttpMethod.GET, httpEntity, PersonIdentity.class);
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case OK:
                     return exchange.getBody();
                 default:
-                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+                    throw new UnexpectedSystemException("Invalid response code:" + wrap(exchange.getStatusCode()));
             }
         }
         catch (RestClientException e) {
@@ -185,11 +185,11 @@ public class PeopleClient extends AbstractClient {
             HttpEntity<Void> httpEntity = createSystemEntity();
 
             ResponseEntity<PersonIdentity> exchange = restTemplate.exchange(baseUrl + URI + "/personIdentity?identityId=" + identityId, HttpMethod.GET, httpEntity, PersonIdentity.class);
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case OK:
                     return exchange.getBody();
                 default:
-                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+                    throw new UnexpectedSystemException("Invalid response code:" + wrap(exchange.getStatusCode()));
             }
         }
         catch (RestClientException e) {
@@ -203,11 +203,11 @@ public class PeopleClient extends AbstractClient {
             HttpEntity<PersonIdentity> httpEntity = createSystemEntity();
 
             ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI + "/reset", HttpMethod.POST, httpEntity, Void.class);
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case OK:
                     return;
                 default:
-                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+                    throw new UnexpectedSystemException("Invalid response code:" + wrap(exchange.getStatusCode()));
             }
         }
         catch (RestClientException e) {
@@ -221,14 +221,14 @@ public class PeopleClient extends AbstractClient {
             HttpEntity<PersonIdentity> httpEntity = createSystemEntityBody(personIdentity);
 
             ResponseEntity<PersonIdentity> exchange = restTemplate.exchange(baseUrl + URI + "/personIdentity", HttpMethod.POST, httpEntity, PersonIdentity.class);
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case CREATED:
                     // List<String> locationHeader = exchange.getHeaders().get(HttpHeaders.LOCATION);
                     return exchange.getBody();
                 case CONFLICT:
                     throw new ResourceExistsException("email");
                 default:
-                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+                    throw new UnexpectedSystemException("Invalid response code:" + wrap(exchange.getStatusCode()));
             }
         }
         catch (RestClientException e) {
@@ -242,13 +242,13 @@ public class PeopleClient extends AbstractClient {
             HttpEntity<PersonIdentity> httpEntity = createSystemEntityBody(personIdentity);
 
             ResponseEntity<PersonIdentity> exchange = restTemplate.exchange(baseUrl + URI + "/personIdentity", HttpMethod.PUT, httpEntity, PersonIdentity.class);
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case OK:
                     return exchange.getBody();
                 case CONFLICT:
                     throw new ResourceExistsException("email");
                 default:
-                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+                    throw new UnexpectedSystemException("Invalid response code:" + wrap(exchange.getStatusCode()));
             }
         }
         catch (RestClientException e) {
@@ -262,14 +262,14 @@ public class PeopleClient extends AbstractClient {
             HttpEntity<Person> httpEntity = createSystemEntityBody(person);
 
             ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI + "/person", HttpMethod.POST, httpEntity, Void.class);
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case CREATED:
                     List<String> locationHeader = exchange.getHeaders().get(HttpHeaders.LOCATION);
                     return locationHeader.get(0);
                 case CONFLICT:
                     throw new ResourceExistsException("email");
                 default:
-                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+                    throw new UnexpectedSystemException("Invalid response code:" + wrap(exchange.getStatusCode()));
             }
         }
         catch (RestClientException e) {
@@ -283,13 +283,13 @@ public class PeopleClient extends AbstractClient {
             HttpEntity<Person> httpEntity = createSystemEntityBody(person);
 
             ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI + "/person", HttpMethod.PUT, httpEntity, Void.class);
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case OK:
                     return;
                 case CONFLICT:
                     throw new ResourceExistsException("email");
                 default:
-                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+                    throw new UnexpectedSystemException("Invalid response code:" + wrap(exchange.getStatusCode()));
             }
         }
         catch (RestClientException e) {
@@ -305,11 +305,11 @@ public class PeopleClient extends AbstractClient {
             HttpEntity<Void> httpEntity = createSystemEntity();
 
             ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI + "/person/" + personId, HttpMethod.DELETE, httpEntity, Void.class);
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case OK:
                     return;
                 default:
-                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+                    throw new UnexpectedSystemException("Invalid response code:" + wrap(exchange.getStatusCode()));
             }
         }
         catch (RestClientException e) {
@@ -323,11 +323,11 @@ public class PeopleClient extends AbstractClient {
             HttpEntity<Void> httpEntity = createEntity();
 
             ResponseEntity<Person[]> exchange = restTemplate.exchange(baseUrl + URI + "/person?" + "firstName=" + firstName + "&lastName=" + lastName, HttpMethod.GET, httpEntity, Person[].class);
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case OK:
                     return Arrays.asList(exchange.getBody());
                 default:
-                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+                    throw new UnexpectedSystemException("Invalid response code:" + wrap(exchange.getStatusCode()));
             }
         }
         catch (RestClientException e) {
@@ -344,11 +344,11 @@ public class PeopleClient extends AbstractClient {
                     + "firstName=" + firstName
                     + "&lastName=" + lastName
                     + "&emailAddress=" + emailAddress, HttpMethod.GET, httpEntity, Person[].class);
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case OK:
                     return exchange.getBody().length == 0 ? null : exchange.getBody()[0];
                 default:
-                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+                    throw new UnexpectedSystemException("Invalid response code:" + wrap(exchange.getStatusCode()));
             }
         }
         catch (RestClientException e) {
@@ -383,11 +383,11 @@ public class PeopleClient extends AbstractClient {
                 ids += "&options=" + org.apache.commons.lang3.StringUtils.join(options, ",");
             }
             ResponseEntity<Person[]> exchange = restTemplate.exchange(baseUrl + URI + "/person?" + "ids=" + ids, HttpMethod.GET, httpEntity, Person[].class);
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case OK:
                     return Arrays.asList(exchange.getBody());
                 default:
-                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+                    throw new UnexpectedSystemException("Invalid response code:" + wrap(exchange.getStatusCode()));
             }
         }
         catch (RestClientException e) {
@@ -401,11 +401,11 @@ public class PeopleClient extends AbstractClient {
             HttpEntity<Void> httpEntity = createSystemEntity();
 
             ResponseEntity<Person[]> exchange = restTemplate.exchange(baseUrl + URI + "/person?" + "query=" + query, HttpMethod.GET, httpEntity, Person[].class);
-            switch (exchange.getStatusCode()) {
+            switch (wrap(exchange.getStatusCode())) {
                 case OK:
                     return Arrays.asList(exchange.getBody());
                 default:
-                    throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+                    throw new UnexpectedSystemException("Invalid response code:" + wrap(exchange.getStatusCode()));
             }
         }
         catch (RestClientException e) {

@@ -48,14 +48,14 @@ public class QualificationClient extends AbstractClient {
             String body = exchange.getBody();
             ObjectMapper objectMapper = objectMapper();
             try {
-                switch (exchange.getStatusCode()) {
+                switch (wrap(exchange.getStatusCode())) {
                     case CREATED:
                     case OK:
                         return objectMapper.readValue(body, QualificationResponse.class);
                     case PRECONDITION_FAILED:
                         throw new ValidationErrorException(objectMapper.readValue(body, ErrorResponse.class).getErrors());
                     default:
-                        throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
+                        throw new UnexpectedSystemException("Invalid response code:" + wrap(exchange.getStatusCode()));
                 }
             } catch (JsonParseException e) {
                 throw new UnexpectedSystemException(e);

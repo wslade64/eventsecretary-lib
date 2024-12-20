@@ -8,6 +8,7 @@ import au.com.eventsecretary.ValidationException;
 import au.com.eventsecretary.client.UnauthorizedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * Enriching with more information on certain exceptions.
  */
 @ControllerAdvice
+@AutoConfiguration
 public class GlobalExceptionHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(GlobalExceptionHandler.class);

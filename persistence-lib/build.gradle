@@ -1,11 +1,20 @@
-archivesBaseName = 'eventsecretary-persistence-lib'
-
 dependencies {
-    compile("org.apache.commons:commons-lang3:${commonsLang3Version}")
-    compile("commons-beanutils:commons-beanutils:${commonsBeanutilsVersion}")
-    compile("org.springframework.boot:spring-boot:${springBootVersion}")
-    compile("org.springframework.data:spring-data-mongodb:${springDataMongo}")
-    compile("org.mongodb:mongodb-driver-sync:${mongoVersion}")
-    compile project(":system-lib")
+    api("org.apache.commons:commons-lang3:${commonsLang3Version}")
+    api("commons-beanutils:commons-beanutils:${commonsBeanutilsVersion}")
+    api("org.springframework.boot:spring-boot:${springBootVersion}")
+    api("org.springframework.data:spring-data-mongodb:${springDataMongo}")
+    api("org.mongodb:mongodb-driver-sync:${mongoVersion}")
+    implementation project(":system-lib")
+    implementation("org.springframework.boot:spring-boot-autoconfigure:${springBootVersion}")
 }
 
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = 'au.com.eventsecretary'
+            artifactId = 'eventsecretary-persistence-lib'
+            version = "x.x.x-SNAPSHOT"
+            from components.java
+        }
+    }
+}

@@ -117,9 +117,9 @@ public class ColumnBuilder {
             }
             if (column.include == null) {
                 if (sheetBuilder.conditional != null) {
-                    column.include = new Boolean(resolveConditional(sheetBuilder.conditional));
+                    column.include = Boolean.valueOf(resolveConditional(sheetBuilder.conditional));
                 } else if (sheetBuilder.workbookBuilder.conditional != null) {
-                    column.include = new Boolean(resolveConditional(sheetBuilder.workbookBuilder.conditional));
+                    column.include = Boolean.valueOf(resolveConditional(sheetBuilder.workbookBuilder.conditional));
                 }
             }
         }
