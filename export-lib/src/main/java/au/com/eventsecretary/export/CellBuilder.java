@@ -50,6 +50,9 @@ public class CellBuilder {
 
         if (column != null) {
             values.forEach(value -> {
+                if (column.valueFormatter != null) {
+                    value = column.valueFormatter.format(value);
+                }
                 Cell cell = createCell();
                 column.cellRenderer.render(cell, value, this.rowBuilder.sheetBuilder.workbookBuilder);
             });
