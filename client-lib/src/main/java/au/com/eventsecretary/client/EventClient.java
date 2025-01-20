@@ -23,7 +23,7 @@ public class EventClient extends AbstractClient {
         try {
             HttpEntity<Void> httpEntity = createSystemEntity();
 
-            ResponseEntity<Event> exchange = restTemplate.exchange(baseUrl + URI + "/export/organisation/?organisationId=" + organisationId
+            ResponseEntity<Event> exchange = restTemplate.exchange(baseUrl + URI + "/export/organisation?organisationId=" + organisationId
                     , HttpMethod.GET, httpEntity, Event.class);
             switch (wrap(exchange.getStatusCode())) {
                 case OK:
