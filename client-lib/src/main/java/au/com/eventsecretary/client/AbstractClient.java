@@ -7,17 +7,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
+import org.springframework.http.*;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.lang.Nullable;
 import org.springframework.web.client.DefaultResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -49,19 +48,19 @@ public abstract class AbstractClient {
         restTemplate.setErrorHandler(new DefaultResponseErrorHandler() {
 
             @Override
-            public void handleError(ClientHttpResponse clientHttpResponse) throws IOException {
-                HttpStatusCode statusCode = clientHttpResponse.getStatusCode();
+            protected void handleError(ClientHttpResponse response, HttpStatusCode statusCode,
+                                       @Nullable URI url, @Nullable HttpMethod method) throws IOException {
                 if (statusCode.value() == PRECONDITION_FAILED.value() || statusCode.value() == CONFLICT.value()) {
                     return;
                 } else if (statusCode.value() == UNAUTHORIZED.value()) {
-                    logger.info("login:" + clientHttpResponse.getStatusCode());
+                    logger.info("login:" + statusCode);
                     throw new UnauthorizedException();
                 } else if (statusCode.value() == HttpStatus.BAD_REQUEST.value()) {
                     throw new ResourceNotFoundException("Bad request");
                 } else if (statusCode.value() == NOT_FOUND.value()) {
                     throw new ResourceNotFoundException("Not found");
                 } else {
-                    super.handleError(clientHttpResponse);
+                    super.handleError(response, statusCode, url, method);
                 }
 //                switch (statusCode.value()) {
 //                    case PRECONDITION_FAILED:
@@ -159,9 +158,6 @@ public abstract class AbstractClient {
         if (value == HttpStatus.UNAUTHORIZED.value()) {
             return HttpStatus.UNAUTHORIZED;
         }
-        if (value == HttpStatus.UNAUTHORIZED.value()) {
-            return HttpStatus.UNAUTHORIZED;
-        }
         if (value == HttpStatus.PRECONDITION_FAILED.value()) {
             return HttpStatus.PRECONDITION_FAILED;
         }
@@ -170,9 +166,6 @@ public abstract class AbstractClient {
         }
         if (value == SERVICE_UNAVAILABLE.value()) {
             return SERVICE_UNAVAILABLE;
-        }
-        if (value == CREATED.value()) {
-            return CREATED;
         }
         throw new UnexpectedSystemException("Unexpected system status: " + statusCode);
     }
