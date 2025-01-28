@@ -173,10 +173,12 @@ public abstract class AbstractController
         Cookie cookie = new Cookie(cookieName, token);
         cookie.setPath("/");
         cookie.setDomain(request.getServerName());
-        cookie.setSecure(request.isSecure());
+        if (request.isSecure()) {
+            cookie.setSecure(true);
+        }
         cookie.setHttpOnly(true);
         cookie.setMaxAge(expirySeconds);
-        cookie.setVersion(1);
+//        cookie.setVersion(1);
         httpResponse.addCookie(cookie);
     }
 
