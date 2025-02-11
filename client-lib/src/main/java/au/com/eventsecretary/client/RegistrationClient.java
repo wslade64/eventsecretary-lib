@@ -3,6 +3,7 @@ package au.com.eventsecretary.client;
 import au.com.eventsecretary.ResourceExistsException;
 import au.com.eventsecretary.UnexpectedSystemException;
 import au.com.eventsecretary.accounting.registration.Registration;
+import au.com.eventsecretary.accounting.registration.RegistrationTarget;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
@@ -21,6 +22,25 @@ public class RegistrationClient extends AbstractClient {
 
     public RegistrationClient(String baseUrl, RestTemplateBuilder restTemplateBuilder) {
         super(baseUrl, restTemplateBuilder);
+    }
+
+    public List<Registration> getRegistrationsByRegistrationType(RegistrationTarget registrationTarget) throws RestClientException {
+        try {
+            HttpEntity<Void> httpEntity = createSystemEntity();
+
+            Map<String, String> uriVariables = new HashMap<>();
+            uriVariables.put("registrationTarget", registrationTarget.name());
+            ResponseEntity<List<Registration>> exchange = restTemplate.exchange(baseUrl + URI + "?registrationTarget={registrationTarget}"
+                    , HttpMethod.GET, httpEntity, new ParameterizedTypeReference<List<Registration>>(){}, uriVariables);
+            if (wrap(exchange.getStatusCode()) == HttpStatus.OK) {
+                return exchange.getBody();
+            }
+            return null;
+        }
+        catch (RestClientException e) {
+            logger.error("getRegistrations:" + e.getMessage());
+            throw new UnexpectedSystemException("getRegistrations");
+        }
     }
 
     public List<Registration> getRegistrationsByOwnerId(String ownerId) {

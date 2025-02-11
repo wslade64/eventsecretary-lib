@@ -43,6 +43,16 @@ public class RegistrationBuilder {
         return this;
     }
 
+    public RegistrationBuilder owner(String ownerId) {
+        registration.setOwnerId(ownerId);
+        return this;
+    }
+
+    public RegistrationBuilder name(String name) {
+        registration.setName(name);
+        return this;
+    }
+
     public RegistrationBuilder association(String associationId) {
         registration.setAssociationId(associationId);
         return this;
@@ -54,6 +64,11 @@ public class RegistrationBuilder {
 
     public RegistrationValueBuilder value(String code) {
         return new RegistrationValueBuilder(findByCode(registrationMetadata.getRegistrationValueMetadata(), code));
+    }
+
+    public RegistrationValueBuilder value(RegistrationType type) {
+        RegistrationValueMetadata registrationValueMetadata = registrationMetadata.getRegistrationValueMetadata().stream().filter(rvm -> rvm.getRegistrationType() == type).findFirst().orElse(null);
+        return new RegistrationValueBuilder(registrationValueMetadata);
     }
 
     public RegistrationBuilder renewal(Timestamp start, Timestamp end) {
@@ -76,6 +91,7 @@ public class RegistrationBuilder {
             if (registrationValueMetadata != null) {
                 value = new RegistrationValueImpl();
                 value.setRegistrationValueMetadataId(registrationValueMetadata.getId());
+                value.setType(registrationValueMetadata.getRegistrationType());
                 registration.getValue().add(value);
             }
         }
