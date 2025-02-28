@@ -101,13 +101,7 @@ public class SessionService {
             }
 
             List<Authorisation> authorisations = getAuthorisations();
-
-            if (!authorisations.stream().anyMatch(authorisation -> authorisation.getContextName().equals(contextName)
-                    && (targetId == null || authorisation.getTargetId().equals(targetId))
-                    && authorisation.getRoles().stream().anyMatch(areaRole
-                    -> areaRole.getArea().equals(area) && areaRole.getPermissions().contains(read)))) {
-                throw new UnauthorizedException();
-            }
+            hasPermission(authorisations, contextName, targetId, area, read);
         }
     }
 
@@ -163,6 +157,14 @@ public class SessionService {
         return session;
     }
 
+    public static void hasPermission(List<Authorisation> authorisations, String contextName, String targetId, String area, Permissions read) {
+        if (!authorisations.stream().anyMatch(authorisation -> authorisation.getContextName().equals(contextName)
+                && (targetId == null || authorisation.getTargetId().equals(targetId))
+                && authorisation.getRoles().stream().anyMatch(areaRole
+                -> areaRole.getArea().equals(area) && areaRole.getPermissions().contains(read)))) {
+            throw new UnauthorizedException();
+        }
+    }
     public static boolean isSandbox() {
         return MDC.get(SANDBOX_KEY) != null;
     }
