@@ -266,6 +266,9 @@ public class MongoBusinessObjectPersistence implements BusinessObjectPersistence
                 }
             }
         }
+    }
 
+    public MongoTemplate getTemplate() {
+        return mongoOperation;
     }
 }
