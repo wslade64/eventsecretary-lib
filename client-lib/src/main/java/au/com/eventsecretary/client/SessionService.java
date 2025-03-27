@@ -85,7 +85,7 @@ public class SessionService {
             }
 
             if (authorisations == null) {
-                authorisations = authenticateClient.findAuthorisations(identity.getId());
+                authorisations = findAuthorisations(identity.getId());
             }
             return authorisations;
 
@@ -172,4 +172,9 @@ public class SessionService {
     public static String bearer() {
         return MDC.get(BEARER_KEY);
     }
+
+    public List<Authorisation> findAuthorisations(String identityId) {
+        return this.authenticateClient.findAuthorisations(identityId);
+    }
+
 }
