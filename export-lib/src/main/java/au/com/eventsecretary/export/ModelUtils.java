@@ -28,7 +28,7 @@ public interface ModelUtils {
                 return;
             }
 
-            complexType.getAttributes().forEach(attribute -> {
+            complexType.getAttributes().stream().filter(attribute -> attribute.getType() != null).forEach(attribute -> {
                 if (include != null) {
                     if (!include.apply(attribute.getId())) {
                         return;
