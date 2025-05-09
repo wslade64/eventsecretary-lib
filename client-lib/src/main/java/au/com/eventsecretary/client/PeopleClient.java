@@ -11,8 +11,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestClientException;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,7 +34,7 @@ public class PeopleClient extends AbstractClient {
 
     public static boolean hasAddress(Person person) {
         Address mailingAddress = person.getMailingAddress();
-        return mailingAddress != null && StringUtils.hasLength(mailingAddress.getPostCode());
+        return mailingAddress != null && StringUtils.isNotBlank(mailingAddress.getPostCode());
     }
 
     public static void copyContactDetails(Person from, Person to) {
@@ -44,10 +44,10 @@ public class PeopleClient extends AbstractClient {
             ContactDetails fromContactDetails = from.getContactDetails();
             ContactDetails toContactDetails = to.getContactDetails();
             if (fromContactDetails != null) {
-                if (org.apache.commons.lang3.StringUtils.isBlank(toContactDetails.getEmailAddress())) {
+                if (StringUtils.isBlank(toContactDetails.getEmailAddress())) {
                     toContactDetails.setEmailAddress(fromContactDetails.getEmailAddress());
                 }
-                if (org.apache.commons.lang3.StringUtils.isBlank(toContactDetails.getPhoneNumber())) {
+                if (StringUtils.isBlank(toContactDetails.getPhoneNumber())) {
                     toContactDetails.setPhoneNumber(fromContactDetails.getPhoneNumber());
                 }
             }
@@ -95,8 +95,8 @@ public class PeopleClient extends AbstractClient {
             contactDetails.setEmailAddress(cleanEmailAddress(contactDetails.getEmailAddress()));
         }
 
-        person.setFirstName(org.apache.commons.lang3.StringUtils.trim(person.getFirstName()));
-        person.setLastName(org.apache.commons.lang3.StringUtils.trim(person.getLastName()));
+        person.setFirstName(StringUtils.trim(person.getFirstName()));
+        person.setLastName(StringUtils.trim(person.getLastName()));
         assignName(person);
     }
 
@@ -226,6 +226,7 @@ public class PeopleClient extends AbstractClient {
                     // List<String> locationHeader = exchange.getHeaders().get(HttpHeaders.LOCATION);
                     return exchange.getBody();
                 case CONFLICT:
+                case PRECONDITION_FAILED:
                     throw new ResourceExistsException("email");
                 default:
                     throw new UnexpectedSystemException("Invalid response code:" + wrap(exchange.getStatusCode()));
@@ -246,6 +247,7 @@ public class PeopleClient extends AbstractClient {
                 case OK:
                     return exchange.getBody();
                 case CONFLICT:
+                case PRECONDITION_FAILED:
                     throw new ResourceExistsException("email");
                 default:
                     throw new UnexpectedSystemException("Invalid response code:" + wrap(exchange.getStatusCode()));
@@ -267,6 +269,7 @@ public class PeopleClient extends AbstractClient {
                     List<String> locationHeader = exchange.getHeaders().get(HttpHeaders.LOCATION);
                     return locationHeader.get(0);
                 case CONFLICT:
+                case PRECONDITION_FAILED:
                     throw new ResourceExistsException("email");
                 default:
                     throw new UnexpectedSystemException("Invalid response code:" + wrap(exchange.getStatusCode()));
@@ -287,6 +290,7 @@ public class PeopleClient extends AbstractClient {
                 case OK:
                     return;
                 case CONFLICT:
+                case PRECONDITION_FAILED:
                     throw new ResourceExistsException("email");
                 default:
                     throw new UnexpectedSystemException("Invalid response code:" + wrap(exchange.getStatusCode()));
