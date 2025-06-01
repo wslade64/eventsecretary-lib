@@ -22,7 +22,8 @@ public interface ModelUtils {
     static SheetBuilderFunction complexTypeBuilder(ModelExtensions modelExtensions, ComplexType complexType) {
         return complexTypeBuilder(modelExtensions, complexType, null);
     }
-    static SheetBuilderFunction complexTypeBuilder(ModelExtensions modelExtensions, ComplexType complexType, Function<String, Boolean> include) {
+
+    static SheetBuilderFunction complexTypeBuilder(ModelExtensions modelExtensions, ComplexType complexType, Function<String, Boolean> include, String... exclusions) {
         return sheetBuilder -> {
             if (complexType == null) {
                 return;
@@ -35,6 +36,11 @@ public interface ModelUtils {
                     }
                 }
                 ColumnBuilder builder = sheetBuilder.column().label(alias(attribute));
+                if (exclusions != null) {
+                    for (String exclusion : exclusions) {
+                        builder.conditional(exclusion);
+                    }
+                }
                 switch (attribute.getType()) {
                     case ENUM:
                         ComplexType enumComplexType = findComplexTypeById(modelExtensions.getComplexTypeExtensions(), attribute.getClassifier());
