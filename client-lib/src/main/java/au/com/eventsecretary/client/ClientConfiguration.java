@@ -4,6 +4,7 @@ import au.com.eventsecretary.accounting.account.CatalogueImpl;
 import au.com.eventsecretary.equestrian.event.EventImpl;
 import au.com.eventsecretary.equestrian.organisation.HorseImpl;
 import au.com.eventsecretary.equestrian.organisation.RiderImpl;
+import au.com.eventsecretary.user.access.AccessCode;
 import au.com.eventsecretary.user.access.AccessCodeImpl;
 import au.com.eventsecretary.user.identity.ActivationImpl;
 import au.com.eventsecretary.user.identity.AuthorisationImpl;
@@ -119,7 +120,7 @@ public class ClientConfiguration {
     }
 
     @Bean
-    public ResourceClient accessCodeClient(@Value("${userUrl}") String baseUrl, RestTemplateBuilder restTemplateBuilder) {
+    public ResourceClient<AccessCode> accessCodeClient(@Value("${userUrl}") String baseUrl, RestTemplateBuilder restTemplateBuilder) {
         return new ResourceClient(baseUrl + "/user/v1/access-code", restTemplateBuilder, AccessCodeImpl.class);
     }
 

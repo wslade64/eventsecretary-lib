@@ -1,13 +1,16 @@
 package au.com.eventsecretary.simm;
 
 import au.com.eventsecretary.ResourceExistsException;
+import au.com.eventsecretary.UnexpectedSystemException;
 import au.com.eventsecretary.common.Entity;
 import au.com.eventsecretary.common.Identifiable;
 import au.com.eventsecretary.common.IdentifiableImpl;
 import org.apache.commons.lang3.StringUtils;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 /**
  * @author sladew
@@ -57,6 +60,14 @@ public interface IdentifiableUtils {
 
     static <T extends Identifiable> T cloneIdentifiable(T from) {
         T to = (T) new IdentifiableImpl();
+        if (from != null) {
+            to.setId(from.getId());
+        }
+        return copy(from, to);
+    }
+
+    static <T extends Identifiable> T cloneIdentifiable(T from, Supplier<T> supplier) {
+        T to = supplier.get();;
         if (from != null) {
             to.setId(from.getId());
         }
