@@ -3,7 +3,12 @@ package au.com.eventsecretary.export;
 import au.com.eventsecretary.UnexpectedSystemException;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.ss.util.CellRangeAddressList;
 import org.apache.poi.util.IOUtils;
+import org.apache.poi.xssf.usermodel.XSSFDataValidation;
+import org.apache.poi.xssf.usermodel.XSSFDataValidationConstraint;
+import org.apache.poi.xssf.usermodel.XSSFDataValidationHelper;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -63,6 +68,18 @@ public class SheetBuilder {
 
     public SheetBuilder repeatFirstRow() {
         sheet.setRepeatingRows(CellRangeAddress.valueOf("1:1"));
+        return this;
+    }
+
+    public SheetBuilder validation(String[] list) {
+        XSSFDataValidationHelper dvHelper = new XSSFDataValidationHelper((XSSFSheet) sheet);
+        XSSFDataValidationConstraint dvConstraint = (XSSFDataValidationConstraint)
+                dvHelper.createExplicitListConstraint(list);
+        CellRangeAddressList addressList = new CellRangeAddressList(0, 0, 0, 0);
+        XSSFDataValidation validation = (XSSFDataValidation)dvHelper.createValidation(
+                dvConstraint, addressList);
+        validation.setShowErrorBox(true);
+        sheet.addValidationData(validation);
         return this;
     }
 
