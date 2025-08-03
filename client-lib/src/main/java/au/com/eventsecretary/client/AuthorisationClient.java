@@ -32,7 +32,7 @@ public class AuthorisationClient extends ResourceClient {
             uriVariables.put("identityId", identityId);
             uriVariables.put("contextName", contentName);
             uriVariables.put("targetId", targetId);
-            ResponseEntity<Authorisation> exchange = restTemplate.exchange(baseUrl + "?identityId={identityId}&contextName={contextName}&contextId={targetId}"
+            ResponseEntity<Authorisation> exchange = restTemplate.exchange(baseUrl + "?identityId={identityId}&contextName={contextName}&targetId={targetId}"
                     , HttpMethod.GET, httpEntity, targetClass, uriVariables);
             if (exchange.getStatusCode() == HttpStatus.OK) {
                 return exchange.getBody();
@@ -52,7 +52,7 @@ public class AuthorisationClient extends ResourceClient {
             Map<String, String> uriVariables = new HashMap<>();
             uriVariables.put("contextName", contextName);
             uriVariables.put("targetId", targetId);
-            ResponseEntity<List<Authorisation>> exchange = restTemplate.exchange(baseUrl + "?contextName={contextName}&contextId={targetId}"
+            ResponseEntity<List<Authorisation>> exchange = restTemplate.exchange(baseUrl + "?contextName={contextName}&targetId={targetId}"
                     , HttpMethod.GET, httpEntity, new ParameterizedTypeReference<List<Authorisation>>(){}, uriVariables);
             if (exchange.getStatusCode() == HttpStatus.OK) {
                 return exchange.getBody();
