@@ -26,6 +26,21 @@ public interface IdentifiableUtils {
         return guid.length() == 36 && guid.indexOf("-") == 8;
     }
 
+    static boolean isBlankIdentifiable(Identifiable identifiable) {
+        if (identifiable == null) {
+            return true;
+        }
+        if (StringUtils.isNotBlank(identifiable.getCode())) {
+            return false;
+        }
+        if (StringUtils.isNotBlank(identifiable.getId())) {
+            return false;
+        }
+        if (StringUtils.isNotBlank(identifiable.getName())) {
+            return false;
+        }
+        return true;
+    }
     static String id() {
         return UUID.randomUUID().toString();
     }
