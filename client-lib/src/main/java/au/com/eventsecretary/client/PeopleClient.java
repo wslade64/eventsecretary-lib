@@ -366,7 +366,7 @@ public class PeopleClient extends AbstractClient {
         boolean remaining = !idList.isEmpty();
         int index = 0;
         while (remaining) {
-            int size = Math.min(idList.size() - index, 100);
+            int size = Math.min(idList.size() - index, 50);
             if (size == 0) {
                 remaining = false;
             } else {
