@@ -266,8 +266,18 @@ public class WorkbookReader {
                     return this;
                 }
 
+                public CellReaderAdapter optional(boolean optional) {
+                    this.optional = optional;
+                    return this;
+                }
+
                 public CellReaderAdapter valueRequired() {
                     valueRequired = true;
+                    return this;
+                }
+
+                public CellReaderAdapter valueRequired(boolean valueRequired) {
+                    this.valueRequired = valueRequired;
                     return this;
                 }
 
