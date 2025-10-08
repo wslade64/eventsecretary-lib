@@ -17,12 +17,6 @@ subprojects {
         mavenCentral()
     }
 
-//    group = 'au.com.eventsecretary'
-//    version = 'x.x.x-SNAPSHOT'
-//
-//    sourceCompatibility = 1.8
-//	targetCompatibility = 1.8
-
     java {
         toolchain {
             languageVersion = JavaLanguageVersion.of(21)
@@ -36,4 +30,14 @@ subprojects {
     artifacts {
         archives sourcesJar
     }
+
+    publishing {
+        publications {
+            mavenJava(MavenPublication) { // Or a custom name for your publication
+//                from components.java // Or components.androidLibrary for Android libraries
+                artifact sourcesJar // Include the source JAR
+            }
+        }
+    }
+
 }
