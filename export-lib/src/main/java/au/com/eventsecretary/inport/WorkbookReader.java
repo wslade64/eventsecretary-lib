@@ -236,7 +236,6 @@ public class WorkbookReader {
                             logger.error("workbook:sheet:{}:column:notFound:{}", sheet.getSheetName(), column);
                         }
                         validationError(null, String.format("Column not found:%s", column));
-                        throw new UnexpectedSystemException("WorkbookReader");
                     }
                     this.index = columnIndex == null ? -1 : columnIndex;
                 }
@@ -292,6 +291,16 @@ public class WorkbookReader {
 
                 public CellReaderAdapter text(String column, BiConsumer<T, String> consumer) {
                     cellReaders.add(init(new TextCellReader(column, consumer, optional)));
+                    return this;
+                }
+
+                public CellReaderAdapter integer(String column, BiConsumer<T, Integer> consumer) {
+                    cellReaders.add(init(new IntegerCellReader(column, consumer, optional)));
+                    return this;
+                }
+
+                public CellReaderAdapter number(String column, BiConsumer<T, Integer> consumer, int scale) {
+                    cellReaders.add(init(new NumberCellReader(column, consumer, optional, scale)));
                     return this;
                 }
 
