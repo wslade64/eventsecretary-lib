@@ -34,6 +34,7 @@ public class SheetBuilder {
     int lastIndex;
     int headerHeight;
     boolean headerHighlight;
+    boolean headerHide;
 
     static class Column<T> {
         List<String> labels;
@@ -58,6 +59,11 @@ public class SheetBuilder {
 
     public SheetBuilder landscape() {
         sheet.getPrintSetup().setLandscape(true);
+        return this;
+    }
+
+    public SheetBuilder hideHeader() {
+        this.headerHide = true;
         return this;
     }
 
@@ -158,6 +164,9 @@ public class SheetBuilder {
 
     private void headers()
     {
+        if (headerHide) {
+            return;
+        }
         Row row = sheet.createRow(0);
         if (headerHeight > 0) {
             row.setHeight((short) headerHeight);
