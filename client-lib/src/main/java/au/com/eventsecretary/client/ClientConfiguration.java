@@ -70,6 +70,11 @@ public class ClientConfiguration {
     }
 
     @Bean
+    public EquestrianAssociationClient equestrianAssociationClient(@Value("${userUrl}") String baseUrl, RestTemplateBuilder restTemplateBuilder) {
+        return new EquestrianAssociationClient(baseUrl, restTemplateBuilder);
+    }
+
+    @Bean
     public OrganisationClient organisationClient(@Value("${userUrl}") String baseUrl, RestTemplateBuilder restTemplateBuilder) {
         return new OrganisationClient(baseUrl, restTemplateBuilder);
     }
@@ -137,6 +142,11 @@ public class ClientConfiguration {
     @Bean
     public TagsClient tagsClient(@Value("${userUrl}") String baseUrl, RestTemplateBuilder restTemplateBuilder) {
         return new TagsClient(baseUrl, restTemplateBuilder);
+    }
+
+    @Bean
+    public LeaderboardClient leaderboardClient(@Value("${userUrl}") String baseUrl, RestTemplateBuilder restTemplateBuilder) {
+        return new LeaderboardClient(baseUrl, restTemplateBuilder);
     }
 
     @Bean
