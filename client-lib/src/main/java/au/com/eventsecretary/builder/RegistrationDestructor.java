@@ -120,6 +120,10 @@ public class RegistrationDestructor {
         }
     }
 
+    public static Pair<RegistrationMetadata, RegistrationValueMetadata> namePair(List<RegistrationMetadata> registrationMetadataList, String metadataCode) {
+        return hasRegistration(registrationMetadataList, metadataCode, RegistrationType.name, RegistrationValueType.pattern);
+    }
+
     public static Pair<RegistrationMetadata, RegistrationValueMetadata> hasClubs(List<RegistrationMetadata> registrationMetadataList) {
         Pair<RegistrationMetadata, RegistrationValueMetadata> riderRegistration = hasRegistration(registrationMetadataList, "riderRegistration", RegistrationType.organisation, RegistrationValueType.reference);
         if (riderRegistration != null) {
