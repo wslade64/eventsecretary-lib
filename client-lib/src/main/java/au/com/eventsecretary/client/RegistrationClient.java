@@ -2,6 +2,7 @@ package au.com.eventsecretary.client;
 
 import au.com.eventsecretary.ResourceExistsException;
 import au.com.eventsecretary.UnexpectedSystemException;
+import au.com.eventsecretary.ValidationException;
 import au.com.eventsecretary.accounting.registration.Registration;
 import au.com.eventsecretary.accounting.registration.RegistrationTarget;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -135,8 +136,6 @@ public class RegistrationClient extends AbstractClient {
 
     public String createRegistration(Registration registration) {
         try {
-            logger.info("create:" + registration.getName());
-
             HttpEntity<Registration> httpEntity = createSystemEntityBody(registration);
 
             ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI, HttpMethod.POST, httpEntity, Void.class);
@@ -158,8 +157,6 @@ public class RegistrationClient extends AbstractClient {
 
     public void updateRegistration(Registration registration) {
         try {
-            logger.info("update:" + registration.getName());
-
             HttpEntity<Registration> httpEntity = createSystemEntityBody(registration);
 
             ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI + "/" + registration.getId(), HttpMethod.PUT, httpEntity, Void.class);
@@ -180,8 +177,6 @@ public class RegistrationClient extends AbstractClient {
 
     public void deleteRegistrations(String ownerId) {
         try {
-            logger.info("delete:" + ownerId);
-
             HttpEntity<Registration> httpEntity = createSystemEntity();
 
             ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI + "/owner/" + ownerId, HttpMethod.DELETE, httpEntity, Void.class);
@@ -200,8 +195,6 @@ public class RegistrationClient extends AbstractClient {
 
     public void deleteRegistration(String registrationId) {
         try {
-            logger.info("delete:" + registrationId);
-
             HttpEntity<Registration> httpEntity = createSystemEntity();
 
             ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI + "/" + registrationId, HttpMethod.DELETE, httpEntity, Void.class);
@@ -218,10 +211,28 @@ public class RegistrationClient extends AbstractClient {
         }
     }
 
+    public Registration validateRegistration(Registration registration) {
+        try {
+            HttpEntity<Registration> httpEntity = createSystemEntityBody(registration);
+
+            ResponseEntity<Registration> exchange = restTemplate.exchange(baseUrl + "/payment/v1/registration/validation", HttpMethod.POST, httpEntity, Registration.class);
+            switch (wrap(exchange.getStatusCode())) {
+                case OK:
+                    return exchange.getBody();
+                case PRECONDITION_FAILED:
+                    throw new ValidationException("validate", "message");
+                default:
+                    throw new UnexpectedSystemException("Invalid response code:" + wrap(exchange.getStatusCode()));
+            }
+        }
+        catch (RestClientException e) {
+            logger.error("updateRegistration:" + e.getMessage());
+            throw new UnexpectedSystemException(e);
+        }
+    }
+
     public void reset() {
         try {
-            logger.info("reset");
-
             HttpEntity<Void> httpEntity = createSystemEntity();
 
             ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI + "/reset", HttpMethod.POST, httpEntity, Void.class);
