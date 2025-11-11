@@ -353,6 +353,11 @@ public interface DateUtility {
         return intervals[0] * 60 + intervals[1];
     }
 
+    static int seconds(int time) {
+        int[] intervals = DateUtility.timeToSplit(time);
+        return intervals[0] * 60 * 60 + intervals[1] * 60 + intervals[2];
+    }
+
     static int timeMinutes(int minutes) {
         int min = minutes % 60;
         int hours = minutes / 60;
