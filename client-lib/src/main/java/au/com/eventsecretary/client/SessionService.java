@@ -30,6 +30,7 @@ public class SessionService {
         private Person effectivePerson;
         private List<Authorisation> authorisations;
         private Identity identity;
+        private boolean sandbox;
 
         private Session(String token) {
             if (StringUtils.hasLength(token)) {
@@ -111,12 +112,28 @@ public class SessionService {
 
     public void begin(String token, boolean sandbox) {
         if (cache.get() != null) {
-            new UnexpectedSystemException("cache present");
+            throw new UnexpectedSystemException("cache present");
         }
         if (sandbox) {
             MDC.put(SANDBOX_KEY, "sandbox");
         }
-        cache.set(new Session(token));
+        Session session;
+        cache.set(session = new Session(token));
+        session.sandbox = sandbox;
+    }
+
+    public void begin(Object object) {
+        if (!(object instanceof Session)) {
+            throw new UnexpectedSystemException("Invalid session");
+        }
+        if (cache.get() != null) {
+            throw new UnexpectedSystemException("cache present");
+        }
+        Session session = (Session) object;
+        if (session.sandbox) {
+            MDC.put(SANDBOX_KEY, "sandbox");
+        }
+        cache.set(session);
     }
 
     public void end() {
@@ -147,6 +164,10 @@ public class SessionService {
     }
     public List<Authorisation> getAuthorisations() {
         return session().getAuthorisations();
+    }
+
+    public Object copySession() {
+        return session();
     }
 
     private Session session() {
