@@ -211,11 +211,17 @@ public class RegistrationClient extends AbstractClient {
         }
     }
 
-    public Registration validateRegistration(Registration registration) {
+    public Registration validateRegistration(Registration registration, Integer applicableDate) {
         try {
             HttpEntity<Registration> httpEntity = createSystemEntityBody(registration);
 
-            ResponseEntity<Registration> exchange = restTemplate.exchange(baseUrl + "/payment/v1/registration/validation", HttpMethod.POST, httpEntity, Registration.class);
+            String url = baseUrl + "/payment/v1/registration/validation";
+            Map<String, String> uriVariables = new HashMap<>();
+            if (applicableDate != null) {
+                url += "?applicableDate={applicableDate}";
+                uriVariables.put("applicableDate", Integer.toString(applicableDate));
+            }
+            ResponseEntity<Registration> exchange = restTemplate.exchange(url, HttpMethod.POST, httpEntity, Registration.class, uriVariables);
             switch (wrap(exchange.getStatusCode())) {
                 case OK:
                     return exchange.getBody();
