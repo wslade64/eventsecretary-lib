@@ -5,6 +5,7 @@ package au.com.eventsecretary;
  */
 public class UnexpectedSystemException extends RuntimeException {
     public UnexpectedSystemException(Exception e) {
+        super(e.getMessage(), e);
     }
     public UnexpectedSystemException(String message) {
         super(message);

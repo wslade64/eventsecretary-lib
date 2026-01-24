@@ -500,6 +500,14 @@ public interface DateUtility {
         return shortMonths[ints[1] - 1] + " " + ints[2];
     }
 
+    static String isoDate(int date) {
+        if (date == 0) {
+            return "";
+        }
+        int[] ints = dateToSplit(date);
+        return String.format("%d-%02d-%02d", ints[0], ints[1], ints[2]);
+    }
+
     static String shortDay(int date) {
 
         if (date == 0) {
