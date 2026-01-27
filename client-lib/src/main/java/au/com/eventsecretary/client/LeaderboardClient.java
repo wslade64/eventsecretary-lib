@@ -1,5 +1,6 @@
 package au.com.eventsecretary.client;
 
+import au.com.eventsecretary.ResourceExistsException;
 import au.com.eventsecretary.ResourceNotFoundException;
 import au.com.eventsecretary.UnexpectedSystemException;
 import au.com.eventsecretary.accounting.organisation.Association;
@@ -34,6 +35,8 @@ public class LeaderboardClient extends AbstractClient {
             switch (wrap(exchange.getStatusCode())) {
                 case OK:
                     return exchange.getBody().getId();
+                case PRECONDITION_FAILED:
+                    throw new ResourceExistsException(leaderboardCode);
                 default:
                     throw new UnexpectedSystemException("Invalid response code:" + exchange.getStatusCode());
             }
