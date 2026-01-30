@@ -149,4 +149,34 @@ public interface NumberUtility {
         return (int)Math.ceil((float)(distance) * 60 / factor);
     }
 
+    String[] numberOrdinals = {
+            "First",
+            "Second",
+            "Third",
+            "Fourth",
+            "Fifth",
+            "Sixth",
+            "Seventh",
+            "Eighth",
+            "Ninth",
+            "Tenth",
+            "Eleventh",
+            "Twelfth",
+            "Thirteenth",
+            "Fourteenth",
+            "Fifteenth",
+            "Sixteenth",
+            "Seventeenth",
+            "Eighteenth",
+            "Nineteenth",
+            "Twentyth"
+    };
+
+    static String getOrdinal(int n) {
+        if (n - 1 < numberOrdinals.length) {
+            return numberOrdinals[n - 1];
+        }
+        return "";
+    }
+
 }

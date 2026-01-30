@@ -225,8 +225,8 @@ public class RegistrationClient extends AbstractClient {
             switch (wrap(exchange.getStatusCode())) {
                 case OK:
                     return exchange.getBody();
-                case PRECONDITION_FAILED:
-                    throw new ValidationException("validate", "message");
+//                case PRECONDITION_FAILED:
+//                    throw new ValidationException("validate", "message");
                 default:
                     throw new UnexpectedSystemException("Invalid response code:" + wrap(exchange.getStatusCode()));
             }

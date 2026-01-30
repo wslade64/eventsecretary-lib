@@ -2,6 +2,7 @@ package au.com.eventsecretary.client;
 
 import au.com.eventsecretary.ResourceNotFoundException;
 import au.com.eventsecretary.UnexpectedSystemException;
+import au.com.eventsecretary.ValidationException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +18,8 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.net.URI;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -37,20 +40,60 @@ public abstract class AbstractClient {
     @Value("${localToken}")
     private String LOCAL;
 
+    private static class ApiError {
+        private String message;
+        private String code;
+        private String supportEmail;
+        public String getMessage() {
+            return message;
+        }
+        public String getCode() { return code; }
+
+        public void setMessage(String message) {
+            this.message = message;
+        }
+
+        public void setCode(String code) {
+            this.code = code;
+        }
+
+        public String getSupportEmail() {
+            return supportEmail;
+        }
+
+        public void setSupportEmail(String supportEmail) {
+            this.supportEmail = supportEmail;
+        }
+    }
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
     protected final String baseUrl;
     protected final RestTemplate restTemplate;
 
+
     public AbstractClient(String baseUrl, RestTemplateBuilder restTemplateBuilder) {
         this.baseUrl = baseUrl;
         restTemplate = restTemplateBuilder.build();
         restTemplate.setErrorHandler(new DefaultResponseErrorHandler() {
+            // Only used for simple decoding
+            final ObjectMapper mapper = new ObjectMapper();
 
             @Override
             protected void handleError(ClientHttpResponse response, HttpStatusCode statusCode,
                                        @Nullable URI url, @Nullable HttpMethod method) throws IOException {
-                if (statusCode.value() == PRECONDITION_FAILED.value() || statusCode.value() == CONFLICT.value()) {
+                if (statusCode.value() == PRECONDITION_FAILED.value()) {
+                    byte[] body = getResponseBody(response);
+                    Charset charset = getCharset(response);
+                    charset = (charset != null ? charset : StandardCharsets.UTF_8);
+                    String bodyText = new String(body, charset);
+                    ApiError apiError;
+                    try {
+                        apiError = mapper.readValue(bodyText, ApiError.class);
+                    } catch (Exception e) {
+                        throw new ValidationException("", bodyText);
+                    }
+                    throw new ValidationException(apiError.getCode(), apiError.getMessage());
+                } else if (statusCode.value() == CONFLICT.value()) {
                     return;
                 } else if (statusCode.value() == UNAUTHORIZED.value()) {
                     logger.info("login:" + statusCode);
