@@ -299,7 +299,7 @@ public class WorkbookReader {
                     return this;
                 }
 
-                public CellReaderAdapter number(String column, BiConsumer<T, Integer> consumer, int scale) {
+                public CellReaderAdapter number(String column, BiConsumer<T, BigDecimal> consumer, int scale) {
                     cellReaders.add(init(new NumberCellReader(column, consumer, optional, scale)));
                     return this;
                 }
