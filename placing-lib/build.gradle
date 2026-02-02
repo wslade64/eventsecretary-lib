@@ -1,0 +1,14 @@
+dependencies {
+    implementation project(":simm-lib")
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = 'au.com.eventsecretary'
+            artifactId = 'eventsecretary-placing-lib'
+            version = "x.x.x-SNAPSHOT"
+            from components.java
+        }
+    }
+}

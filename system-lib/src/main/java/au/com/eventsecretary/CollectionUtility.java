@@ -134,4 +134,13 @@ public interface CollectionUtility {
         return true;
     }
 
+    public static <T> List<T> copyLeft(List<T> equalityRules) {
+        List<T> leftRules = new ArrayList<>();
+        for (int i = 1; i < equalityRules.size(); i++) {
+            leftRules.add(equalityRules.get(i));
+        }
+        return leftRules;
+    }
+
+
 }

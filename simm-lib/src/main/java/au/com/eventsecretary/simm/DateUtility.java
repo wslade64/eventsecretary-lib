@@ -656,4 +656,9 @@ public interface DateUtility {
         return timeZone.getOffset(System.currentTimeMillis()) / (60 * 1000);
     }
 
+    static int dateDifference(int from, int to) {
+        LocalDate fromDate = DateUtility.date(from);
+        LocalDate toDate = DateUtility.date(to);
+        return Days.daysBetween(fromDate, toDate).getDays();
+    }
 }
