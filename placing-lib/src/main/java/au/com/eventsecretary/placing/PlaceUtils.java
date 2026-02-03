@@ -87,8 +87,7 @@ public interface PlaceUtils {
         if (isEliminated(bigDecimal)) {
             return "E";
         }
-//        return trimDecimal(bigDecimal.toPlainString());
-        return bigDecimal.toPlainString();
+        return bigDecimal.stripTrailingZeros().toPlainString();
     }
 
 
