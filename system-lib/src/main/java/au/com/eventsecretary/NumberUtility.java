@@ -150,26 +150,26 @@ public interface NumberUtility {
     }
 
     String[] numberOrdinals = {
-            "First",
-            "Second",
-            "Third",
-            "Fourth",
-            "Fifth",
-            "Sixth",
-            "Seventh",
-            "Eighth",
-            "Ninth",
-            "Tenth",
-            "Eleventh",
-            "Twelfth",
-            "Thirteenth",
-            "Fourteenth",
-            "Fifteenth",
-            "Sixteenth",
-            "Seventeenth",
-            "Eighteenth",
-            "Nineteenth",
-            "Twentyth"
+            "first",
+            "second",
+            "third",
+            "fourth",
+            "fifth",
+            "sixth",
+            "seventh",
+            "eighth",
+            "ninth",
+            "tenth",
+            "eleventh",
+            "twelfth",
+            "thirteenth",
+            "fourteenth",
+            "fifteenth",
+            "sixteenth",
+            "seventeenth",
+            "eighteenth",
+            "nineteenth",
+            "twentyth"
     };
 
     static String getOrdinal(int n) {
