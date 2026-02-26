@@ -59,11 +59,14 @@ public class AbstractRenderer {
         }
         if (attribute.getType() == Type.ENUM) {
             ComplexType enumComplexType = model.get(attribute.getClassifier());
-            Optional<Attribute> first = enumComplexType.getAttributes().stream().filter(aAttribute -> aAttribute.getName().equals(value)).findFirst();
-            if (!first.isPresent()) {
-                return value;
+            if (enumComplexType != null) {
+                Optional<Attribute> first = enumComplexType.getAttributes().stream().filter(aAttribute -> aAttribute.getName().equals(value)).findFirst();
+                if (!first.isPresent()) {
+                    return value;
+                }
+                return alias(first.get());
             }
-            return alias(first.get());
+            return "";
         }
         return value;
     }
