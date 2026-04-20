@@ -584,9 +584,20 @@ public interface DateUtility {
     }
 
     static String formatSecondsAsMinutes(int seconds) {
+        if (seconds == 0) {
+            return "";
+        }
         int minutes = seconds / 60;
         seconds = seconds % 60;
         return String.format("%d:%02d", minutes, seconds);
+    }
+
+    static String formatSecondsAsHoursMinutesSeconds(int seconds) {
+        int hours = seconds / (60 * 60);
+        seconds = seconds % (60 * 60);
+        int minutes = seconds / 60;
+        seconds = seconds % 60;
+        return String.format("%d:%02d:%02d", hours, minutes, seconds);
     }
 
     static void periodRange(Period sourcePeriod, Period mergePeriod) {
