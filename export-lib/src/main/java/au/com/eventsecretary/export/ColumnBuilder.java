@@ -91,6 +91,11 @@ public class ColumnBuilder {
         return this;
     }
 
+    public ColumnBuilder centered() {
+        column.centered = true;
+        return this;
+    }
+
     public ColumnBuilder label(String label) {
         column.labels = new ArrayList<>();
         column.labels.add(label);

@@ -43,6 +43,7 @@ public class SheetBuilder {
         ValueFormatter<T, T> valueFormatter;
         boolean sum;
         Boolean include;
+        boolean centered;
     }
 
     SheetBuilder(WorkbookBuilder workbookBuilder, String sheetName) {

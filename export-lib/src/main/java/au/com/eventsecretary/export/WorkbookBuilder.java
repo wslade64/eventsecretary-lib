@@ -149,6 +149,7 @@ public class WorkbookBuilder implements FileBuilder {
         currencyCellStyle.setAlignment(HorizontalAlignment.RIGHT);
         currencyCellStyle.setFont(normalFont);
 
+
         normalStyle = workbook.createCellStyle();
         normalStyle.setFont(normalFont);
     }

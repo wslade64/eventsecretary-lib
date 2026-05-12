@@ -37,6 +37,9 @@ public class CellBuilder {
                 value = column.valueFormatter.format(value);
             }
             column.cellRenderer.render(cell, value, this.rowBuilder.sheetBuilder.workbookBuilder);
+            if (column.centered) {
+                cell.setCellStyle(rowBuilder.sheetBuilder.workbookBuilder.centeredStyle);
+            }
         }
         return this;
     }
@@ -55,6 +58,9 @@ public class CellBuilder {
                 }
                 Cell cell = createCell();
                 column.cellRenderer.render(cell, value, this.rowBuilder.sheetBuilder.workbookBuilder);
+                if (column.centered) {
+                    cell.setCellStyle(rowBuilder.sheetBuilder.workbookBuilder.centeredStyle);
+                }
             });
         }
         return this;
@@ -66,6 +72,10 @@ public class CellBuilder {
             if (column != null) {
                 Cell cell = createCell();
                 column.cellRenderer.render(cell, value, this.rowBuilder.sheetBuilder.workbookBuilder);
+                if (column.centered) {
+                    // Override any style set by the render
+                    cell.setCellStyle(rowBuilder.sheetBuilder.workbookBuilder.centeredStyle);
+                }
             }
         });
         return this;
@@ -74,8 +84,6 @@ public class CellBuilder {
     private Cell createCell()  {
         Cell cell = row.createCell(sheetColumn++);
         cell.setCellStyle(rowBuilder.sheetBuilder.workbookBuilder.normalStyle);
-//        cell.setCellStyle(rowBuilder.sheetBuilder.workbookBuilder.workbook.createCellStyle());
-//        cell.getCellStyle().setFont(rowBuilder.sheetBuilder.workbookBuilder.normalFont);
         return cell;
     }
 
