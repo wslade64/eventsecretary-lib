@@ -2,6 +2,7 @@ package au.com.eventsecretary.client;
 
 import au.com.eventsecretary.ResourceExistsException;
 import au.com.eventsecretary.UnexpectedSystemException;
+import au.com.eventsecretary.accounting.transfer.BatchTransfer;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -134,4 +135,24 @@ public class PaymentClient extends AbstractClient
             throw new UnexpectedSystemException("Could not perform checkout at this moment.");
         }
     }
+
+    public BatchTransfer transfer(BatchTransfer batchTransfer) {
+        try {
+            String url = baseUrl + URI + "/transfer";
+
+            HttpEntity<BatchTransfer> httpEntity = createEntityBody(batchTransfer);
+
+            ResponseEntity<BatchTransfer> exchange = restTemplate.exchange(url, HttpMethod.POST, httpEntity, BatchTransfer.class);
+            switch (wrap(exchange.getStatusCode())) {
+                case OK:
+                    return exchange.getBody();
+            }
+            throw new ResourceExistsException("Could not create the batch transfer at this moment." + exchange.getStatusCode());
+        }
+        catch (RestClientException e) {
+            logger.error("Could not connect to payment service:" + e.getMessage());
+            throw new UnexpectedSystemException("Could not create the batch transfer at this moment.");
+        }
+    }
+
 }
