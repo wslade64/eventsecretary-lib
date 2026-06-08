@@ -3,11 +3,15 @@ package au.com.eventsecretary.client;
 import au.com.eventsecretary.ResourceExistsException;
 import au.com.eventsecretary.UnexpectedSystemException;
 import au.com.eventsecretary.accounting.transfer.BatchTransfer;
+import au.com.eventsecretary.accounting.transfer.Beneficiary;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClientException;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author sladew
@@ -152,6 +156,25 @@ public class PaymentClient extends AbstractClient
         catch (RestClientException e) {
             logger.error("Could not connect to payment service:" + e.getMessage());
             throw new UnexpectedSystemException("Could not create the batch transfer at this moment.");
+        }
+    }
+
+    public List<Beneficiary> findBeneficiariesByPersonid(List<String> peopleIds, String contextId) {
+        try {
+            String url = baseUrl + URI + "/beneficiary";
+
+            HttpEntity<List<String>> httpEntity = createEntityBody(peopleIds);
+
+            ResponseEntity<Beneficiary[]> exchange = restTemplate.exchange(url + "?contextId=" + contextId, HttpMethod.GET, httpEntity, Beneficiary[].class);
+            switch (wrap(exchange.getStatusCode())) {
+                case OK:
+                    return Arrays.asList(exchange.getBody());
+            }
+            throw new ResourceExistsException("Could not retrieve beneficiaries at this moment." + exchange.getStatusCode());
+        }
+        catch (RestClientException e) {
+            logger.error("Could not connect to payment service:" + e.getMessage());
+            throw new UnexpectedSystemException("Could not retrieve beneficiaries at this moment.");
         }
     }
 
