@@ -96,7 +96,7 @@ public class PaymentClient extends AbstractClient
             Refund refund = new Refund();
             refund.setAmount(amount);
             refund.setTransactionId(paymentId);
-            HttpEntity<Refund> httpEntity = createEntityBody(refund);
+            HttpEntity<Refund> httpEntity = createSystemEntityBody(refund);
 
             ResponseEntity<String> exchange = restTemplate.exchange(url, HttpMethod.PUT, httpEntity, String.class);
             switch (wrap(exchange.getStatusCode())) {
@@ -144,7 +144,7 @@ public class PaymentClient extends AbstractClient
         try {
             String url = baseUrl + URI + "/transfer";
 
-            HttpEntity<BatchTransfer> httpEntity = createEntityBody(batchTransfer);
+            HttpEntity<BatchTransfer> httpEntity = createSystemEntityBody(batchTransfer);
 
             ResponseEntity<BatchTransfer> exchange = restTemplate.exchange(url, HttpMethod.POST, httpEntity, BatchTransfer.class);
             switch (wrap(exchange.getStatusCode())) {
@@ -163,7 +163,7 @@ public class PaymentClient extends AbstractClient
         try {
             String url = baseUrl + URI + "/beneficiary";
 
-            HttpEntity<List<String>> httpEntity = createEntityBody(peopleIds);
+            HttpEntity<List<String>> httpEntity = createSystemEntityBody(peopleIds);
 
             ResponseEntity<Beneficiary[]> exchange = restTemplate.exchange(url + "?contextId=" + contextId, HttpMethod.GET, httpEntity, Beneficiary[].class);
             switch (wrap(exchange.getStatusCode())) {
