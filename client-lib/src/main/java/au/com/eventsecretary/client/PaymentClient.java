@@ -158,24 +158,4 @@ public class PaymentClient extends AbstractClient
             throw new UnexpectedSystemException("Could not create the batch transfer at this moment.");
         }
     }
-
-    public List<Beneficiary> findBeneficiariesByPersonid(List<String> peopleIds, String contextId) {
-        try {
-            String url = baseUrl + URI + "/beneficiary";
-
-            HttpEntity<List<String>> httpEntity = createSystemEntityBody(peopleIds);
-
-            ResponseEntity<Beneficiary[]> exchange = restTemplate.exchange(url + "?contextId=" + contextId, HttpMethod.GET, httpEntity, Beneficiary[].class);
-            switch (wrap(exchange.getStatusCode())) {
-                case OK:
-                    return Arrays.asList(exchange.getBody());
-            }
-            throw new ResourceExistsException("Could not retrieve beneficiaries at this moment." + exchange.getStatusCode());
-        }
-        catch (RestClientException e) {
-            logger.error("Could not connect to payment service:" + e.getMessage());
-            throw new UnexpectedSystemException("Could not retrieve beneficiaries at this moment.");
-        }
-    }
-
 }

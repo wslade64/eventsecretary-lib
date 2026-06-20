@@ -10,6 +10,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.web.client.RestClientException;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,66 +50,26 @@ public class BeneficiaryClient extends AbstractClient {
         }
     }
 
-    public void updateAssociation(Association association) {
+    public List<Beneficiary> findBeneficiariesByPersonid(List<String> peopleIds, String contextId) {
         try {
-            logger.info("update:" + association.getName());
+            String url = baseUrl + URI;
 
-            HttpEntity<Association> httpEntity = createSystemEntityBody(association);
+            HttpEntity<List<String>> httpEntity = createSystemEntityBody(peopleIds);
 
-            ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI + "/" + association.getId(), HttpMethod.PUT, httpEntity, Void.class);
+            if (contextId == null) {
+                contextId = "all";
+            }
+            url += "?contextId=" + contextId;
+            ResponseEntity<Beneficiary[]> exchange = restTemplate.exchange(url, HttpMethod.GET, httpEntity, Beneficiary[].class);
             switch (wrap(exchange.getStatusCode())) {
                 case OK:
-                    return;
-                case CONFLICT:
-                case PRECONDITION_FAILED:
-                    throw new ResourceExistsException("Code exists");
-                default:
-                    throw new UnexpectedSystemException("Invalid response code:" + wrap(exchange.getStatusCode()));
+                    return Arrays.asList(exchange.getBody());
             }
+            throw new ResourceExistsException("Could not retrieve beneficiaries at this moment." + exchange.getStatusCode());
         }
         catch (RestClientException e) {
-            logger.error("updateAssociation:" + e.getMessage());
-            throw new UnexpectedSystemException(e);
+            logger.error("Could not connect to payment service:" + e.getMessage());
+            throw new UnexpectedSystemException("Could not retrieve beneficiaries at this moment.");
         }
     }
-
-    public void reset() {
-        try {
-            logger.info("reset");
-
-            HttpEntity<Void> httpEntity = createSystemEntity();
-
-            ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI + "/reset", HttpMethod.POST, httpEntity, Void.class);
-            switch (wrap(exchange.getStatusCode())) {
-                case OK:
-                    return;
-                default:
-                    throw new UnexpectedSystemException("Invalid response code:" + wrap(exchange.getStatusCode()));
-            }
-        }
-        catch (RestClientException e) {
-            logger.error("reset:" + e.getMessage());
-            throw new UnexpectedSystemException(e);
-        }
-    }
-
-    public void deleteAssociation(String associationId) {
-        try {
-            logger.info("delete:" + associationId);
-
-            HttpEntity<Void> httpEntity = createSystemEntity();
-            ResponseEntity<Void> exchange = restTemplate.exchange(baseUrl + URI + "/" + associationId, HttpMethod.DELETE, httpEntity, Void.class);
-            switch (wrap(exchange.getStatusCode())) {
-                case OK:
-                    return ;
-                default:
-                    throw new UnexpectedSystemException("Invalid response code:" + wrap(exchange.getStatusCode()));
-            }
-        }
-        catch (RestClientException e) {
-            logger.error("deleteResource:" + e.getMessage());
-            throw new UnexpectedSystemException(e);
-        }
-    }
-
 }
