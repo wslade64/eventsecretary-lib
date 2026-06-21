@@ -2,6 +2,7 @@ package au.com.eventsecretary.export;
 
 import au.com.eventsecretary.UnexpectedSystemException;
 import org.apache.poi.ooxml.POIXMLProperties;
+import org.apache.poi.poifs.crypt.HashAlgorithm;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFColor;
@@ -12,6 +13,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+
+import static au.com.eventsecretary.simm.IdentifiableUtils.id;
 
 /**
  *
@@ -152,6 +155,12 @@ public class WorkbookBuilder implements FileBuilder {
 
         normalStyle = workbook.createCellStyle();
         normalStyle.setFont(normalFont);
+    }
+
+    public WorkbookBuilder lock() {
+        workbook.lockStructure();
+        workbook.setWorkbookPassword(id(), HashAlgorithm.sha512);
+        return this;
     }
 
     public WorkbookBuilder conditional(Conditional conditional) {

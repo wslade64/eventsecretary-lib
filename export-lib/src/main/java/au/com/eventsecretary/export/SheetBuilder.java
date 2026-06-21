@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static au.com.eventsecretary.export.WorkbookBuilder.CM_1;
+import static au.com.eventsecretary.simm.IdentifiableUtils.id;
 import static org.apache.poi.ss.usermodel.PrintSetup.A4_TRANSVERSE_PAPERSIZE;
 
 /**
@@ -56,6 +57,11 @@ public class SheetBuilder {
 
         sheet = this.workbookBuilder.workbook.createSheet(sheetName);
         sheet.getPrintSetup().setPaperSize(A4_TRANSVERSE_PAPERSIZE);
+    }
+
+    public SheetBuilder lock() {
+        sheet.protectSheet(id());
+        return this;
     }
 
     public SheetBuilder landscape() {
