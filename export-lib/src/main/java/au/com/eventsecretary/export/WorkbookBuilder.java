@@ -112,7 +112,7 @@ public class WorkbookBuilder implements FileBuilder {
         headerStyle.setFont(boldFont);
 
         headerHighlightStyle = workbook.createCellStyle();
-        headerHighlightStyle.setWrapText(true);
+//        headerHighlightStyle.setWrapText(true);
         headerHighlightStyle.cloneStyleFrom(headerStyle);
         headerHighlightStyle.setVerticalAlignment(VerticalAlignment.CENTER);
         headerHighlightStyle.setFillForegroundColor(highlightColor);
@@ -120,11 +120,11 @@ public class WorkbookBuilder implements FileBuilder {
 
         importantStyle = workbook.createCellStyle();
         importantStyle.setAlignment(HorizontalAlignment.LEFT);
-        importantStyle.setWrapText(true);
+//        importantStyle.setWrapText(true);
         importantStyle.setFont(boldFont);
 
         highlightStyle = workbook.createCellStyle();
-        highlightStyle.setWrapText(true);
+//        highlightStyle.setWrapText(true);
         highlightStyle.setAlignment(HorizontalAlignment.LEFT);
         highlightStyle.setFont(boldFont);
         highlightStyle.setFillForegroundColor(highlightColor);
