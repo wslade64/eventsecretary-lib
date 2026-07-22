@@ -221,7 +221,7 @@ public class SheetBuilder {
     public RowBuilder rows() {
         // TODO possible optional headers
         headers();
-        return new RowBuilder(this, 1);
+        return new RowBuilder(this, headerHide ? 0 : 1);
     }
 
     public RowBuilder rows(int startRow) {
