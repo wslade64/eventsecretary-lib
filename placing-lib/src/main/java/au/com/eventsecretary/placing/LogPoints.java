@@ -55,13 +55,13 @@ public class LogPoints {
             }
         }
 
-//        for (BigDecimal[] bigDecimals : logTable) {
-//            for (BigDecimal bigDecimal : bigDecimals) {
-//                System.out.print(bigDecimal != null ? bigDecimal.toString() : "     ");
-//                System.out.print(" ");
-//            }
-//            System.out.println();
-//        }
+        for (BigDecimal[] bigDecimals : logTable) {
+            for (BigDecimal bigDecimal : bigDecimals) {
+                System.out.print(bigDecimal != null ? bigDecimal.toString() : "     ");
+                System.out.print(" ");
+            }
+            System.out.println();
+        }
 
         return logTable;
     }
