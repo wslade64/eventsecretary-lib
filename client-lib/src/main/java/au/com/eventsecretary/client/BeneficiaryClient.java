@@ -68,8 +68,28 @@ public class BeneficiaryClient extends AbstractClient {
             throw new ResourceExistsException("Could not retrieve beneficiaries at this moment." + exchange.getStatusCode());
         }
         catch (RestClientException e) {
-            logger.error("Could not connect to payment service:" + e.getMessage());
+            logger.error("Could not connect to beneficiary service:" + e.getMessage());
             throw new UnexpectedSystemException("Could not retrieve beneficiaries at this moment.");
         }
     }
+
+    public Beneficiary findBeneficiaryById(String beneficiaryId) {
+        try {
+            String url = baseUrl + URI + "/" + beneficiaryId;
+
+            HttpEntity<Void> httpEntity = createSystemEntity();
+
+            ResponseEntity<Beneficiary> exchange = restTemplate.exchange(url, HttpMethod.GET, httpEntity, Beneficiary.class);
+            switch (wrap(exchange.getStatusCode())) {
+                case OK:
+                    return exchange.getBody();
+            }
+            throw new ResourceExistsException("Could not retrieve beneficiary at this moment." + exchange.getStatusCode());
+        }
+        catch (RestClientException e) {
+            logger.error("Could not connect to beneficiary service:" + e.getMessage());
+            throw new UnexpectedSystemException("Could not retrieve beneficiary at this moment.");
+        }
+    }
+
 }
