@@ -50,6 +50,24 @@ public class BeneficiaryClient extends AbstractClient {
         }
     }
 
+    public Beneficiary updateBeneficiary(Beneficiary beneficiary) {
+        try {
+            HttpEntity<Beneficiary> httpEntity = createSystemEntityBody(beneficiary);
+
+            ResponseEntity<Beneficiary> exchange = restTemplate.exchange(baseUrl + URI, HttpMethod.PUT, httpEntity, Beneficiary.class);
+            switch (wrap(exchange.getStatusCode())) {
+                case OK:
+                    return beneficiary;
+                default:
+                    throw new UnexpectedSystemException("Invalid response code:" + wrap(exchange.getStatusCode()));
+            }
+        }
+        catch (RestClientException e) {
+            logger.error("updateBeneficiary:" + e.getMessage());
+            throw new UnexpectedSystemException(e);
+        }
+    }
+
     public List<Beneficiary> findBeneficiariesByPersonid(List<String> peopleIds, String contextId) {
         try {
             String url = baseUrl + URI;
