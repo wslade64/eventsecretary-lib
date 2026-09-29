@@ -44,13 +44,13 @@ public class RestCodeController extends AbstractController
 
     @RequestMapping(method = RequestMethod.GET, params = "setId")
     @ResponseBody
-    public List<Code> getCodesBySetId(@RequestParam String setId) {
+    public List<Code> getCodesBySetId(@RequestParam() String setId) {
         return codeService.findCodesBySetId(setId);
     }
 
     @RequestMapping(method = RequestMethod.GET, params = "contextId")
     @ResponseBody
-    public List<Code> getCodesByContextId(@RequestParam String contextId) {
+    public List<Code> getCodesByContextId(@RequestParam(name="contextId") String contextId) {
         return codeService.findCodesByContextId(contextId);
     }
 
