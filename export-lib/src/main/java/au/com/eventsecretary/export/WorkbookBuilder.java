@@ -4,15 +4,14 @@ import au.com.eventsecretary.UnexpectedSystemException;
 import org.apache.poi.ooxml.POIXMLProperties;
 import org.apache.poi.poifs.crypt.HashAlgorithm;
 import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFCellStyle;
-import org.apache.poi.xssf.usermodel.XSSFColor;
-import org.apache.poi.xssf.usermodel.XSSFFont;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xssf.usermodel.*;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Map;
 
 import static au.com.eventsecretary.simm.IdentifiableUtils.id;
 
@@ -51,6 +50,8 @@ public class WorkbookBuilder implements FileBuilder {
     public final short dateTimeFormat;
     public final short timeFormat;
     public final CreationHelper helper;
+    private final Map<String, CellStyle> customStyles = new HashMap();
+    private final Map<String, Font> customFonts = new HashMap();
     public Conditional conditional;
 
     public WorkbookBuilder() {
@@ -157,6 +158,14 @@ public class WorkbookBuilder implements FileBuilder {
         normalStyle.setFont(normalFont);
     }
 
+    public StyleBuilder createCustomStyle(String usageName, String pattern) {
+        return new StyleBuilder(this, usageName, pattern);
+    }
+
+    public FontBuilder createCustomFont(String usageName) {
+        return new FontBuilder(this, usageName);
+    }
+
     public WorkbookBuilder lock() {
         workbook.lockStructure();
         workbook.setWorkbookPassword(id(), HashAlgorithm.sha512);
@@ -197,4 +206,21 @@ public class WorkbookBuilder implements FileBuilder {
             throw new UnexpectedSystemException(e);
         }
     }
+
+    public CellStyle getStyle(String styleName) {
+        return customStyles.get(styleName);
+    }
+
+    public void addStyle(String name, CellStyle customStyle) {
+        customStyles.put(name, customStyle);
+    }
+
+    public Font getFont(String fontName) {
+        return customFonts.get(fontName);
+    }
+
+    public void addFont(String name, Font font) {
+        customFonts.put(name, font);
+    }
+
 }

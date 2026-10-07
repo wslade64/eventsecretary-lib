@@ -1,8 +1,6 @@
 package au.com.eventsecretary.export;
 
-import au.com.eventsecretary.export.renderers.CurrencyCellRender;
-import au.com.eventsecretary.export.renderers.FormulaCellRender;
-import au.com.eventsecretary.export.renderers.StringCellRender;
+import au.com.eventsecretary.export.renderers.*;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.RegionUtil;
@@ -63,13 +61,38 @@ public class MatrixBuilder {
             return this;
         }
 
+        public CellBuilder stringFormat(String styleName) {
+            cellRenderer = new StringCellRender(sheetBuilder.workbookBuilder.getStyle(styleName));
+            return this;
+        }
+
         public CellBuilder currencyFormat() {
             cellRenderer = new CurrencyCellRender();
             return this;
         }
 
+        public CellBuilder dateFormat() {
+            cellRenderer = new DateCellRender();
+            return this;
+        }
+
+        public CellBuilder numericFormat() {
+            cellRenderer = new NumericCellRender();
+            return this;
+        }
+
+        public CellBuilder numericFormat(String stylename) {
+            cellRenderer = new NumericCellRender(sheetBuilder.workbookBuilder.getStyle(stylename));
+            return this;
+        }
+
         public CellBuilder formulaFormat() {
             cellRenderer = new FormulaCellRender(sheetBuilder.workbookBuilder.formulaStyle);
+            return this;
+        }
+
+        public CellBuilder formulaFormat(String stylename) {
+            cellRenderer = new FormulaCellRender(sheetBuilder.workbookBuilder.getStyle(stylename));
             return this;
         }
 
@@ -108,6 +131,15 @@ public class MatrixBuilder {
             // Something about setting the font results in the wrap text not working.
             cell.setCellStyle(sheetBuilder.workbookBuilder.workbook.createCellStyle());
             cell.getCellStyle().setWrapText(true);
+            return this;
+        }
+
+        public CellBuilder border() {
+            CellRangeAddress cellAddresses = new CellRangeAddress(cell.getRow().getRowNum(), cell.getRow().getRowNum(), cell.getColumnIndex(), cell.getColumnIndex());
+            RegionUtil.setBorderTop(BorderStyle.THIN, cellAddresses, sheet);
+            RegionUtil.setBorderLeft(BorderStyle.THIN, cellAddresses, sheet);
+            RegionUtil.setBorderRight(BorderStyle.THIN, cellAddresses, sheet);
+            RegionUtil.setBorderBottom(BorderStyle.THIN, cellAddresses, sheet);
             return this;
         }
 
