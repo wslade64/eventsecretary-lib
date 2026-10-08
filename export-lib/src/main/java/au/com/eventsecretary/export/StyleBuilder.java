@@ -13,11 +13,16 @@ public class StyleBuilder {
         this.builder = builder;
 
         customStyle = builder.workbook.createCellStyle();
+        customStyle.setLocked(false);
         XSSFDataFormat dataFormat = builder.workbook.createDataFormat();
         customStyle.setDataFormat(dataFormat.getFormat(pattern));
         builder.addStyle(name, customStyle);
     }
 
+    public StyleBuilder lock() {
+        customStyle.setLocked(true);
+        return this;
+    }
     public StyleBuilder horizontalAlignment(HorizontalAlignment horizontalAlignment) {
         customStyle.setAlignment(horizontalAlignment);
         return this;

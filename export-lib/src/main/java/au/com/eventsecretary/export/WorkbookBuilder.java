@@ -80,6 +80,7 @@ public class WorkbookBuilder implements FileBuilder {
         centeredStyle.setDataFormat((short)1);
         centeredStyle.setAlignment(HorizontalAlignment.CENTER);
         centeredStyle.setFont(normalFont);
+        centeredStyle.setLocked(false);
 
         dateStyle = workbook.createCellStyle();
         dateStyle.setAlignment(HorizontalAlignment.LEFT);
@@ -155,6 +156,7 @@ public class WorkbookBuilder implements FileBuilder {
 
 
         normalStyle = workbook.createCellStyle();
+        normalStyle.setLocked(false);
         normalStyle.setFont(normalFont);
     }
 

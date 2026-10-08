@@ -59,6 +59,11 @@ public class SheetBuilder {
         sheet.getPrintSetup().setPaperSize(A4_TRANSVERSE_PAPERSIZE);
     }
 
+    public SheetBuilder lockCells() {
+        sheet.protectSheet("");
+        return this;
+    }
+
     public SheetBuilder lock() {
         sheet.protectSheet(id());
         return this;
