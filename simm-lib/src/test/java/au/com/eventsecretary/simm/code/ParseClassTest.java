@@ -4,11 +4,13 @@ import au.com.auspost.simm.model.Attribute;
 import au.com.auspost.simm.model.ComplexType;
 import au.com.auspost.simm.model.Documentation;
 import au.com.auspost.simm.model.Type;
+import au.com.eventsecretary.ResourceNotFoundException;
 import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.util.List;
 
+import static au.com.eventsecretary.simm.IdentifiableUtils.findByName;
 import static au.com.eventsecretary.simm.ModelUtils.findDocumentation;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -64,6 +66,14 @@ public class ParseClassTest {
     public static class Composite {
         @Input(alias="test1")
         private TestInterface test1;
+    }
+
+    public static class ListClass {
+        @Input(alias="String List")
+        private List<String> stringList;
+
+        @Input(alias="Object List")
+        private List<TestBase> objectList;
     }
 
     @Test
@@ -165,5 +175,27 @@ public class ParseClassTest {
         ComplexType twoComplexType = ParseClass.findComplexTypeByClass(complexTypeList, FunctionTwo.class);
         assertThat(twoComplexType, is(notNullValue()));
         assertThat(twoComplexType.getBaseClassifier(), is(interfaceComplexType.getId()));
+    }
+
+    @Test
+    public void testList() {
+        List<ComplexType> complexTypes = ParseClass.parseClass(ListClass.class);
+        assertThat(complexTypes.size(), is(2));
+
+        ComplexType testBase = complexTypes.stream().filter(ct -> ct.getName().equals("au.com.eventsecretary.simm.code.ParseClassTest$TestBase")).findFirst().orElseThrow(() -> new ResourceNotFoundException("ListClass"));
+
+        ComplexType complexType = complexTypes.stream().filter(ct -> ct.getName().equals("au.com.eventsecretary.simm.code.ParseClassTest$ListClass")).findFirst().orElseThrow(() -> new ResourceNotFoundException("ListClass"));
+        List<Attribute> attributes = complexType.getAttributes();
+        assertThat(attributes.size(), is(2));
+
+        Attribute attribute = attributes.getFirst();
+        assertThat(attribute.getClassifier(), is("STRING"));
+        assertThat(attribute.getMinCount(), is(1));
+        assertThat(attribute.getMaxCount(), is(Integer.MAX_VALUE));
+
+        Attribute second = attributes.get(1);
+        assertThat(second.getClassifier(), is(testBase.getId()));
+        assertThat(second.getMinCount(), is(1));
+        assertThat(second.getMaxCount(), is(Integer.MAX_VALUE));
     }
 }

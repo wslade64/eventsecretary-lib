@@ -5,6 +5,7 @@ import au.com.eventsecretary.UnexpectedSystemException;
 
 import java.io.File;
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
 import java.math.BigDecimal;
 import java.net.URI;
 import java.net.URL;
@@ -61,6 +62,10 @@ public class ParseClass {
 
     private void mapType(Field field, Attribute attribute) {
         Class<?> type = field.getType();
+        mapType(field, attribute, type);
+    }
+
+    private void mapType(Field field, Attribute attribute, Class<?> type) {
         if (type == String.class || type == int.class || type == Integer.class || type == boolean.class || type == Boolean.class || type == BigDecimal.class) {
             attribute.setType(Type.INTRINSIC);
             if (type == String.class) {
@@ -79,6 +84,13 @@ public class ParseClass {
                 complexType = processEnum(type);
             }
             attribute.setClassifier(complexType.getId());
+        } else if (type == List.class) {
+            if (field.getGenericType() instanceof ParameterizedType) {
+                ParameterizedType pType = (ParameterizedType) field.getGenericType();
+                Class<?> listType = (Class<?>) pType.getActualTypeArguments()[0];
+                mapType(field, attribute, listType);
+                attribute.setMaxCount(Integer.MAX_VALUE);
+            }
         } else {
           attribute.setType(type.isInterface() ? Type.ABSTRACT : Type.COMPLEX);
           ComplexType complexType = classMap.get(type);
