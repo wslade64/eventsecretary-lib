@@ -24,7 +24,7 @@ public interface ExtensionUtils {
     }
 
     static ComplexType findComplexTypeById(List<ComplexType> complexTypeList, String id) {
-        return complexTypeList.stream().filter(complexType -> complexType.getId().equals(id)).findFirst().get();
+        return complexTypeList.stream().filter(complexType -> complexType.getId().equals(id)).findFirst().orElse(null);
     }
 
     static Documentation documentation(Attribute attribute) {
