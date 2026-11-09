@@ -17,6 +17,10 @@ public class IdentifiableCache<T extends Identifiable> {
 
     private List<T> cache = new ArrayList<>();
 
+    public IdentifiableCache(List<T> list) {
+        this(id -> IdentifiableUtils.findById(list, id), code -> IdentifiableUtils.findByCode(list, code));
+    }
+
     public IdentifiableCache(Function<String, T> findById
             , Function<String, T> findByCode) {
         this.findById = findById;
